@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { CalendarIcon, MapPinIcon, ClockIcon, ArrowRightIcon } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<any[]>([])
@@ -25,12 +25,12 @@ export default function EventosPage() {
     fetchEventos()
   }, [])
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.15 } }
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
   }

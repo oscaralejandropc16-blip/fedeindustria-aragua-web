@@ -66,7 +66,6 @@ export default function Dashboard() {
   const [msgEvento, setMsgEvento] = useState('')
   const [msgNoticia, setMsgNoticia] = useState('')
   const [msgAliado, setMsgAliado] = useState('')
-  const [editToast, setEditToast] = useState('')
   
   // Referencias
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -127,8 +126,6 @@ export default function Dashboard() {
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    setEditToast('✏️ Modo Edición activado. Sube al formulario para modificar los datos.')
-    setTimeout(() => setEditToast(''), 4000)
   }
 
   const handleEditEmpresa = (empresa: any) => {
@@ -424,19 +421,6 @@ export default function Dashboard() {
         {/* Glow de fondo tenue */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 blur-[120px] rounded-full pointer-events-none" />
 
-        <AnimatePresence>
-          {editToast && (
-            <motion.div 
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 50, scale: 0.9 }}
-              className="fixed bottom-8 right-8 z-[200] bg-[#002b7f] text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border border-blue-500/30"
-            >
-              {editToast}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="mb-10">
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Gestión de Contenido</h2>
@@ -460,26 +444,28 @@ export default function Dashboard() {
               </TabsTrigger>
             </TabsList>
 
-            {/* CONTENIDO EMPRESAS (Rediseñado en tarjetas) */}
-            <TabsContent value="empresas">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            {/* CONTENIDO EMPRESAS */}
+            <TabsContent value="empresas" className="mt-0 outline-none">
+                <div className="space-y-10">
+                  {/* Formulario Empresas */}
+                  <motion.div 
+                    layout
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEmpresaId ? 'bg-blue-50/50 border-2 border-blue-400 shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] ring-4 ring-blue-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                  >
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingEmpresaId ? 'text-blue-600' : 'text-[#002b7f]'}`}>
+                        <BuildingIcon className="w-5 h-5" />
+                        {editingEmpresaId ? '✏️ Editando Empresa: ' + nombre : 'Registrar Nueva Empresa'}
+                      </h3>
+                      {editingEmpresaId && (
+                        <Button variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
+                        </Button>
+                      )}
+                    </div>
                 <form onSubmit={handleAddEmpresa} className="space-y-8">
                   
-                  {/* Tarjeta: Información Principal */}
-                  <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
-                    <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                      <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <BuildingIcon className="w-5 h-5 text-blue-600" /> {editingEmpresaId ? 'Editar Empresa' : 'Registrar Nueva Empresa'}
-                        </div>
-                        {editingEmpresaId && (
-                          <Button type="button" variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
-                            <XIcon className="w-4 h-4" /> Cancelar Edición
-                          </Button>
-                        )}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-white">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Razón Social o Nombre Comercial</Label>
                         <Input required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
@@ -511,12 +497,10 @@ export default function Dashboard() {
                         </Label>
                         <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
 
                   {/* Tarjeta: Contacto e Identidad */}
-                  <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
-                    <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-white">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
                       
                       {/* Columna de Contacto */}
                       <div className="space-y-8">
@@ -574,10 +558,10 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                    </CardContent>
+                    </div>
                     
                     {/* Botonera de Acción */}
-                    <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                       <div className="w-full">
                         {msg && <div className={`p-4 rounded-xl font-bold text-sm ${msg.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msg}</div>}
                         {loading && uploadStatus && <div className="text-sm font-bold text-[#002b7f] mt-2 flex items-center gap-2"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
@@ -586,12 +570,12 @@ export default function Dashboard() {
                         {loading ? 'Procesando...' : (editingEmpresaId ? 'Guardar Cambios' : 'Guardar Empresa')}
                       </Button>
                     </div>
-                  </Card>
 
                 </form>
+                  </motion.div>
 
-                {/* LISTA DE EMPRESAS */}
-                <div className="mt-12">
+                  {/* LISTA DE EMPRESAS */}
+                  <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Directorio de Empresas</h3>
                   <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                     {loadingListas ? (
@@ -631,27 +615,29 @@ export default function Dashboard() {
                     )}
                   </div>
                 </div>
-
-              </motion.div>
+              </div>
             </TabsContent>
 
             {/* CONTENIDO EVENTOS */}
-            <TabsContent value="eventos">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
-                  <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="w-5 h-5 text-emerald-600" /> {editingEventoId ? 'Editar Evento' : 'Agendar Nuevo Evento'}
-                      </div>
+            <TabsContent value="eventos" className="mt-0 outline-none">
+                <div className="space-y-10">
+                  {/* Formulario Eventos */}
+                  <motion.div 
+                    layout
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEventoId ? 'bg-emerald-50/50 border-2 border-emerald-400 shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)] ring-4 ring-emerald-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                  >
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingEventoId ? 'text-emerald-600' : 'text-[#002b7f]'}`}>
+                        <CalendarIcon className="w-5 h-5" />
+                        {editingEventoId ? '✏️ Editando Evento: ' + tituloEvento : 'Programar Nuevo Evento'}
+                      </h3>
                       {editingEventoId && (
-                        <Button type="button" variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
-                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-8 space-y-6 bg-white">
+                    </div>
+                  <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Título del Evento</Label>
                       <Input required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
@@ -669,7 +655,7 @@ export default function Dashboard() {
                       <Input type="number" value={ordenEvento} onChange={e => setOrdenEvento(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
-                  <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="w-full">
                       {msgEvento && <div className={`p-4 rounded-xl font-bold text-sm ${msgEvento.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgEvento}</div>}
                     </div>
@@ -677,7 +663,7 @@ export default function Dashboard() {
                       {loading ? 'Procesando...' : (editingEventoId ? 'Guardar Cambios' : 'Agendar Evento')}
                     </Button>
                   </div>
-                </Card>
+                </motion.div>
 
                 {/* LISTA DE EVENTOS */}
                 <div className="mt-12">
@@ -721,27 +707,29 @@ export default function Dashboard() {
                     )}
                   </div>
                 </div>
-
-              </motion.div>
+              </div>
             </TabsContent>
 
             {/* CONTENIDO NOTICIAS */}
-            <TabsContent value="noticias">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
-                  <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <NewspaperIcon className="w-5 h-5 text-blue-600" /> {editingNoticiaId ? 'Editar Noticia' : 'Publicar Noticia'}
-                      </div>
+            <TabsContent value="noticias" className="mt-0 outline-none">
+                <div className="space-y-10">
+                  {/* Formulario Noticias */}
+                  <motion.div 
+                    layout
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingNoticiaId ? 'bg-amber-50/50 border-2 border-amber-400 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)] ring-4 ring-amber-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                  >
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingNoticiaId ? 'text-amber-600' : 'text-[#002b7f]'}`}>
+                        <NewspaperIcon className="w-5 h-5" />
+                        {editingNoticiaId ? '✏️ Editando Noticia: ' + tituloNoticia : 'Redactar Nueva Noticia'}
+                      </h3>
                       {editingNoticiaId && (
-                        <Button type="button" variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
-                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-8 space-y-6 bg-white">
+                    </div>
+                  <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Título de la Noticia</Label>
                       <Input required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
@@ -759,7 +747,7 @@ export default function Dashboard() {
                       <Input type="number" value={ordenNoticia} onChange={e => setOrdenNoticia(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
-                  <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="w-full">
                       {msgNoticia && <div className={`p-4 rounded-xl font-bold text-sm ${msgNoticia.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgNoticia}</div>}
                     </div>
@@ -767,7 +755,7 @@ export default function Dashboard() {
                       {loading ? 'Procesando...' : (editingNoticiaId ? 'Guardar Cambios' : 'Publicar Noticia')}
                     </Button>
                   </div>
-                </Card>
+                </motion.div>
 
                 {/* LISTA DE NOTICIAS */}
                 <div className="mt-12">
@@ -810,27 +798,29 @@ export default function Dashboard() {
                     )}
                   </div>
                 </div>
-
-              </motion.div>
+                </div>
             </TabsContent>
 
             {/* CONTENIDO ALIADOS */}
-            <TabsContent value="aliados">
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
-                  <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ImageIcon className="w-5 h-5 text-blue-600" /> {editingAliadoId ? 'Editar Aliado' : 'Registrar Nuevo Aliado'}
-                      </div>
+            <TabsContent value="aliados" className="mt-0 outline-none">
+                <div className="space-y-10">
+                  {/* Formulario Aliados */}
+                  <motion.div 
+                    layout
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingAliadoId ? 'bg-purple-50/50 border-2 border-purple-400 shadow-[0_0_40px_-10px_rgba(168,85,247,0.3)] ring-4 ring-purple-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                  >
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingAliadoId ? 'text-purple-600' : 'text-[#002b7f]'}`}>
+                        <ImageIcon className="w-5 h-5" />
+                        {editingAliadoId ? '✏️ Editando Aliado: ' + nombreAliado : 'Registrar Nuevo Aliado'}
+                      </h3>
                       {editingAliadoId && (
-                        <Button type="button" variant="ghost" onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
-                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        <Button variant="ghost" onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-8 space-y-6 bg-white">
+                    </div>
+                  <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Nombre de la Institución o Marca</Label>
                       <Input required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
@@ -844,7 +834,7 @@ export default function Dashboard() {
                       <Input type="number" value={ordenAliado} onChange={e => setOrdenAliado(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
-                  <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="w-full">
                       {msgAliado && <div className={`p-4 rounded-xl font-bold text-sm ${msgAliado.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgAliado}</div>}
                     </div>
@@ -852,7 +842,7 @@ export default function Dashboard() {
                       {loading ? 'Procesando...' : (editingAliadoId ? 'Guardar Cambios' : 'Agregar Aliado')}
                     </Button>
                   </div>
-                </Card>
+                </motion.div>
 
                 {/* LISTA DE ALIADOS */}
                 <div className="mt-12">
@@ -892,8 +882,7 @@ export default function Dashboard() {
                     )}
                   </div>
                 </div>
-
-              </motion.div>
+                </div>
             </TabsContent>
 
           </Tabs>
