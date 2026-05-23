@@ -47,6 +47,7 @@ export default function Dashboard() {
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
   const [currentImagenNoticia, setCurrentImagenNoticia] = useState<string | null>(null)
   const [galeriaNoticia, setGaleriaNoticia] = useState<File[]>([])
+  const [currentGaleriaNoticia, setCurrentGaleriaNoticia] = useState<string[]>([])
   const [ordenNoticia, setOrdenNoticia] = useState(0)
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
@@ -168,6 +169,7 @@ export default function Dashboard() {
     setFileNoticia(null)
     setCurrentImagenNoticia(noticia.imagen_url)
     setGaleriaNoticia([])
+    setCurrentGaleriaNoticia(noticia.galeria_urls || [])
     scrollToTop()
   }
 
@@ -318,7 +320,11 @@ export default function Dashboard() {
       payload.imagen_url = null
     }
 
-    if (galeria_urls.length > 0) payload.galeria_urls = galeria_urls // ESTO REQUIERE LA COLUMNA EN SUPABASE
+    if (editingNoticiaId) {
+      payload.galeria_urls = [...(currentGaleriaNoticia || []), ...galeria_urls]
+    } else if (galeria_urls.length > 0) {
+      payload.galeria_urls = galeria_urls // ESTO REQUIERE LA COLUMNA EN SUPABASE
+    }
 
     let error;
     if (editingNoticiaId) {
@@ -338,7 +344,7 @@ export default function Dashboard() {
     }
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setOrdenNoticia(0)
+      setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setCurrentGaleriaNoticia([]); setOrdenNoticia(0)
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
@@ -814,7 +820,7 @@ export default function Dashboard() {
                         {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
                       </h3>
                       {editingNoticiaId && (
-                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
@@ -895,6 +901,31 @@ export default function Dashboard() {
                         <p className="text-sm text-slate-500 italic mt-3 text-center">
                           * Selecciona una o varias fotos para añadir al carrusel.
                         </p>
+
+                        {/* Previsualización de imágenes ya guardadas en base de datos */}
+                        {editingNoticiaId && currentGaleriaNoticia.length > 0 && (
+                          <div className="mt-6 mb-8">
+                            <h4 className="text-sm font-bold text-blue-900 mb-3 border-b border-blue-200 pb-2">Galería actual guardada ({currentGaleriaNoticia.length}):</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
+                              {currentGaleriaNoticia.map((url, idx) => (
+                                <div key={`current-${idx}`} className="relative group bg-white border border-blue-200 rounded-xl overflow-hidden aspect-square">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={url} alt="Current Preview" className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button 
+                                      type="button"
+                                      onClick={() => setCurrentGaleriaNoticia(prev => prev.filter((_, i) => i !== idx))}
+                                      className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                                      title="Eliminar esta imagen de la base de datos"
+                                    >
+                                      <XIcon className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
 
                         {/* Previsualización de archivos seleccionados */}
                         {galeriaNoticia.length > 0 && (
