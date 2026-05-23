@@ -125,13 +125,17 @@ export default function NoticiaPage() {
                   Galería Fotográfica
                 </h3>
                 
-                {/* Grilla Masonry (Mampostería) con CSS Columns */}
-                <div className="columns-1 sm:columns-2 gap-6 space-y-6">
+                {/* Carrusel Horizontal Moderno */}
+                <div className="flex overflow-x-auto gap-6 pb-8 pt-4 snap-x snap-mandatory scroll-smooth" style={{ scrollbarWidth: 'thin' }}>
                   {noticia.galeria_urls.map((url: string, index: number) => (
-                    <div key={index} className="break-inside-avoid rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer">
+                    <div key={index} className="flex-none w-[85vw] sm:w-[60vw] md:w-[450px] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer snap-center shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#002b7f]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#002b7f]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                         <span className="text-white font-bold text-sm tracking-wider uppercase flex items-center gap-2">
+                           <ImageIcon className="w-4 h-4" /> Ampliar Imagen
+                         </span>
+                      </div>
                     </div>
                   ))}
                 </div>

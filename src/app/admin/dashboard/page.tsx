@@ -632,7 +632,19 @@ export default function Dashboard() {
                               <input 
                                 type="file" 
                                 accept="image/*" 
-                                onChange={e => setFile(e.target.files?.[0] || null)}
+                                onChange={e => {
+                                    const selected = e.target.files?.[0];
+                                    if (selected) {
+                                      if (selected.size > 2 * 1024 * 1024) {
+                                        alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
+                                        if (fileInputRef.current) fileInputRef.current.value = '';
+                                        return;
+                                      }
+                                      setFile(selected);
+                                    } else {
+                                      setFile(null);
+                                    }
+                                  }}
                                 ref={fileInputRef}
                                 disabled={loading}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -864,7 +876,19 @@ export default function Dashboard() {
                       )}
 
                       <div className="flex items-center gap-3">
-                        <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        <Input type="file" accept="image/*" onChange={e => {
+                          const selected = e.target.files?.[0];
+                          if (selected) {
+                            if (selected.size > 2 * 1024 * 1024) {
+                              alert("La foto de portada excede el límite de 2MB.");
+                              if (fileNoticiaRef.current) fileNoticiaRef.current.value = '';
+                              return;
+                            }
+                            setFileNoticia(selected);
+                          } else {
+                            setFileNoticia(null);
+                          }
+                        }} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
                         {fileNoticia && (
                           <button 
                             type="button" 
@@ -888,7 +912,23 @@ export default function Dashboard() {
                           onChange={e => {
                             if (e.target.files && e.target.files.length > 0) {
                               const newFiles = Array.from(e.target.files);
-                              setGaleriaNoticia(prev => [...(prev || []), ...newFiles]);
+                              
+                              const validFiles = newFiles.filter(f => f.size <= 2 * 1024 * 1024);
+                              if (validFiles.length < newFiles.length) {
+                                alert(`Se descartaron ${newFiles.length - validFiles.length} imágenes porque exceden el límite de 2MB cada una.`);
+                              }
+
+                              setGaleriaNoticia(prev => {
+                                const currentTotal = currentGaleriaNoticia.length + prev.length;
+                                const futureTotal = currentTotal + validFiles.length;
+                                
+                                if (futureTotal > 10) {
+                                  alert(`El límite es de 10 imágenes en total para la galería. Solo se añadirán las primeras permitidas.`);
+                                  const allowed = 10 - currentTotal;
+                                  return [...prev, ...validFiles.slice(0, Math.max(0, allowed))];
+                                }
+                                return [...prev, ...validFiles];
+                              });
                             }
                             // Usamos setTimeout para no interferir con el evento actual
                             setTimeout(() => {
@@ -1063,7 +1103,19 @@ export default function Dashboard() {
                       )}
 
                       <div className="flex items-center gap-3">
-                        <Input type="file" accept="image/*" onChange={e => setFileAliado(e.target.files?.[0] || null)} ref={fileAliadoRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        <Input type="file" accept="image/*" onChange={e => {
+                          const selected = e.target.files?.[0];
+                          if (selected) {
+                            if (selected.size > 2 * 1024 * 1024) {
+                              alert("El logo del aliado excede el límite de 2MB.");
+                              if (fileAliadoRef.current) fileAliadoRef.current.value = '';
+                              return;
+                            }
+                            setFileAliado(selected);
+                          } else {
+                            setFileAliado(null);
+                          }
+                        }} ref={fileAliadoRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
                         {fileAliado && (
                           <button 
                             type="button" 
