@@ -90,7 +90,7 @@ export default function Dashboard() {
     const { data: emp } = await supabase.from('empresas_afiliadas').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (emp) setListaEmpresas(emp)
 
-    const { data: eve } = await supabase.from('eventos').select('*').order('orden', { ascending: true }).order('fecha_evento', { ascending: false })
+    const { data: eve } = await supabase.from('eventos').select('*').order('orden', { ascending: true }).order('fecha', { ascending: false })
     if (eve) setListaEventos(eve)
 
     const { data: not } = await supabase.from('noticias').select('*').order('orden', { ascending: true }).order('fecha_publicacion', { ascending: false })
