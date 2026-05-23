@@ -17,6 +17,8 @@ type Empresa = {
   direccion: string | null
   estatus_membresia: string
   instagram: string | null
+  tiktok: string | null
+  web: string | null
 }
 
 export default function DirectorioPage() {
@@ -314,6 +316,44 @@ export default function DirectorioPage() {
                           className="font-bold text-pink-600 hover:text-pink-700 mt-0.5 leading-relaxed block hover:underline"
                         >
                           {selectedEmpresa.instagram.startsWith('@') ? selectedEmpresa.instagram : `@${selectedEmpresa.instagram}`}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedEmpresa.tiktok && (
+                    <div className="flex items-start gap-4">
+                      <div className="bg-slate-100 p-2.5 rounded-xl text-slate-900">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">TikTok</p>
+                        <a 
+                          href={`https://tiktok.com/${selectedEmpresa.tiktok.replace('@', '')}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="font-bold text-slate-800 hover:text-slate-900 mt-0.5 leading-relaxed block hover:underline"
+                        >
+                          {selectedEmpresa.tiktok.startsWith('@') ? selectedEmpresa.tiktok : `@${selectedEmpresa.tiktok}`}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedEmpresa.web && (
+                    <div className="flex items-start gap-4">
+                      <div className="bg-blue-50 p-2.5 rounded-xl text-blue-600">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Página Web</p>
+                        <a 
+                          href={selectedEmpresa.web.startsWith('http') ? selectedEmpresa.web : `https://${selectedEmpresa.web}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="font-bold text-blue-600 hover:text-blue-700 mt-0.5 leading-relaxed block hover:underline"
+                        >
+                          {selectedEmpresa.web.replace(/(^\w+:|^)\/\//, '')}
                         </a>
                       </div>
                     </div>

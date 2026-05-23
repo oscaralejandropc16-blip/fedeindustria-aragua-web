@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Dashboard() {
@@ -22,22 +22,28 @@ export default function Dashboard() {
   const [direccion, setDireccion] = useState('')
   const [telefono, setTelefono] = useState('')
   const [instagram, setInstagram] = useState('')
+  const [tiktok, setTiktok] = useState('')
+  const [web, setWeb] = useState('')
   const [estatus, setEstatus] = useState('Activa')
   const [file, setFile] = useState<File | null>(null)
+  const [editingEmpresaId, setEditingEmpresaId] = useState<number | null>(null)
   
   // Estados para Eventos
   const [tituloEvento, setTituloEvento] = useState('')
   const [descripcionEvento, setDescripcionEvento] = useState('')
   const [fechaEvento, setFechaEvento] = useState('')
+  const [editingEventoId, setEditingEventoId] = useState<number | null>(null)
   
   // Estados para Noticias
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
+  const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
   // Estados para Aliados
   const [nombreAliado, setNombreAliado] = useState('')
   const [fileAliado, setFileAliado] = useState<File | null>(null)
+  const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
@@ -106,7 +112,45 @@ export default function Dashboard() {
     else fetchData() // refrescar listas
   }
 
-  // --- Handlers de Inserción ---
+  const handleEditEmpresa = (empresa: any) => {
+    setEditingEmpresaId(empresa.id)
+    setNombre(empresa.nombre)
+    setRif(empresa.rif)
+    setRubro(empresa.rubro || '')
+    setDireccion(empresa.direccion || '')
+    setTelefono(empresa.telefono || '')
+    setInstagram(empresa.instagram || '')
+    setTiktok(empresa.tiktok || '')
+    setWeb(empresa.web || '')
+    setEstatus(empresa.estatus_membresia)
+    setFile(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleEditEvento = (evento: any) => {
+    setEditingEventoId(evento.id)
+    setTituloEvento(evento.titulo)
+    setDescripcionEvento(evento.descripcion)
+    setFechaEvento(evento.fecha_evento)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleEditNoticia = (noticia: any) => {
+    setEditingNoticiaId(noticia.id)
+    setTituloNoticia(noticia.titulo)
+    setResumenNoticia(noticia.resumen)
+    setFileNoticia(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleEditAliado = (aliado: any) => {
+    setEditingAliadoId(aliado.id)
+    setNombreAliado(aliado.nombre)
+    setFileAliado(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // --- Handlers de Inserción/Actualización ---
   const handleAddEmpresa = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -138,15 +182,25 @@ export default function Dashboard() {
     }
 
     setUploadStatus('Guardando datos de la empresa...')
-    const { error } = await supabase.from('empresas_afiliadas').insert([{
-      nombre, rif, rubro, direccion, telefono, instagram, estatus_membresia: estatus, logo_url
-    }])
+    
+    const payload: any = { nombre, rif, rubro, direccion, telefono, instagram, tiktok, web, estatus_membresia: estatus }
+    if (logo_url) payload.logo_url = logo_url
+
+    let error;
+    if (editingEmpresaId) {
+      const res = await supabase.from('empresas_afiliadas').update(payload).eq('id', editingEmpresaId)
+      error = res.error
+    } else {
+      const res = await supabase.from('empresas_afiliadas').insert([payload])
+      error = res.error
+    }
 
     if (error) {
       setMsg(`❌ Error: ${error.message}`)
     } else {
-      setMsg('✅ Empresa registrada exitosamente.')
-      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setFile(null)
+      setMsg(editingEmpresaId ? '✅ Empresa actualizada exitosamente.' : '✅ Empresa registrada exitosamente.')
+      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null)
+      setEditingEmpresaId(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
       fetchData()
     }
@@ -161,16 +215,22 @@ export default function Dashboard() {
     setMsgEvento('')
     
     const supabase = createClient()
-    const { error } = await supabase.from('eventos').insert([{ 
-      titulo: tituloEvento, 
-      descripcion: descripcionEvento, 
-      fecha_evento: fechaEvento 
-    }])
+    const payload = { titulo: tituloEvento, descripcion: descripcionEvento, fecha_evento: fechaEvento }
+    
+    let error;
+    if (editingEventoId) {
+      const res = await supabase.from('eventos').update(payload).eq('id', editingEventoId)
+      error = res.error
+    } else {
+      const res = await supabase.from('eventos').insert([payload])
+      error = res.error
+    }
 
     if (error) setMsgEvento(`❌ Error: ${error.message}`)
     else {
-      setMsgEvento('✅ Evento agendado exitosamente.')
+      setMsgEvento(editingEventoId ? '✅ Evento actualizado exitosamente.' : '✅ Evento agendado exitosamente.')
       setTituloEvento(''); setDescripcionEvento(''); setFechaEvento('')
+      setEditingEventoId(null)
       fetchData()
     }
     setLoading(false)
@@ -200,12 +260,23 @@ export default function Dashboard() {
     }
 
     setUploadStatus('Publicando noticia...')
-    const { error } = await supabase.from('noticias').insert([{ titulo: tituloNoticia, resumen: resumenNoticia, imagen_url }])
+    const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia }
+    if (imagen_url) payload.imagen_url = imagen_url
+
+    let error;
+    if (editingNoticiaId) {
+      const res = await supabase.from('noticias').update(payload).eq('id', editingNoticiaId)
+      error = res.error
+    } else {
+      const res = await supabase.from('noticias').insert([payload])
+      error = res.error
+    }
 
     if (error) setMsgNoticia(`❌ Error: ${error.message}`)
     else {
-      setMsgNoticia('✅ Noticia publicada exitosamente.')
+      setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
       setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null)
+      setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       fetchData()
     }
@@ -226,14 +297,26 @@ export default function Dashboard() {
     if (uploadError) { setMsgAliado(`❌ Error: ${uploadError.message}`); setLoading(false); return }
 
     const logo_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+    }
     
     setUploadStatus('Guardando aliado...')
-    const { error } = await supabase.from('aliados').insert([{ nombre: nombreAliado, logo_url }])
+    const payload: any = { nombre: nombreAliado }
+    if (logo_url) payload.logo_url = logo_url
+
+    let error;
+    if (editingAliadoId) {
+      const res = await supabase.from('aliados').update(payload).eq('id', editingAliadoId)
+      error = res.error
+    } else {
+      const res = await supabase.from('aliados').insert([payload])
+      error = res.error
+    }
 
     if (error) setMsgAliado(`❌ Error: ${error.message}`)
     else {
-      setMsgAliado('✅ Aliado agregado exitosamente.')
+      setMsgAliado(editingAliadoId ? '✅ Aliado actualizado exitosamente.' : '✅ Aliado agregado exitosamente.')
       setNombreAliado(''); setFileAliado(null)
+      setEditingAliadoId(null)
       if (fileAliadoRef.current) fileAliadoRef.current.value = ''
       fetchData()
     }
@@ -319,8 +402,15 @@ export default function Dashboard() {
                   {/* Tarjeta: Información Principal */}
                   <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
                     <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                      <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                        <BuildingIcon className="w-5 h-5 text-blue-600" /> Registrar Nueva Empresa
+                      <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <BuildingIcon className="w-5 h-5 text-blue-600" /> {editingEmpresaId ? 'Editar Empresa' : 'Registrar Nueva Empresa'}
+                        </div>
+                        {editingEmpresaId && (
+                          <Button type="button" variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
+                            <XIcon className="w-4 h-4" /> Cancelar Edición
+                          </Button>
+                        )}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 bg-white">
@@ -374,6 +464,20 @@ export default function Dashboard() {
                           </Label>
                           <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
+                        <div className="space-y-3">
+                          <Label className="text-slate-700 font-bold flex items-center gap-2">
+                            <svg className="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+                            TikTok <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
+                          </Label>
+                          <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        </div>
+                        <div className="space-y-3">
+                          <Label className="text-slate-700 font-bold flex items-center gap-2">
+                            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            Página Web <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
+                          </Label>
+                          <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        </div>
                       </div>
 
                       {/* Columna de Imagen */}
@@ -407,7 +511,7 @@ export default function Dashboard() {
                         {loading && uploadStatus && <div className="text-sm font-bold text-[#002b7f] mt-2 flex items-center gap-2"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
                       </div>
                       <Button type="submit" disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                        {loading ? 'Procesando...' : 'Guardar Empresa'}
+                        {loading ? 'Procesando...' : (editingEmpresaId ? 'Guardar Cambios' : 'Guardar Empresa')}
                       </Button>
                     </div>
                   </Card>
@@ -435,10 +539,15 @@ export default function Dashboard() {
                                 <p className="text-sm text-slate-500 font-medium">{emp.rubro} • <span className={emp.estatus_membresia === 'Activa' ? 'text-emerald-600' : 'text-slate-500'}>{emp.estatus_membresia}</span></p>
                               </div>
                             </div>
-                            <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                              <TrashIcon className="w-5 h-5" />
-                            </Button>
-                          </li>
+                              <div className="flex items-center gap-2">
+                                <Button variant="ghost" onClick={() => handleEditEmpresa(emp)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                  <PencilIcon className="w-5 h-5" />
+                                </Button>
+                                <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                  <TrashIcon className="w-5 h-5" />
+                                </Button>
+                              </div>
+                            </li>
                         ))}
                       </ul>
                     )}
@@ -453,8 +562,15 @@ export default function Dashboard() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                 <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
                   <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                      <CalendarIcon className="w-5 h-5 text-emerald-600" /> Agendar Nuevo Evento
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon className="w-5 h-5 text-emerald-600" /> {editingEventoId ? 'Editar Evento' : 'Agendar Nuevo Evento'}
+                      </div>
+                      {editingEventoId && (
+                        <Button type="button" variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
+                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        </Button>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-8 space-y-6 bg-white">
@@ -476,7 +592,7 @@ export default function Dashboard() {
                       {msgEvento && <div className={`p-4 rounded-xl font-bold text-sm ${msgEvento.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgEvento}</div>}
                     </div>
                     <Button onClick={handleAddEvento} disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                      {loading ? 'Procesando...' : 'Agendar Evento'}
+                      {loading ? 'Procesando...' : (editingEventoId ? 'Guardar Cambios' : 'Agendar Evento')}
                     </Button>
                   </div>
                 </Card>
@@ -503,9 +619,14 @@ export default function Dashboard() {
                                 <p className="text-sm text-slate-500 font-medium line-clamp-1">{eve.descripcion}</p>
                               </div>
                             </div>
-                            <Button variant="ghost" onClick={() => handleDelete(eve.id, 'eventos')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                              <TrashIcon className="w-5 h-5" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" onClick={() => handleEditEvento(eve)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <PencilIcon className="w-5 h-5" />
+                              </Button>
+                              <Button variant="ghost" onClick={() => handleDelete(eve.id, 'eventos')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <TrashIcon className="w-5 h-5" />
+                              </Button>
+                            </div>
                           </li>
                         ))}
                       </ul>
@@ -521,8 +642,15 @@ export default function Dashboard() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                 <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
                   <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                      <NewspaperIcon className="w-5 h-5 text-blue-600" /> Publicar Noticia
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <NewspaperIcon className="w-5 h-5 text-blue-600" /> {editingNoticiaId ? 'Editar Noticia' : 'Publicar Noticia'}
+                      </div>
+                      {editingNoticiaId && (
+                        <Button type="button" variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
+                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        </Button>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-8 space-y-6 bg-white">
@@ -544,7 +672,7 @@ export default function Dashboard() {
                       {msgNoticia && <div className={`p-4 rounded-xl font-bold text-sm ${msgNoticia.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgNoticia}</div>}
                     </div>
                     <Button onClick={handleAddNoticia} disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                      {loading ? 'Procesando...' : 'Publicar Noticia'}
+                      {loading ? 'Procesando...' : (editingNoticiaId ? 'Guardar Cambios' : 'Publicar Noticia')}
                     </Button>
                   </div>
                 </Card>
@@ -570,9 +698,14 @@ export default function Dashboard() {
                                 <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE')}</p>
                               </div>
                             </div>
-                            <Button variant="ghost" onClick={() => handleDelete(not.id, 'noticias')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                              <TrashIcon className="w-5 h-5" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" onClick={() => handleEditNoticia(not)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <PencilIcon className="w-5 h-5" />
+                              </Button>
+                              <Button variant="ghost" onClick={() => handleDelete(not.id, 'noticias')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <TrashIcon className="w-5 h-5" />
+                              </Button>
+                            </div>
                           </li>
                         ))}
                       </ul>
@@ -588,8 +721,15 @@ export default function Dashboard() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                 <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden">
                   <CardHeader className="border-b border-slate-100 bg-white pb-6 pt-8 px-8">
-                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                      <ImageIcon className="w-5 h-5 text-blue-600" /> Registrar Nuevo Aliado
+                    <CardTitle className="text-xl font-bold text-slate-900 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-blue-600" /> {editingAliadoId ? 'Editar Aliado' : 'Registrar Nuevo Aliado'}
+                      </div>
+                      {editingAliadoId && (
+                        <Button type="button" variant="ghost" onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); }} className="text-slate-500 hover:text-slate-700 font-bold flex items-center gap-2">
+                          <XIcon className="w-4 h-4" /> Cancelar Edición
+                        </Button>
+                      )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-8 space-y-6 bg-white">
@@ -607,7 +747,7 @@ export default function Dashboard() {
                       {msgAliado && <div className={`p-4 rounded-xl font-bold text-sm ${msgAliado.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgAliado}</div>}
                     </div>
                     <Button onClick={handleAddAliado} disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                      {loading ? 'Procesando...' : 'Agregar Aliado'}
+                      {loading ? 'Procesando...' : (editingAliadoId ? 'Guardar Cambios' : 'Agregar Aliado')}
                     </Button>
                   </div>
                 </Card>
@@ -630,9 +770,14 @@ export default function Dashboard() {
                               </div>
                               <h4 className="font-bold text-slate-900">{ali.nombre}</h4>
                             </div>
-                            <Button variant="ghost" onClick={() => handleDelete(ali.id, 'aliados')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                              <TrashIcon className="w-5 h-5" />
-                            </Button>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" onClick={() => handleEditAliado(ali)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <PencilIcon className="w-5 h-5" />
+                              </Button>
+                              <Button variant="ghost" onClick={() => handleDelete(ali.id, 'aliados')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                                <TrashIcon className="w-5 h-5" />
+                              </Button>
+                            </div>
                           </li>
                         ))}
                       </ul>
