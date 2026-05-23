@@ -33,8 +33,8 @@ export default function RootLayout({
         {/* Navbar Flotante Ultra-Moderno con estado responsivo */}
         <Navbar />
 
-        {/* Contenido Principal con padding superior para compensar el navbar flotante */}
-        <main className="flex-1 flex flex-col pt-32">
+        {/* Contenido Principal */}
+        <main className="flex-1 flex flex-col">
           {children}
         </main>
 

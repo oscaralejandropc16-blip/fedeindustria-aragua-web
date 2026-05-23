@@ -44,7 +44,7 @@ export default function EventosPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_30%,#000_70%,transparent_100%)] opacity-40" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 pt-40 pb-24 relative z-10 space-y-16">
+      <div className="max-w-5xl mx-auto px-6 pt-20 pb-24 relative z-10 space-y-16">
         
         {/* Cabecera */}
         <motion.div 
