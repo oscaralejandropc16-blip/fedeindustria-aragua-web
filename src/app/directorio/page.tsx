@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, InstagramIcon } from 'lucide-react'
+import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, Instagram } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 
 type Empresa = {
@@ -312,7 +312,7 @@ export default function DirectorioPage() {
                     )}
                     {selectedEmpresa.instagram && (
                       <a href={`https://instagram.com/${selectedEmpresa.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-colors">
-                        <InstagramIcon className="w-4 h-4 text-pink-500" /> Instagram
+                        <Instagram className="w-4 h-4 text-pink-500" /> Instagram
                       </a>
                     )}
                     {selectedEmpresa.tiktok && (
