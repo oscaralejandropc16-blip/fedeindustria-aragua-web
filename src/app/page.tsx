@@ -296,11 +296,11 @@ export default function Home() {
                     <p className="text-slate-400 font-medium">No hay eventos próximos agendados.</p>
                   </div>
                 ) : eventos.map((evento) => (
-                  <motion.div 
-                    initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                    key={evento.id} 
-                    className="group relative overflow-hidden rounded-3xl border border-white/5 hover:border-emerald-500/30 bg-slate-900/50 hover:bg-slate-800/80 backdrop-blur-xl cursor-pointer transition-all duration-500 shadow-xl shadow-black/20"
-                  >
+                  <Link href="/eventos" key={evento.id} className="block group outline-none">
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                      className="relative overflow-hidden rounded-3xl border border-white/5 group-hover:border-emerald-500/30 bg-slate-900/50 group-hover:bg-slate-800/80 backdrop-blur-xl cursor-pointer transition-all duration-500 shadow-xl shadow-black/20"
+                    >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-blue-500" />
                     <div className="p-8 pl-10 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                       {evento.imagen_url && (
@@ -328,6 +328,7 @@ export default function Home() {
                       </div>
                     </div>
                   </motion.div>
+                  </Link>
                 ))}
               </div>
             </div>
