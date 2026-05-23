@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [fechaEventoFin, setFechaEventoFin] = useState('')
   const [ubicacionEvento, setUbicacionEvento] = useState('')
   const [linkDetallesEvento, setLinkDetallesEvento] = useState('')
+  const [linkMapaEvento, setLinkMapaEvento] = useState('')
   const [ordenEvento, setOrdenEvento] = useState(0)
   const [editingEventoId, setEditingEventoId] = useState<number | null>(null)
   const [fileEvento, setFileEvento] = useState<File | null>(null)
@@ -166,6 +167,7 @@ export default function Dashboard() {
     setFechaEventoFin(evento.fecha_fin || '')
     setUbicacionEvento(evento.ubicacion || '')
     setLinkDetallesEvento(evento.link_detalles || '')
+    setLinkMapaEvento(evento.link_mapa || '')
     setOrdenEvento(evento.orden || 0)
     setCurrentImagenEvento(evento.imagen_url || null)
     setFileEvento(null)
@@ -284,7 +286,8 @@ export default function Dashboard() {
       fecha: fechaEvento, 
       orden: ordenEvento,
       ubicacion: ubicacionEvento || null,
-      link_detalles: linkDetallesEvento || null
+      link_detalles: linkDetallesEvento || null,
+      link_mapa: linkMapaEvento || null
     }
     
     if (fechaEventoFin) payload.fecha_fin = fechaEventoFin
@@ -308,7 +311,7 @@ export default function Dashboard() {
     if (error) setMsgEvento(`❌ Error: ${error.message}`)
     else {
       setMsgEvento(editingEventoId ? '✅ Evento actualizado exitosamente.' : '✅ Evento agendado exitosamente.')
-      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
+      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
       if (fileEventoRef.current) fileEventoRef.current.value = ''
       setEditingEventoId(null)
       fetchData()
@@ -783,7 +786,7 @@ export default function Dashboard() {
                         {editingEventoId ? <span>Edición: <span className="font-medium text-slate-500">{tituloEvento}</span></span> : 'Programar Nuevo Evento'}
                       </h3>
                       {editingEventoId && (
-                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setFileEvento(null); setCurrentImagenEvento(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setFileEvento(null); setCurrentImagenEvento(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
@@ -809,9 +812,13 @@ export default function Dashboard() {
                         <Input value={ubicacionEvento} onChange={e => setUbicacionEvento(e.target.value)} placeholder="Ej. Hotel Eurobuilding, Caracas" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">Link "Ver Detalles" (Opcional)</Label>
-                        <Input type="url" value={linkDetallesEvento} onChange={e => setLinkDetallesEvento(e.target.value)} placeholder="https://instagram.com/p/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Label className="text-slate-700 font-bold">Link de Google Maps (Opcional)</Label>
+                        <Input type="url" value={linkMapaEvento} onChange={e => setLinkMapaEvento(e.target.value)} placeholder="https://maps.app.goo.gl/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Link "Ver Detalles" Externo (Opcional)</Label>
+                      <Input type="url" value={linkDetallesEvento} onChange={e => setLinkDetallesEvento(e.target.value)} placeholder="https://instagram.com/p/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Descripción Corta</Label>

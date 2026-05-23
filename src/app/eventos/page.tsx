@@ -139,7 +139,13 @@ export default function EventosPage() {
                   <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-6">
                     <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
                       <MapPinIcon className="w-4 h-4 text-emerald-500" />
-                      {evento.ubicacion || 'Sede Fedeindustria'}
+                      {evento.link_mapa ? (
+                        <a href={evento.link_mapa} target="_blank" rel="noopener noreferrer" className="hover:text-[#002b7f] hover:underline transition-colors cursor-pointer">
+                          {evento.ubicacion || 'Sede Fedeindustria'}
+                        </a>
+                      ) : (
+                        <span>{evento.ubicacion || 'Sede Fedeindustria'}</span>
+                      )}
                     </div>
                     
                     {evento.link_detalles ? (
