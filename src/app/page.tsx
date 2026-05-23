@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
 import { ArrowRightIcon, BuildingIcon, NetworkIcon, TrendingUpIcon, CalendarIcon, ChevronRightIcon, NewspaperIcon } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 
 export default function Home() {
@@ -13,6 +13,7 @@ export default function Home() {
   const [noticias, setNoticias] = useState<any[]>([])
   const [aliadosLogos, setAliadosLogos] = useState<string[]>(['/logo.png'])
   const [loading, setLoading] = useState(true)
+  const [selectedNoticia, setSelectedNoticia] = useState<any>(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -135,9 +136,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NOTICIAS (NUEVA SECCIÓN) */}
-      <section className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* NOTICIAS (NUEVA SECCIÓN MEJORADA) */}
+      <section className="py-24 relative overflow-hidden bg-white border-y border-slate-100">
+        {/* Adornos de fondo */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-0 right-[10%] w-[40%] h-[60%] rounded-full bg-blue-50/50 blur-[100px]" />
+          <div className="absolute bottom-[20%] left-[-10%] w-[30%] h-[40%] rounded-full bg-emerald-50/50 blur-[80px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div>
               <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Sala de Prensa</h2>
@@ -162,7 +169,7 @@ export default function Home() {
                   <div className="h-56 relative bg-slate-100 overflow-hidden">
                     {noticia.imagen_url ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
-                      <img src={noticia.imagen_url} alt="Noticia" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+                      <img src={noticia.imagen_url} alt="Noticia" className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <NewspaperIcon className="w-12 h-12 text-slate-300" />
@@ -181,7 +188,10 @@ export default function Home() {
                       {noticia.resumen}
                     </p>
                     <div className="mt-auto pt-6 border-t border-slate-50">
-                      <button className="text-[#002b7f] font-bold flex items-center gap-2 group/btn text-sm">
+                      <button 
+                        onClick={() => setSelectedNoticia(noticia)}
+                        className="text-[#002b7f] font-bold flex items-center gap-2 group/btn text-sm hover:text-blue-900 transition-colors"
+                      >
                         Leer artículo completo <ArrowRightIcon className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                       </button>
                     </div>
@@ -191,6 +201,56 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        {/* Modal de Lectura de Noticia */}
+        <AnimatePresence>
+          {selectedNoticia && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[110] flex items-center justify-center px-4 bg-slate-900/60 backdrop-blur-sm"
+              onClick={() => setSelectedNoticia(null)}
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-white rounded-3xl overflow-hidden max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl"
+                onClick={e => e.stopPropagation()}
+              >
+                {selectedNoticia.imagen_url && (
+                  <div className="h-64 sm:h-80 relative flex-shrink-0">
+                    <img src={selectedNoticia.imagen_url} className="w-full h-full object-cover object-top" alt="Noticia" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+                    <button 
+                      onClick={() => setSelectedNoticia(null)}
+                      className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+                )}
+                <div className="p-8 md:p-10 overflow-y-auto flex-1">
+                  {!selectedNoticia.imagen_url && (
+                    <div className="flex justify-end mb-4">
+                      <button onClick={() => setSelectedNoticia(null)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+                  )}
+                  <span className="text-sm font-bold text-emerald-600 uppercase tracking-widest">
+                    {new Date(selectedNoticia.fecha_publicacion).toLocaleDateString('es-VE')}
+                  </span>
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-4 mb-6 leading-tight">
+                    {selectedNoticia.titulo}
+                  </h2>
+                  <div className="prose prose-lg prose-slate max-w-none">
+                    <p className="text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">
+                      {selectedNoticia.resumen}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </section>
 
       {/* DASHBOARD DINÁMICO (EMPRESAS Y EVENTOS) */}
