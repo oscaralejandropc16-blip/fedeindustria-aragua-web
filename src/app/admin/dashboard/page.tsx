@@ -850,6 +850,20 @@ export default function Dashboard() {
                           </button>
                         )}
                       </div>
+                      
+                      {fileEvento && (
+                        <div className="mt-4 p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                          <h4 className="text-sm font-bold text-blue-900 mb-3">Previsualización del nuevo póster:</h4>
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={URL.createObjectURL(fileEvento)} alt="Preview Nuevo" className="w-20 h-20 object-cover rounded-lg border border-blue-200 shadow-sm" />
+                            <div className="text-sm">
+                              <p className="font-bold text-blue-800">Listo para subir</p>
+                              <p className="text-blue-600">Al hacer clic en Agendar se guardará.</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
