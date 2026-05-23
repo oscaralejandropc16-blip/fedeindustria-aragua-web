@@ -15,7 +15,7 @@ export default function EventosPage() {
       const { data, error } = await supabase
         .from('eventos')
         .select('*')
-        .order('fecha', { ascending: true })
+        .order('fecha', { ascending: false })
 
       if (!error && data) {
         setEventos(data)
@@ -139,13 +139,20 @@ export default function EventosPage() {
                   <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-6">
                     <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
                       <MapPinIcon className="w-4 h-4 text-emerald-500" />
-                      Sede Fedeindustria
+                      {evento.ubicacion || 'Sede Fedeindustria'}
                     </div>
                     
-                    <button className="text-[#002b7f] font-bold flex items-center gap-2 group/btn">
-                      Ver Detalles 
-                      <ArrowRightIcon className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+                    {evento.link_detalles ? (
+                      <a href={evento.link_detalles} target="_blank" rel="noopener noreferrer" className="text-[#002b7f] font-bold flex items-center gap-2 group/btn">
+                        Ver Detalles 
+                        <ArrowRightIcon className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </a>
+                    ) : (
+                      <button className="text-[#002b7f] font-bold flex items-center gap-2 group/btn">
+                        Ver Detalles 
+                        <ArrowRightIcon className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </motion.div>

@@ -33,7 +33,7 @@ export default function Home() {
         .from('eventos')
         .select('*')
         .order('orden', { ascending: true })
-        .order('fecha', { ascending: true })
+        .order('fecha', { ascending: false })
         .limit(2)
       if (eventosData) setEventos(eventosData)
 

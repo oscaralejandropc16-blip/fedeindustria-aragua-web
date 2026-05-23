@@ -38,6 +38,8 @@ export default function Dashboard() {
   const [descripcionEvento, setDescripcionEvento] = useState('')
   const [fechaEvento, setFechaEvento] = useState('')
   const [fechaEventoFin, setFechaEventoFin] = useState('')
+  const [ubicacionEvento, setUbicacionEvento] = useState('')
+  const [linkDetallesEvento, setLinkDetallesEvento] = useState('')
   const [ordenEvento, setOrdenEvento] = useState(0)
   const [editingEventoId, setEditingEventoId] = useState<number | null>(null)
   const [fileEvento, setFileEvento] = useState<File | null>(null)
@@ -162,6 +164,8 @@ export default function Dashboard() {
     setDescripcionEvento(evento.descripcion)
     setFechaEvento(evento.fecha)
     setFechaEventoFin(evento.fecha_fin || '')
+    setUbicacionEvento(evento.ubicacion || '')
+    setLinkDetallesEvento(evento.link_detalles || '')
     setOrdenEvento(evento.orden || 0)
     setCurrentImagenEvento(evento.imagen_url || null)
     setFileEvento(null)
@@ -278,7 +282,9 @@ export default function Dashboard() {
       titulo: tituloEvento, 
       descripcion: descripcionEvento, 
       fecha: fechaEvento, 
-      orden: ordenEvento 
+      orden: ordenEvento,
+      ubicacion: ubicacionEvento || null,
+      link_detalles: linkDetallesEvento || null
     }
     
     if (fechaEventoFin) payload.fecha_fin = fechaEventoFin
@@ -302,7 +308,7 @@ export default function Dashboard() {
     if (error) setMsgEvento(`❌ Error: ${error.message}`)
     else {
       setMsgEvento(editingEventoId ? '✅ Evento actualizado exitosamente.' : '✅ Evento agendado exitosamente.')
-      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
+      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
       if (fileEventoRef.current) fileEventoRef.current.value = ''
       setEditingEventoId(null)
       fetchData()
@@ -777,7 +783,7 @@ export default function Dashboard() {
                         {editingEventoId ? <span>Edición: <span className="font-medium text-slate-500">{tituloEvento}</span></span> : 'Programar Nuevo Evento'}
                       </h3>
                       {editingEventoId && (
-                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setFileEvento(null); setCurrentImagenEvento(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
@@ -795,6 +801,16 @@ export default function Dashboard() {
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Fecha de Fin (Opcional)</Label>
                         <Input type="date" value={fechaEventoFin} onChange={e => setFechaEventoFin(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-slate-400" /> Ubicación (Opcional)</Label>
+                        <Input value={ubicacionEvento} onChange={e => setUbicacionEvento(e.target.value)} placeholder="Ej. Hotel Eurobuilding, Caracas" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Link "Ver Detalles" (Opcional)</Label>
+                        <Input type="url" value={linkDetallesEvento} onChange={e => setLinkDetallesEvento(e.target.value)} placeholder="https://instagram.com/p/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </div>
                     <div className="space-y-3">
