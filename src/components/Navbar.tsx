@@ -56,8 +56,8 @@ export default function Navbar() {
 
           {/* Call to Action (CTA) (Desktop) */}
           <div className="hidden md:block">
-            <Link href="/admin/login" className="text-[15px] font-bold bg-[#002b7f] text-white px-8 py-3.5 rounded-full hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 inline-flex items-center gap-2">
-              Portal Socios
+            <Link href="/contacto" className="text-[15px] font-bold bg-[#002b7f] text-white px-8 py-3.5 rounded-full hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 inline-flex items-center gap-2">
+              Afiliar mi Empresa
             </Link>
           </div>
 
@@ -111,11 +111,11 @@ export default function Navbar() {
             </Link>
             <div className="pt-4 mt-2 border-t border-slate-100">
               <Link 
-                href="/admin/login" 
+                href="/contacto" 
                 className="block text-center text-[15px] font-bold bg-[#002b7f] text-white px-8 py-3.5 rounded-xl hover:bg-blue-900 transition-all shadow-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Portal Socios
+                Afiliar mi Empresa
               </Link>
             </div>
           </nav>
