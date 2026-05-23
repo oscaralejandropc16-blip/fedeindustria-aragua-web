@@ -305,18 +305,23 @@ export default function Dashboard() {
 
   const handleAddAliado = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!fileAliado) { setMsgAliado('❌ Debes seleccionar el logo.'); return }
-    setLoading(true); setMsgAliado(''); setUploadStatus('Subiendo logo...')
+    if (!fileAliado && !editingAliadoId) { setMsgAliado('❌ Debes seleccionar el logo.'); return }
+    setLoading(true); setMsgAliado(''); 
     
     const supabase = createClient()
-    const fileExt = fileAliado.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-    const filePath = `aliados/${fileName}`
+    let logo_url = null;
 
-    const { error: uploadError } = await supabase.storage.from('media_institucional').upload(filePath, fileAliado)
-    if (uploadError) { setMsgAliado(`❌ Error: ${uploadError.message}`); setLoading(false); return }
+    if (fileAliado) {
+      setUploadStatus('Subiendo logo...')
+      const fileExt = fileAliado.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `aliados/${fileName}`
 
-    const logo_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+      const { error: uploadError } = await supabase.storage.from('media_institucional').upload(filePath, fileAliado)
+      if (uploadError) { setMsgAliado(`❌ Error: ${uploadError.message}`); setLoading(false); return }
+
+      logo_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+    }
     
     setUploadStatus('Guardando aliado...')
     const payload: any = { nombre: nombreAliado, orden: ordenAliado }
@@ -739,8 +744,13 @@ export default function Dashboard() {
                       <textarea required value={resumenNoticia} onChange={e => setResumenNoticia(e.target.value)} placeholder="Escribe el resumen de la noticia aquí..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[120px] resize-y" disabled={loading} />
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Imagen Destacada</Label>
+                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Fotografía de Portada (Opcional)</Label>
                       <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
+                      {editingNoticiaId && !fileNoticia && (
+                        <p className="text-sm text-slate-500 italic mt-2">
+                          * Ya existe una fotografía guardada. Sube una nueva solo si deseas reemplazarla.
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
@@ -828,6 +838,11 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
                       <Input type="file" accept="image/*" onChange={e => setFileAliado(e.target.files?.[0] || null)} ref={fileAliadoRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
+                      {editingAliadoId && !fileAliado && (
+                        <p className="text-sm text-slate-500 italic mt-2">
+                          * Ya existe un logo guardado. Sube uno nuevo solo si deseas reemplazarlo.
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>

@@ -83,28 +83,28 @@ export default function Navbar() {
           <nav className="md:hidden pt-6 pb-4 flex flex-col gap-4 border-t border-slate-100 mt-4 animate-in slide-in-from-top-4 fade-in duration-200">
             <Link 
               href="/" 
-              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] px-2 py-2 rounded-lg hover:bg-slate-50"
+              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] active:text-[#002b7f] px-4 py-3 rounded-xl hover:bg-slate-50 active:bg-blue-50 active:scale-95 transition-all"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Inicio
             </Link>
             <Link 
               href="/nosotros" 
-              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] px-2 py-2 rounded-lg hover:bg-slate-50"
+              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] active:text-[#002b7f] px-4 py-3 rounded-xl hover:bg-slate-50 active:bg-blue-50 active:scale-95 transition-all"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Nosotros
             </Link>
             <Link 
               href="/directorio" 
-              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] px-2 py-2 rounded-lg hover:bg-slate-50"
+              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] active:text-[#002b7f] px-4 py-3 rounded-xl hover:bg-slate-50 active:bg-blue-50 active:scale-95 transition-all"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Directorio
             </Link>
             <Link 
               href="/eventos" 
-              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] px-2 py-2 rounded-lg hover:bg-slate-50"
+              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] active:text-[#002b7f] px-4 py-3 rounded-xl hover:bg-slate-50 active:bg-blue-50 active:scale-95 transition-all"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Eventos
