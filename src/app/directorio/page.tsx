@@ -57,10 +57,8 @@ export default function DirectorioPage() {
 
   // Funciones auxiliares para dinámica de color (Dark Theme)
   const getHoverStyles = (estatus: string) => {
-    const state = estatus.toLowerCase()
-    if (state === 'activa') return 'hover:border-emerald-500/40 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.2)]'
-    if (state === 'pendiente') return 'hover:border-amber-500/40 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.2)]'
-    return 'hover:border-slate-500/40 hover:shadow-[0_20px_40px_-15px_rgba(100,116,139,0.2)]'
+    // Usamos un hover unificado azul corporativo sin importar el estatus, para que se vea más limpio
+    return 'hover:border-blue-500/40 hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.15)]'
   }
 
   const getBadgeVariant = (estatus: string) => {
@@ -168,16 +166,16 @@ export default function DirectorioPage() {
                   >
                     
                     {/* Área Superior: Logo/Imagen */}
-                    <div className="h-40 w-full relative flex items-center justify-center bg-white/5 p-6 overflow-hidden border-b border-white/5">
+                    <div className="h-40 w-full relative flex items-center justify-center bg-white p-6 overflow-hidden border-b border-white/10">
                       {empresa.logo_url ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img 
                           src={empresa.logo_url} 
                           alt={`Logo de ${empresa.nombre}`} 
-                          className="object-contain h-full w-full group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-md"
+                          className="object-contain h-full w-full group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
                       ) : (
-                        <div className="flex flex-col items-center gap-3 opacity-30 group-hover:opacity-60 transition-opacity">
+                        <div className="flex flex-col items-center gap-3 opacity-50 group-hover:opacity-80 transition-opacity">
                           <BuildingIcon className="w-10 h-10 text-slate-400" />
                           <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sin Logo</span>
                         </div>
@@ -246,7 +244,7 @@ export default function DirectorioPage() {
               </button>
 
               {/* Cabecera del Modal con Logo */}
-              <div className="h-48 w-full relative flex items-center justify-center bg-white/5 p-8 border-b border-white/10">
+              <div className="h-48 w-full relative flex items-center justify-center bg-white p-8 border-b border-white/10">
                 {selectedEmpresa.logo_url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img 
