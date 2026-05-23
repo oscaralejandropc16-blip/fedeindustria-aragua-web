@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 // Utilizamos Inter como fuente principal, es la más profesional y limpia para UI corporativa.
@@ -22,61 +23,8 @@ export default function RootLayout({
       {/* Aseguramos que Inter sea la fuente base en todo el body */}
       <body className={`${inter.className} min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900`}>
         
-        {/* Navbar Flotante Ultra-Moderno (Glassmorphism) */}
-        <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
-          <header className="w-full max-w-7xl bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl h-24 px-8 flex items-center justify-between pointer-events-auto transition-all">
-            
-            {/* Logo Oficial Extra Grande */}
-            <Link href="/" className="flex items-center group relative">
-              <img 
-                src="/logo.png" 
-                alt="Fedeindustria Aragua" 
-                className="w-48 md:w-64 h-auto object-contain mix-blend-multiply transition-transform duration-500" 
-              />
-              {/* Fallback Textual */}
-              <div className="hidden flex-col justify-center">
-                <span className="text-xs font-black text-[#002b7f] tracking-[0.2em] uppercase leading-none">Somos</span>
-                <span className="font-black text-2xl tracking-tighter text-[#002b7f] leading-none mt-1">
-                  FedeIndustria <span className="font-light italic">Aragua</span>
-                </span>
-              </div>
-            </Link>
-
-            {/* Enlaces de Navegación Centrados */}
-            <nav className="hidden md:flex items-center gap-10">
-              <Link href="/" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
-                Inicio
-                <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
-              </Link>
-              <Link href="/nosotros" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
-                Nosotros
-                <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
-              </Link>
-              <Link href="/directorio" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
-                Directorio
-                <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
-              </Link>
-              <Link href="/eventos" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
-                Eventos
-                <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
-              </Link>
-            </nav>
-
-            {/* Call to Action (CTA) */}
-            <div className="hidden md:block">
-              <Link href="/admin/login" className="text-[15px] font-bold bg-[#002b7f] text-white px-8 py-3.5 rounded-full hover:bg-blue-900 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 inline-flex items-center gap-2">
-                Portal Socios
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button className="md:hidden p-2 text-[#002b7f] bg-blue-50 rounded-full">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </header>
-        </div>
+        {/* Navbar Flotante Ultra-Moderno con estado responsivo */}
+        <Navbar />
 
         {/* Contenido Principal con padding superior para compensar el navbar flotante */}
         <main className="flex-1 flex flex-col pt-32">
