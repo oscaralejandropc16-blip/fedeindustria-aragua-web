@@ -74,22 +74,25 @@ export default function ContactoPage() {
             </div>
 
             <div className="hidden lg:grid grid-cols-2 gap-6 pt-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/10">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/10 flex-shrink-0">
                   <PhoneIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-blue-200 uppercase tracking-widest">Llámanos</p>
-                  <p className="font-bold text-white">+58 243 555-0000</p>
+                  <p className="text-xs font-bold text-blue-200 uppercase tracking-widest mb-1">Llámanos</p>
+                  <p className="font-bold text-white text-sm">0242-6888183</p>
+                  <p className="font-bold text-white text-sm">0424-5401990</p>
+                  <p className="font-bold text-white text-sm">0414-4677830</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/10">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-md border border-white/10 flex-shrink-0">
                   <MailIcon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-blue-200 uppercase tracking-widest">Escríbenos</p>
-                  <p className="font-bold text-white text-sm">contacto@fedeindustria.org</p>
+                  <p className="text-xs font-bold text-blue-200 uppercase tracking-widest mb-1">Escríbenos</p>
+                  <p className="font-bold text-white text-xs lowercase">fedeindustriaregistroaragua@gmail.com</p>
+                  <p className="font-bold text-white text-xs lowercase">fedeindustriaaragua@gmail.com</p>
                 </div>
               </div>
             </div>

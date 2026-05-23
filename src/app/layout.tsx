@@ -72,13 +72,20 @@ export default function RootLayout({
                   <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><MapPinIcon className="w-5 h-5 text-white" /></div>
                   <span className="mt-1 leading-relaxed">Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.</span>
                 </li>
-                <li className="flex items-center gap-4 group">
+                <li className="flex items-start gap-4 group">
                   <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><PhoneIcon className="w-5 h-5 text-white" /></div>
-                  <span className="leading-relaxed">+58 (243) 555-0000</span>
+                  <div className="flex flex-col gap-1">
+                    <a href="tel:02426888183" className="hover:text-white transition-colors">0242-6888183</a>
+                    <a href="tel:04245401990" className="hover:text-white transition-colors">0424-5401990</a>
+                    <a href="tel:04144677830" className="hover:text-white transition-colors">0414-4677830</a>
+                  </div>
                 </li>
-                <li className="flex items-center gap-4 group">
+                <li className="flex items-start gap-4 group">
                   <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><MailIcon className="w-5 h-5 text-white" /></div>
-                  <a href="mailto:contacto@fedeindustriaaragua.org" className="hover:text-white transition-colors">contacto@fedeindustriaaragua.org</a>
+                  <div className="flex flex-col gap-1 text-sm lowercase break-words">
+                    <a href="mailto:fedeindustriaregistroaragua@gmail.com" className="hover:text-white transition-colors block">fedeindustriaregistroaragua@gmail.com</a>
+                    <a href="mailto:fedeindustriaaragua@gmail.com" className="hover:text-white transition-colors block">fedeindustriaaragua@gmail.com</a>
+                  </div>
                 </li>
               </ul>
               
