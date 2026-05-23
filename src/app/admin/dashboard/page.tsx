@@ -8,8 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { SortableItem } from '@/components/SortableItem'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -63,6 +66,7 @@ export default function Dashboard() {
   const [msgEvento, setMsgEvento] = useState('')
   const [msgNoticia, setMsgNoticia] = useState('')
   const [msgAliado, setMsgAliado] = useState('')
+  const [editToast, setEditToast] = useState('')
   
   // Referencias
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -116,6 +120,12 @@ export default function Dashboard() {
     else fetchData() // refrescar listas
   }
 
+  const scrollToTop = () => {
+    document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' })
+    setEditToast('✏️ Modo Edición activado. Sube al formulario para modificar los datos.')
+    setTimeout(() => setEditToast(''), 4000)
+  }
+
   const handleEditEmpresa = (empresa: any) => {
     setEditingEmpresaId(empresa.id)
     setNombre(empresa.nombre)
@@ -129,7 +139,7 @@ export default function Dashboard() {
     setEstatus(empresa.estatus_membresia)
     setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }
 
   const handleEditEvento = (evento: any) => {
@@ -138,7 +148,7 @@ export default function Dashboard() {
     setDescripcionEvento(evento.descripcion)
     setFechaEvento(evento.fecha_evento)
     setOrdenEvento(evento.orden || 0)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }
 
   const handleEditNoticia = (noticia: any) => {
@@ -147,7 +157,7 @@ export default function Dashboard() {
     setResumenNoticia(noticia.resumen)
     setOrdenNoticia(noticia.orden || 0)
     setFileNoticia(null)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }
 
   const handleEditAliado = (aliado: any) => {
@@ -155,7 +165,7 @@ export default function Dashboard() {
     setNombreAliado(aliado.nombre)
     setOrdenAliado(aliado.orden || 0)
     setFileAliado(null)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }
 
   // --- Handlers de Inserción/Actualización ---
@@ -330,6 +340,37 @@ export default function Dashboard() {
     setLoading(false); setUploadStatus('')
   }
 
+  // --- Manejo del Drag and Drop (Reordenamiento Visual) ---
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = async (event: any, tipo: 'empresas' | 'eventos' | 'noticias' | 'aliados') => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    let items: any[] = [];
+    let setItems: any;
+    let tabla = '';
+
+    if (tipo === 'empresas') { items = listaEmpresas; setItems = setListaEmpresas; tabla = 'empresas_afiliadas' }
+    if (tipo === 'eventos') { items = listaEventos; setItems = setListaEventos; tabla = 'eventos' }
+    if (tipo === 'noticias') { items = listaNoticias; setItems = setListaNoticias; tabla = 'noticias' }
+    if (tipo === 'aliados') { items = listaAliados; setItems = setListaAliados; tabla = 'aliados' }
+
+    const oldIndex = items.findIndex((item) => item.id === active.id);
+    const newIndex = items.findIndex((item) => item.id === over.id);
+
+    const newArray = arrayMove(items, oldIndex, newIndex);
+    const updatedArray = newArray.map((item, index) => ({ ...item, orden: index + 1 }));
+    setItems(updatedArray);
+
+    const supabase = createClient()
+    const updates = updatedArray.map(item => supabase.from(tabla).update({ orden: item.orden }).eq('id', item.id))
+    await Promise.all(updates)
+  }
+
   if (!isAuthenticated) return (
     <div className="fixed inset-0 z-[100] bg-slate-900 flex items-center justify-center flex-col gap-4">
       <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -377,6 +418,19 @@ export default function Dashboard() {
       <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden p-6 md:p-12 relative">
         {/* Glow de fondo tenue */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 blur-[120px] rounded-full pointer-events-none" />
+
+        <AnimatePresence>
+          {editToast && (
+            <motion.div 
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.9 }}
+              className="fixed bottom-8 right-8 z-[200] bg-[#002b7f] text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border border-blue-500/30"
+            >
+              {editToast}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="max-w-5xl mx-auto relative z-10">
           <div className="mb-10">
@@ -540,29 +594,35 @@ export default function Dashboard() {
                     ) : listaEmpresas.length === 0 ? (
                       <div className="p-8 text-center text-slate-500 font-medium">No hay empresas registradas.</div>
                     ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {listaEmpresas.map(emp => (
-                          <li key={emp.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
-                                {emp.logo_url ? <img src={emp.logo_url} className="w-full h-full object-cover" alt="Logo" /> : <BuildingIcon className="w-5 h-5 text-slate-300" />}
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-slate-900 text-lg leading-tight">{emp.nombre}</h4>
-                                <p className="text-sm text-slate-500 font-medium">{emp.rubro} • <span className={emp.estatus_membresia === 'Activa' ? 'text-emerald-600' : 'text-slate-500'}>{emp.estatus_membresia}</span></p>
-                              </div>
-                            </div>
-                              <div className="flex items-center gap-2">
-                                <Button variant="ghost" onClick={() => handleEditEmpresa(emp)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                  <PencilIcon className="w-5 h-5" />
-                                </Button>
-                                <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                  <TrashIcon className="w-5 h-5" />
-                                </Button>
-                              </div>
-                            </li>
-                        ))}
-                      </ul>
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'empresas')}>
+                        <SortableContext items={listaEmpresas.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
+                            {listaEmpresas.map(emp => (
+                              <SortableItem key={emp.id} id={emp.id}>
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
+                                      {emp.logo_url ? <img src={emp.logo_url} className="w-full h-full object-cover" alt="Logo" /> : <BuildingIcon className="w-5 h-5 text-slate-300" />}
+                                    </div>
+                                    <div>
+                                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{emp.nombre}</h4>
+                                      <p className="text-sm text-slate-500 font-medium">{emp.rubro} • <span className={emp.estatus_membresia === 'Activa' ? 'text-emerald-600' : 'text-slate-500'}>{emp.estatus_membresia}</span></p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button variant="ghost" onClick={() => handleEditEmpresa(emp)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <PencilIcon className="w-5 h-5" />
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <TrashIcon className="w-5 h-5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </ul>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>
@@ -623,30 +683,36 @@ export default function Dashboard() {
                     ) : listaEventos.length === 0 ? (
                       <div className="p-8 text-center text-slate-500 font-medium">No hay eventos programados.</div>
                     ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {listaEventos.map(eve => (
-                          <li key={eve.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex items-center gap-4">
-                              <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
-                                <span className="text-xs uppercase">{new Date(eve.fecha_evento).toLocaleDateString('es-VE', { month: 'short' })}</span>
-                                <span className="text-lg leading-none">{new Date(eve.fecha_evento).getDate()}</span>
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-slate-900 text-lg leading-tight">{eve.titulo}</h4>
-                                <p className="text-sm text-slate-500 font-medium line-clamp-1">{eve.descripcion}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button variant="ghost" onClick={() => handleEditEvento(eve)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <PencilIcon className="w-5 h-5" />
-                              </Button>
-                              <Button variant="ghost" onClick={() => handleDelete(eve.id, 'eventos')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <TrashIcon className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'eventos')}>
+                        <SortableContext items={listaEventos.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
+                            {listaEventos.map(eve => (
+                              <SortableItem key={eve.id} id={eve.id}>
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
+                                      <span className="text-xs uppercase">{new Date(eve.fecha_evento).toLocaleDateString('es-VE', { month: 'short' })}</span>
+                                      <span className="text-lg leading-none">{new Date(eve.fecha_evento).getDate()}</span>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{eve.titulo}</h4>
+                                      <p className="text-sm text-slate-500 font-medium line-clamp-1">{eve.descripcion}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button variant="ghost" onClick={() => handleEditEvento(eve)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <PencilIcon className="w-5 h-5" />
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => handleDelete(eve.id, 'eventos')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <TrashIcon className="w-5 h-5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </ul>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>
@@ -707,29 +773,35 @@ export default function Dashboard() {
                     ) : listaNoticias.length === 0 ? (
                       <div className="p-8 text-center text-slate-500 font-medium">No hay noticias publicadas.</div>
                     ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {listaNoticias.map(not => (
-                          <li key={not.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex items-center gap-4">
-                              <div className="w-16 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-200">
-                                {not.imagen_url ? <img src={not.imagen_url} className="w-full h-full object-cover" alt="Noticia" /> : <NewspaperIcon className="w-5 h-5 text-slate-300 m-auto h-full" />}
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-slate-900 text-base leading-tight line-clamp-1">{not.titulo}</h4>
-                                <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE')}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button variant="ghost" onClick={() => handleEditNoticia(not)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <PencilIcon className="w-5 h-5" />
-                              </Button>
-                              <Button variant="ghost" onClick={() => handleDelete(not.id, 'noticias')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <TrashIcon className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'noticias')}>
+                        <SortableContext items={listaNoticias.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
+                            {listaNoticias.map(not => (
+                              <SortableItem key={not.id} id={not.id}>
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-16 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-200 flex items-center justify-center">
+                                      {not.imagen_url ? <img src={not.imagen_url} className="w-full h-full object-cover" alt="Noticia" /> : <NewspaperIcon className="w-5 h-5 text-slate-300" />}
+                                    </div>
+                                    <div>
+                                      <h4 className="font-bold text-slate-900 text-base leading-tight line-clamp-1">{not.titulo}</h4>
+                                      <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE')}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button variant="ghost" onClick={() => handleEditNoticia(not)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <PencilIcon className="w-5 h-5" />
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => handleDelete(not.id, 'noticias')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <TrashIcon className="w-5 h-5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </ul>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>
@@ -786,26 +858,32 @@ export default function Dashboard() {
                     ) : listaAliados.length === 0 ? (
                       <div className="p-8 text-center text-slate-500 font-medium">No hay aliados registrados.</div>
                     ) : (
-                      <ul className="divide-y divide-slate-100">
-                        {listaAliados.map(ali => (
-                          <li key={ali.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div className="flex items-center gap-4">
-                              <div className="w-20 h-10 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center p-1 border border-slate-200">
-                                <img src={ali.logo_url} className="w-full h-full object-contain" alt="Logo Aliado" />
-                              </div>
-                              <h4 className="font-bold text-slate-900">{ali.nombre}</h4>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button variant="ghost" onClick={() => handleEditAliado(ali)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <PencilIcon className="w-5 h-5" />
-                              </Button>
-                              <Button variant="ghost" onClick={() => handleDelete(ali.id, 'aliados')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
-                                <TrashIcon className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'aliados')}>
+                        <SortableContext items={listaAliados.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
+                            {listaAliados.map(ali => (
+                              <SortableItem key={ali.id} id={ali.id}>
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-20 h-10 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center p-1 border border-slate-200">
+                                      <img src={ali.logo_url} className="w-full h-full object-contain" alt="Logo Aliado" />
+                                    </div>
+                                    <h4 className="font-bold text-slate-900">{ali.nombre}</h4>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button variant="ghost" onClick={() => handleEditAliado(ali)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <PencilIcon className="w-5 h-5" />
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => handleDelete(ali.id, 'aliados')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <TrashIcon className="w-5 h-5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </ul>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>
