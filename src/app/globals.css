@@ -127,17 +127,3 @@
   html {
     @apply font-sans;
   }
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-
-.custom-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-.custom-marquee:hover {
-  animation-play-state: paused;
-}
