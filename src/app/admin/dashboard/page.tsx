@@ -487,12 +487,13 @@ export default function Dashboard() {
                   {/* Formulario Empresas */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEmpresaId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingEmpresaId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
+                    {editingEmpresaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-blue-400" />}
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
-                        <BuildingIcon className="w-5 h-5" />
-                        {editingEmpresaId ? '✏️ Editando Empresa: ' + nombre : 'Registrar Nueva Empresa'}
+                      <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
+                        <BuildingIcon className="w-6 h-6 text-[#002b7f]/70" />
+                        {editingEmpresaId ? <span>Edición: <span className="font-medium text-slate-500">{nombre}</span></span> : 'Registrar Nueva Empresa'}
                       </h3>
                       {editingEmpresaId && (
                         <Button variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
@@ -661,12 +662,13 @@ export default function Dashboard() {
                   {/* Formulario Eventos */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEventoId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingEventoId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
+                    {editingEventoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-emerald-400" />}
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
-                        <CalendarIcon className="w-5 h-5" />
-                        {editingEventoId ? '✏️ Editando Evento: ' + tituloEvento : 'Programar Nuevo Evento'}
+                      <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
+                        <CalendarIcon className="w-6 h-6 text-[#002b7f]/70" />
+                        {editingEventoId ? <span>Edición: <span className="font-medium text-slate-500">{tituloEvento}</span></span> : 'Programar Nuevo Evento'}
                       </h3>
                       {editingEventoId && (
                         <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
@@ -753,12 +755,13 @@ export default function Dashboard() {
                   {/* Formulario Noticias */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingNoticiaId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingNoticiaId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
+                    {editingNoticiaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-amber-400" />}
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
-                        <NewspaperIcon className="w-5 h-5" />
-                        {editingNoticiaId ? '✏️ Editando Noticia: ' + tituloNoticia : 'Redactar Nueva Noticia'}
+                      <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
+                        <NewspaperIcon className="w-6 h-6 text-[#002b7f]/70" />
+                        {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
                       </h3>
                       {editingNoticiaId && (
                         <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
@@ -904,12 +907,13 @@ export default function Dashboard() {
                   {/* Formulario Aliados */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingAliadoId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingAliadoId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
+                    {editingAliadoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-purple-400" />}
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
-                        <ImageIcon className="w-5 h-5" />
-                        {editingAliadoId ? '✏️ Editando Aliado: ' + nombreAliado : 'Registrar Nuevo Aliado'}
+                      <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
+                        <ImageIcon className="w-6 h-6 text-[#002b7f]/70" />
+                        {editingAliadoId ? <span>Edición: <span className="font-medium text-slate-500">{nombreAliado}</span></span> : 'Registrar Nuevo Aliado'}
                       </h3>
                       {editingAliadoId && (
                         <Button variant="ghost" onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
