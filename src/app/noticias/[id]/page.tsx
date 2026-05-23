@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
-import { ArrowLeftIcon, NewspaperIcon, CalendarIcon } from 'lucide-react'
+import { ArrowLeftIcon, NewspaperIcon, CalendarIcon, ImageIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function NoticiaPage() {
@@ -103,22 +103,35 @@ export default function NoticiaPage() {
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="prose prose-lg md:prose-xl prose-slate max-w-none"
+            className="max-w-none"
           >
-            <p className="text-slate-600 font-medium leading-relaxed whitespace-pre-wrap text-lg md:text-xl mb-12">
+            {/* Resumen como un "Lead Paragraph" destacado */}
+            <p className="text-slate-600 font-medium leading-relaxed whitespace-pre-wrap text-xl md:text-2xl mb-12 border-l-4 border-[#002b7f] pl-6 italic">
               {noticia.resumen}
             </p>
+
+            {/* Contenido Completo (Reportaje) */}
+            {noticia.contenido_completo && (
+              <div className="prose prose-lg md:prose-xl prose-slate max-w-none mb-16 whitespace-pre-wrap text-slate-800 leading-relaxed">
+                {noticia.contenido_completo}
+              </div>
+            )}
 
             {/* Galería de imágenes adicionales */}
             {noticia.galeria_urls && noticia.galeria_urls.length > 0 && (
               <div className="mt-16 pt-12 border-t border-slate-100">
-                <h3 className="text-2xl font-bold text-slate-900 mb-8">Galería de Imágenes</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <h3 className="text-3xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                  <ImageIcon className="w-8 h-8 text-[#002b7f]" />
+                  Galería Fotográfica
+                </h3>
+                
+                {/* Grilla Masonry (Mampostería) con CSS Columns */}
+                <div className="columns-1 sm:columns-2 gap-6 space-y-6">
                   {noticia.galeria_urls.map((url: string, index: number) => (
-                    <div key={index} className="rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-slate-50 aspect-[4/3] group cursor-pointer relative">
+                    <div key={index} className="break-inside-avoid rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#002b7f]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   ))}
                 </div>

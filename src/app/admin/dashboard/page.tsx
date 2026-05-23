@@ -43,6 +43,7 @@ export default function Dashboard() {
   // Estados para Noticias
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
+  const [contenidoCompletoNoticia, setContenidoCompletoNoticia] = useState('')
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
   const [currentImagenNoticia, setCurrentImagenNoticia] = useState<string | null>(null)
   const [galeriaNoticia, setGaleriaNoticia] = useState<File[]>([])
@@ -161,7 +162,8 @@ export default function Dashboard() {
   const handleEditNoticia = (noticia: any) => {
     setEditingNoticiaId(noticia.id)
     setTituloNoticia(noticia.titulo)
-    setResumenNoticia(noticia.resumen)
+    setResumenNoticia(noticia.resumen || '')
+    setContenidoCompletoNoticia(noticia.contenido_completo || '')
     setOrdenNoticia(noticia.orden || 0)
     setFileNoticia(null)
     setCurrentImagenNoticia(noticia.imagen_url)
@@ -308,7 +310,7 @@ export default function Dashboard() {
     }
 
     setUploadStatus('Publicando noticia...')
-    const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, orden: ordenNoticia }
+    const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, contenido_completo: contenidoCompletoNoticia, orden: ordenNoticia }
     if (imagen_url !== null) {
       payload.imagen_url = imagen_url
     } else if (editingNoticiaId && currentImagenNoticia === null) {
@@ -336,7 +338,7 @@ export default function Dashboard() {
     }
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setOrdenNoticia(0)
+      setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setOrdenNoticia(0)
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
@@ -812,7 +814,7 @@ export default function Dashboard() {
                         {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
                       </h3>
                       {editingNoticiaId && (
-                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
@@ -823,8 +825,12 @@ export default function Dashboard() {
                       <Input required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold">Resumen / Contenido Breve</Label>
-                      <textarea required value={resumenNoticia} onChange={e => setResumenNoticia(e.target.value)} placeholder="Escribe el resumen de la noticia aquí..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[120px] resize-y" disabled={loading} />
+                      <Label className="text-slate-700 font-bold">Resumen Breve (Para tarjeta o preview)</Label>
+                      <textarea required value={resumenNoticia} onChange={e => setResumenNoticia(e.target.value)} placeholder="Escribe el resumen corto aquí..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[80px] resize-y" disabled={loading} />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Contenido Completo (Reportaje)</Label>
+                      <textarea value={contenidoCompletoNoticia} onChange={e => setContenidoCompletoNoticia(e.target.value)} placeholder="Redacta el reportaje completo aquí..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[200px] resize-y" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Fotografía de Portada (Opcional)</Label>
