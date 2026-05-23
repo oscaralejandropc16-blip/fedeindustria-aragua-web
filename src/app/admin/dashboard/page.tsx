@@ -212,7 +212,11 @@ export default function Dashboard() {
     setUploadStatus('Guardando datos de la empresa...')
     
     const payload: any = { nombre, rif, rubro, direccion, telefono, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
-    if (logo_url) payload.logo_url = logo_url
+    if (logo_url !== null) {
+      payload.logo_url = logo_url
+    } else if (editingEmpresaId && currentImagenEmpresa === null) {
+      payload.logo_url = null
+    }
 
     let error;
     if (editingEmpresaId) {
@@ -305,7 +309,13 @@ export default function Dashboard() {
 
     setUploadStatus('Publicando noticia...')
     const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, orden: ordenNoticia }
-    if (imagen_url) payload.imagen_url = imagen_url
+    if (imagen_url !== null) {
+      payload.imagen_url = imagen_url
+    } else if (editingNoticiaId && currentImagenNoticia === null) {
+      // Si estamos editando y currentImagenNoticia es null (el usuario la borró explícitamente), la quitamos en BD
+      payload.imagen_url = null
+    }
+
     if (galeria_urls.length > 0) payload.galeria_urls = galeria_urls // ESTO REQUIERE LA COLUMNA EN SUPABASE
 
     let error;
@@ -357,7 +367,11 @@ export default function Dashboard() {
     
     setUploadStatus('Guardando aliado...')
     const payload: any = { nombre: nombreAliado, orden: ordenAliado }
-    if (logo_url) payload.logo_url = logo_url
+    if (logo_url !== null) {
+      payload.logo_url = logo_url
+    } else if (editingAliadoId && currentImagenAliado === null) {
+      payload.logo_url = null
+    }
 
     let error;
     if (editingAliadoId) {
@@ -579,19 +593,53 @@ export default function Dashboard() {
                         <h3 className="font-bold text-slate-900 text-lg border-b border-slate-100 pb-2">Identidad Visual</h3>
                         <div className="space-y-4">
                           <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logotipo de la Empresa</Label>
-                          <div className="border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 p-6 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100 hover:border-[#002b7f]/50 group relative">
-                            <ImageIcon className="w-10 h-10 text-slate-300 mb-3 group-hover:text-[#002b7f] transition-colors" />
-                            <p className="text-sm font-bold text-slate-700">Haz clic para buscar archivo</p>
-                            <p className="text-xs text-slate-400 mt-1">PNG o JPG. Formato cuadrado recomendado.</p>
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={e => setFile(e.target.files?.[0] || null)}
-                              ref={fileInputRef}
-                              disabled={loading}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            />
-                            {file && <div className="mt-4 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">{file.name}</div>}
+                          
+                          {editingEmpresaId && currentImagenEmpresa && !file && (
+                            <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                              <div className="flex items-center gap-4">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={currentImagenEmpresa} alt="Actual" className="w-20 h-20 object-contain bg-white rounded-lg border border-blue-200 shadow-sm p-1" />
+                                <div className="text-sm">
+                                  <p className="font-bold text-blue-900">Logo actual guardado</p>
+                                  <p className="text-blue-700">Sube uno nuevo abajo si deseas cambiarlo.</p>
+                                </div>
+                              </div>
+                              <button 
+                                type="button" 
+                                onClick={() => setCurrentImagenEmpresa(null)}
+                                className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
+                                title="Eliminar logo actual"
+                              >
+                                <XIcon className="w-5 h-5" />
+                              </button>
+                            </div>
+                          )}
+
+                          <div className="flex items-center gap-3">
+                            <div className="border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 p-6 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100 hover:border-[#002b7f]/50 group relative flex-1">
+                              <ImageIcon className="w-8 h-8 text-slate-300 mb-2 group-hover:text-[#002b7f] transition-colors" />
+                              <p className="text-sm font-bold text-slate-700">Haz clic para buscar archivo</p>
+                              <p className="text-xs text-slate-400 mt-1">PNG o JPG. Formato cuadrado recomendado.</p>
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={e => setFile(e.target.files?.[0] || null)}
+                                ref={fileInputRef}
+                                disabled={loading}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                              />
+                            </div>
+                            {file && (
+                              <button 
+                                type="button" 
+                                onClick={() => { setFile(null); if(fileInputRef.current) fileInputRef.current.value = '' }}
+                                className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-full p-4 flex flex-col items-center justify-center transition-all shadow-sm"
+                                title="Descartar archivo"
+                              >
+                                <XIcon className="w-6 h-6 mb-2" />
+                                <span className="text-xs font-bold text-center break-all max-w-[80px] line-clamp-2">{file.name}</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -782,17 +830,39 @@ export default function Dashboard() {
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Fotografía de Portada (Opcional)</Label>
                       
                       {editingNoticiaId && currentImagenNoticia && !fileNoticia && (
-                        <div className="mb-4 flex items-center gap-4 p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={currentImagenNoticia} alt="Actual" className="w-20 h-20 object-cover rounded-lg border border-blue-200 shadow-sm" />
-                          <div className="text-sm">
-                            <p className="font-bold text-blue-900">Imagen actual guardada</p>
-                            <p className="text-blue-700">Sube una nueva imagen abajo si deseas cambiarla. Si no, se conservará esta.</p>
+                        <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={currentImagenNoticia} alt="Actual" className="w-20 h-20 object-cover rounded-lg border border-blue-200 shadow-sm" />
+                            <div className="text-sm">
+                              <p className="font-bold text-blue-900">Imagen actual guardada</p>
+                              <p className="text-blue-700">Sube una nueva imagen abajo si deseas cambiarla.</p>
+                            </div>
                           </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setCurrentImagenNoticia(null)}
+                            className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
+                            title="Eliminar imagen actual"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
                         </div>
                       )}
 
-                      <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
+                      <div className="flex items-center gap-3">
+                        <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        {fileNoticia && (
+                          <button 
+                            type="button" 
+                            onClick={() => { setFileNoticia(null); if(fileNoticiaRef.current) fileNoticiaRef.current.value = '' }}
+                            className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-12 w-12 flex items-center justify-center transition-all shadow-sm flex-shrink-0"
+                            title="Descartar archivo"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Galería de Imágenes Adicionales (Opcional)</Label>
@@ -928,12 +998,41 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
-                      <Input type="file" accept="image/*" onChange={e => setFileAliado(e.target.files?.[0] || null)} ref={fileAliadoRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
-                      {editingAliadoId && !fileAliado && (
-                        <p className="text-sm text-slate-500 italic mt-2">
-                          * Ya existe un logo guardado. Sube uno nuevo solo si deseas reemplazarlo.
-                        </p>
+                      
+                      {editingAliadoId && currentImagenAliado && !fileAliado && (
+                        <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={currentImagenAliado} alt="Actual" className="w-20 h-20 object-contain bg-white rounded-lg border border-blue-200 shadow-sm p-1" />
+                            <div className="text-sm">
+                              <p className="font-bold text-blue-900">Logo actual guardado</p>
+                              <p className="text-blue-700">Sube uno nuevo abajo si deseas cambiarlo.</p>
+                            </div>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setCurrentImagenAliado(null)}
+                            className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
+                            title="Eliminar logo actual"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        </div>
                       )}
+
+                      <div className="flex items-center gap-3">
+                        <Input type="file" accept="image/*" onChange={e => setFileAliado(e.target.files?.[0] || null)} ref={fileAliadoRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        {fileAliado && (
+                          <button 
+                            type="button" 
+                            onClick={() => { setFileAliado(null); if(fileAliadoRef.current) fileAliadoRef.current.value = '' }}
+                            className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-12 w-12 flex items-center justify-center transition-all shadow-sm flex-shrink-0"
+                            title="Descartar archivo"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
