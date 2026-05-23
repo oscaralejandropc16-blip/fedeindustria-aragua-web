@@ -121,7 +121,12 @@ export default function Dashboard() {
   }
 
   const scrollToTop = () => {
-    document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' })
+    const mainEl = document.getElementById('dashboard-main');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     setEditToast('✏️ Modo Edición activado. Sube al formulario para modificar los datos.')
     setTimeout(() => setEditToast(''), 4000)
   }
@@ -359,8 +364,8 @@ export default function Dashboard() {
     if (tipo === 'noticias') { items = listaNoticias; setItems = setListaNoticias; tabla = 'noticias' }
     if (tipo === 'aliados') { items = listaAliados; setItems = setListaAliados; tabla = 'aliados' }
 
-    const oldIndex = items.findIndex((item) => item.id === active.id);
-    const newIndex = items.findIndex((item) => item.id === over.id);
+    const oldIndex = items.findIndex((item) => item.id.toString() === active.id.toString());
+    const newIndex = items.findIndex((item) => item.id.toString() === over.id.toString());
 
     const newArray = arrayMove(items, oldIndex, newIndex);
     const updatedArray = newArray.map((item, index) => ({ ...item, orden: index + 1 }));
@@ -415,7 +420,7 @@ export default function Dashboard() {
       </aside>
 
       {/* ÁREA PRINCIPAL (Main Content) */}
-      <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden p-6 md:p-12 relative">
+      <main id="dashboard-main" className="flex-1 h-screen overflow-y-auto overflow-x-hidden p-6 md:p-12 relative scroll-smooth">
         {/* Glow de fondo tenue */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 blur-[120px] rounded-full pointer-events-none" />
 
@@ -595,10 +600,10 @@ export default function Dashboard() {
                       <div className="p-8 text-center text-slate-500 font-medium">No hay empresas registradas.</div>
                     ) : (
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'empresas')}>
-                        <SortableContext items={listaEmpresas.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={listaEmpresas.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
                           <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
                             {listaEmpresas.map(emp => (
-                              <SortableItem key={emp.id} id={emp.id}>
+                              <SortableItem key={emp.id} id={emp.id.toString()}>
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
@@ -684,10 +689,10 @@ export default function Dashboard() {
                       <div className="p-8 text-center text-slate-500 font-medium">No hay eventos programados.</div>
                     ) : (
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'eventos')}>
-                        <SortableContext items={listaEventos.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={listaEventos.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
                           <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
                             {listaEventos.map(eve => (
-                              <SortableItem key={eve.id} id={eve.id}>
+                              <SortableItem key={eve.id} id={eve.id.toString()}>
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
@@ -774,10 +779,10 @@ export default function Dashboard() {
                       <div className="p-8 text-center text-slate-500 font-medium">No hay noticias publicadas.</div>
                     ) : (
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'noticias')}>
-                        <SortableContext items={listaNoticias.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={listaNoticias.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
                           <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
                             {listaNoticias.map(not => (
-                              <SortableItem key={not.id} id={not.id}>
+                              <SortableItem key={not.id} id={not.id.toString()}>
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-16 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-200 flex items-center justify-center">
@@ -859,10 +864,10 @@ export default function Dashboard() {
                       <div className="p-8 text-center text-slate-500 font-medium">No hay aliados registrados.</div>
                     ) : (
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'aliados')}>
-                        <SortableContext items={listaAliados.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                        <SortableContext items={listaAliados.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
                           <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
                             {listaAliados.map(ali => (
-                              <SortableItem key={ali.id} id={ali.id}>
+                              <SortableItem key={ali.id} id={ali.id.toString()}>
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-20 h-10 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center p-1 border border-slate-200">
