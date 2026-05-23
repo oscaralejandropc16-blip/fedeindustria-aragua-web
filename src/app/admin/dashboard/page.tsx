@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [estatus, setEstatus] = useState('Activa')
   const [ordenEmpresa, setOrdenEmpresa] = useState(0)
   const [file, setFile] = useState<File | null>(null)
+  const [currentImagenEmpresa, setCurrentImagenEmpresa] = useState<string | null>(null)
   const [editingEmpresaId, setEditingEmpresaId] = useState<number | null>(null)
   
   // Estados para Eventos
@@ -43,13 +44,15 @@ export default function Dashboard() {
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
-  const [galeriaNoticia, setGaleriaNoticia] = useState<FileList | null>(null)
+  const [currentImagenNoticia, setCurrentImagenNoticia] = useState<string | null>(null)
+  const [galeriaNoticia, setGaleriaNoticia] = useState<File[]>([])
   const [ordenNoticia, setOrdenNoticia] = useState(0)
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
   // Estados para Aliados
   const [nombreAliado, setNombreAliado] = useState('')
   const [fileAliado, setFileAliado] = useState<File | null>(null)
+  const [currentImagenAliado, setCurrentImagenAliado] = useState<string | null>(null)
   const [ordenAliado, setOrdenAliado] = useState(0)
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
@@ -161,7 +164,8 @@ export default function Dashboard() {
     setResumenNoticia(noticia.resumen)
     setOrdenNoticia(noticia.orden || 0)
     setFileNoticia(null)
-    setGaleriaNoticia(null)
+    setCurrentImagenNoticia(noticia.imagen_url)
+    setGaleriaNoticia([])
     scrollToTop()
   }
 
@@ -170,6 +174,7 @@ export default function Dashboard() {
     setNombreAliado(aliado.nombre)
     setOrdenAliado(aliado.orden || 0)
     setFileAliado(null)
+    setCurrentImagenAliado(aliado.logo_url)
     scrollToTop()
   }
 
@@ -321,7 +326,7 @@ export default function Dashboard() {
     }
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setGaleriaNoticia(null); setOrdenNoticia(0)
+      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setOrdenNoticia(0)
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
@@ -482,10 +487,10 @@ export default function Dashboard() {
                   {/* Formulario Empresas */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEmpresaId ? 'bg-blue-50/50 border-2 border-blue-400 shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] ring-4 ring-blue-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEmpresaId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
                   >
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingEmpresaId ? 'text-blue-600' : 'text-[#002b7f]'}`}>
+                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
                         <BuildingIcon className="w-5 h-5" />
                         {editingEmpresaId ? '✏️ Editando Empresa: ' + nombre : 'Registrar Nueva Empresa'}
                       </h3>
@@ -656,10 +661,10 @@ export default function Dashboard() {
                   {/* Formulario Eventos */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEventoId ? 'bg-emerald-50/50 border-2 border-emerald-400 shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)] ring-4 ring-emerald-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingEventoId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
                   >
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingEventoId ? 'text-emerald-600' : 'text-[#002b7f]'}`}>
+                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
                         <CalendarIcon className="w-5 h-5" />
                         {editingEventoId ? '✏️ Editando Evento: ' + tituloEvento : 'Programar Nuevo Evento'}
                       </h3>
@@ -748,10 +753,10 @@ export default function Dashboard() {
                   {/* Formulario Noticias */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingNoticiaId ? 'bg-amber-50/50 border-2 border-amber-400 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)] ring-4 ring-amber-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingNoticiaId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
                   >
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingNoticiaId ? 'text-amber-600' : 'text-[#002b7f]'}`}>
+                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
                         <NewspaperIcon className="w-5 h-5" />
                         {editingNoticiaId ? '✏️ Editando Noticia: ' + tituloNoticia : 'Redactar Nueva Noticia'}
                       </h3>
@@ -772,19 +777,67 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Fotografía de Portada (Opcional)</Label>
-                      <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
-                      {editingNoticiaId && !fileNoticia && (
-                        <p className="text-sm text-slate-500 italic mt-2">
-                          * Ya existe una fotografía guardada. Sube una nueva solo si deseas reemplazarla.
-                        </p>
+                      
+                      {editingNoticiaId && currentImagenNoticia && !fileNoticia && (
+                        <div className="mb-4 flex items-center gap-4 p-4 border border-blue-100 bg-blue-50/50 rounded-xl">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={currentImagenNoticia} alt="Actual" className="w-20 h-20 object-cover rounded-lg border border-blue-200 shadow-sm" />
+                          <div className="text-sm">
+                            <p className="font-bold text-blue-900">Imagen actual guardada</p>
+                            <p className="text-blue-700">Sube una nueva imagen abajo si deseas cambiarla. Si no, se conservará esta.</p>
+                          </div>
+                        </div>
                       )}
+
+                      <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Galería de Imágenes Adicionales (Opcional)</Label>
-                      <Input type="file" accept="image/*" multiple onChange={e => setGaleriaNoticia(e.target.files)} ref={galeriaNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
-                      <p className="text-sm text-slate-500 italic mt-2">
-                        * Puedes seleccionar varias fotos a la vez para crear un carrusel dentro de la noticia.
-                      </p>
+                      
+                      <div className="border-2 border-dashed border-slate-200 bg-slate-50/50 rounded-2xl p-6 transition-colors hover:border-[#002b7f]/30">
+                        <Input 
+                          type="file" 
+                          accept="image/*" 
+                          multiple 
+                          onChange={e => {
+                            if (e.target.files) {
+                              setGaleriaNoticia(prev => [...prev, ...Array.from(e.target.files!)])
+                            }
+                            if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
+                          }} 
+                          ref={galeriaNoticiaRef} 
+                          disabled={loading} 
+                          className="h-12 bg-white cursor-pointer pt-3 rounded-xl border-slate-200 w-full" 
+                        />
+                        <p className="text-sm text-slate-500 italic mt-3 text-center">
+                          * Selecciona una o varias fotos para añadir al carrusel.
+                        </p>
+
+                        {/* Previsualización de archivos seleccionados */}
+                        {galeriaNoticia.length > 0 && (
+                          <div className="mt-6">
+                            <h4 className="text-sm font-bold text-slate-700 mb-3 border-b border-slate-200 pb-2">Imágenes a subir ({galeriaNoticia.length}):</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              {galeriaNoticia.map((file, idx) => (
+                                <div key={idx} className="relative group bg-white border border-slate-200 rounded-xl overflow-hidden aspect-square">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button 
+                                      type="button"
+                                      onClick={() => setGaleriaNoticia(prev => prev.filter((_, i) => i !== idx))}
+                                      className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                                      title="Quitar imagen"
+                                    >
+                                      <XIcon className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
@@ -851,10 +904,10 @@ export default function Dashboard() {
                   {/* Formulario Aliados */}
                   <motion.div 
                     layout
-                    className={`rounded-3xl p-8 transition-all duration-500 ${editingAliadoId ? 'bg-purple-50/50 border-2 border-purple-400 shadow-[0_0_40px_-10px_rgba(168,85,247,0.3)] ring-4 ring-purple-500/10' : 'bg-white border border-slate-200 shadow-sm'}`}
+                    className={`rounded-3xl p-8 transition-all duration-500 ${editingAliadoId ? 'bg-gradient-to-br from-white to-blue-50/30 border-2 border-[#002b7f] shadow-2xl shadow-[#002b7f]/10 ring-4 ring-[#002b7f]/5 scale-[1.01] relative z-10' : 'bg-white border border-slate-200 shadow-sm'}`}
                   >
                     <div className="flex items-center justify-between mb-8">
-                      <h3 className={`text-xl font-bold flex items-center gap-2 ${editingAliadoId ? 'text-purple-600' : 'text-[#002b7f]'}`}>
+                      <h3 className="text-xl font-bold flex items-center gap-2 text-[#002b7f]">
                         <ImageIcon className="w-5 h-5" />
                         {editingAliadoId ? '✏️ Editando Aliado: ' + nombreAliado : 'Registrar Nuevo Aliado'}
                       </h3>
