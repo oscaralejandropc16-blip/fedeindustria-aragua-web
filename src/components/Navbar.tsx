@@ -14,7 +14,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <div className="absolute top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
       <header className="w-full max-w-7xl bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl min-h-[6rem] px-4 md:px-8 py-4 flex flex-col justify-center pointer-events-auto transition-all">
         
         <div className="flex items-center justify-between w-full h-full">
