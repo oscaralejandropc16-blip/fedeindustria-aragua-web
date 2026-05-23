@@ -783,8 +783,7 @@ export default function Dashboard() {
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Galería de Imágenes Adicionales (Opcional)</Label>
                       <Input type="file" accept="image/*" multiple onChange={e => setGaleriaNoticia(e.target.files)} ref={galeriaNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
                       <p className="text-sm text-slate-500 italic mt-2">
-                        * Puedes seleccionar varias fotos a la vez para crear un carrusel dentro de la noticia. <br/>
-                        <span className="font-bold text-red-500">⚠ Requiere añadir la columna 'galeria_urls' (tipo text[]) en la tabla 'noticias' en Supabase.</span>
+                        * Puedes seleccionar varias fotos a la vez para crear un carrusel dentro de la noticia.
                       </p>
                     </div>
                     <div className="space-y-3">
