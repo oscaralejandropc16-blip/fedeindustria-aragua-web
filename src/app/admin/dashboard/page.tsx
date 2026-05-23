@@ -663,7 +663,7 @@ export default function Dashboard() {
                   {/* LISTA DE EMPRESAS */}
                   <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Directorio de Empresas</h3>
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaEmpresas.length === 0 ? (
@@ -755,7 +755,7 @@ export default function Dashboard() {
                 {/* LISTA DE EVENTOS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Eventos Programados</h3>
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaEventos.length === 0 ? (
@@ -873,10 +873,14 @@ export default function Dashboard() {
                           accept="image/*" 
                           multiple 
                           onChange={e => {
-                            if (e.target.files) {
-                              setGaleriaNoticia(prev => [...prev, ...Array.from(e.target.files!)])
+                            if (e.target.files && e.target.files.length > 0) {
+                              const newFiles = Array.from(e.target.files);
+                              setGaleriaNoticia(prev => [...(prev || []), ...newFiles]);
                             }
-                            if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
+                            // Usamos setTimeout para no interferir con el evento actual
+                            setTimeout(() => {
+                              if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = '';
+                            }, 10);
                           }} 
                           ref={galeriaNoticiaRef} 
                           disabled={loading} 
@@ -930,7 +934,7 @@ export default function Dashboard() {
                 {/* LISTA DE NOTICIAS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Noticias Publicadas</h3>
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaNoticias.length === 0 ? (
@@ -1052,7 +1056,7 @@ export default function Dashboard() {
                 {/* LISTA DE ALIADOS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Aliados Estratégicos</h3>
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaAliados.length === 0 ? (
