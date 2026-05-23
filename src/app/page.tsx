@@ -23,6 +23,7 @@ export default function Home() {
         .from('empresas_afiliadas')
         .select('*')
         .eq('estatus_membresia', 'Activa')
+        .order('orden', { ascending: true })
         .order('id', { ascending: false })
         .limit(3)
       if (empresasData) setEmpresas(empresasData)
@@ -31,6 +32,7 @@ export default function Home() {
       const { data: eventosData } = await supabase
         .from('eventos')
         .select('*')
+        .order('orden', { ascending: true })
         .order('fecha_evento', { ascending: true })
         .limit(2)
       if (eventosData) setEventos(eventosData)
@@ -39,6 +41,7 @@ export default function Home() {
       const { data: noticiasData } = await supabase
         .from('noticias')
         .select('*')
+        .order('orden', { ascending: true })
         .order('fecha_publicacion', { ascending: false })
         .limit(3)
       if (noticiasData) setNoticias(noticiasData)
@@ -47,6 +50,7 @@ export default function Home() {
       const { data: aliadosData } = await supabase
         .from('aliados')
         .select('logo_url')
+        .order('orden', { ascending: true })
         .order('id', { ascending: false })
       if (aliadosData && aliadosData.length > 0) {
         setAliadosLogos(aliadosData.map(a => a.logo_url))

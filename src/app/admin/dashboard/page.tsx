@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [tiktok, setTiktok] = useState('')
   const [web, setWeb] = useState('')
   const [estatus, setEstatus] = useState('Activa')
+  const [ordenEmpresa, setOrdenEmpresa] = useState(0)
   const [file, setFile] = useState<File | null>(null)
   const [editingEmpresaId, setEditingEmpresaId] = useState<number | null>(null)
   
@@ -32,17 +33,20 @@ export default function Dashboard() {
   const [tituloEvento, setTituloEvento] = useState('')
   const [descripcionEvento, setDescripcionEvento] = useState('')
   const [fechaEvento, setFechaEvento] = useState('')
+  const [ordenEvento, setOrdenEvento] = useState(0)
   const [editingEventoId, setEditingEventoId] = useState<number | null>(null)
   
   // Estados para Noticias
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
+  const [ordenNoticia, setOrdenNoticia] = useState(0)
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
   // Estados para Aliados
   const [nombreAliado, setNombreAliado] = useState('')
   const [fileAliado, setFileAliado] = useState<File | null>(null)
+  const [ordenAliado, setOrdenAliado] = useState(0)
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
   // Estados para las Listas
@@ -69,16 +73,16 @@ export default function Dashboard() {
     const supabase = createClient()
     setLoadingListas(true)
     
-    const { data: emp } = await supabase.from('empresas_afiliadas').select('*').order('id', { ascending: false })
+    const { data: emp } = await supabase.from('empresas_afiliadas').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (emp) setListaEmpresas(emp)
 
-    const { data: eve } = await supabase.from('eventos').select('*').order('fecha_evento', { ascending: false })
+    const { data: eve } = await supabase.from('eventos').select('*').order('orden', { ascending: true }).order('fecha_evento', { ascending: false })
     if (eve) setListaEventos(eve)
 
-    const { data: not } = await supabase.from('noticias').select('*').order('fecha_publicacion', { ascending: false })
+    const { data: not } = await supabase.from('noticias').select('*').order('orden', { ascending: true }).order('fecha_publicacion', { ascending: false })
     if (not) setListaNoticias(not)
 
-    const { data: ali } = await supabase.from('aliados').select('*').order('id', { ascending: false })
+    const { data: ali } = await supabase.from('aliados').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (ali) setListaAliados(ali)
 
     setLoadingListas(false)
@@ -123,6 +127,7 @@ export default function Dashboard() {
     setTiktok(empresa.tiktok || '')
     setWeb(empresa.web || '')
     setEstatus(empresa.estatus_membresia)
+    setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -132,6 +137,7 @@ export default function Dashboard() {
     setTituloEvento(evento.titulo)
     setDescripcionEvento(evento.descripcion)
     setFechaEvento(evento.fecha_evento)
+    setOrdenEvento(evento.orden || 0)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -139,6 +145,7 @@ export default function Dashboard() {
     setEditingNoticiaId(noticia.id)
     setTituloNoticia(noticia.titulo)
     setResumenNoticia(noticia.resumen)
+    setOrdenNoticia(noticia.orden || 0)
     setFileNoticia(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -146,6 +153,7 @@ export default function Dashboard() {
   const handleEditAliado = (aliado: any) => {
     setEditingAliadoId(aliado.id)
     setNombreAliado(aliado.nombre)
+    setOrdenAliado(aliado.orden || 0)
     setFileAliado(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -183,7 +191,7 @@ export default function Dashboard() {
 
     setUploadStatus('Guardando datos de la empresa...')
     
-    const payload: any = { nombre, rif, rubro, direccion, telefono, instagram, tiktok, web, estatus_membresia: estatus }
+    const payload: any = { nombre, rif, rubro, direccion, telefono, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
     if (logo_url) payload.logo_url = logo_url
 
     let error;
@@ -199,7 +207,7 @@ export default function Dashboard() {
       setMsg(`❌ Error: ${error.message}`)
     } else {
       setMsg(editingEmpresaId ? '✅ Empresa actualizada exitosamente.' : '✅ Empresa registrada exitosamente.')
-      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null)
+      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setOrdenEmpresa(0)
       setEditingEmpresaId(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
       fetchData()
@@ -215,7 +223,7 @@ export default function Dashboard() {
     setMsgEvento('')
     
     const supabase = createClient()
-    const payload = { titulo: tituloEvento, descripcion: descripcionEvento, fecha_evento: fechaEvento }
+    const payload = { titulo: tituloEvento, descripcion: descripcionEvento, fecha_evento: fechaEvento, orden: ordenEvento }
     
     let error;
     if (editingEventoId) {
@@ -229,7 +237,7 @@ export default function Dashboard() {
     if (error) setMsgEvento(`❌ Error: ${error.message}`)
     else {
       setMsgEvento(editingEventoId ? '✅ Evento actualizado exitosamente.' : '✅ Evento agendado exitosamente.')
-      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento('')
+      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setOrdenEvento(0)
       setEditingEventoId(null)
       fetchData()
     }
@@ -260,7 +268,7 @@ export default function Dashboard() {
     }
 
     setUploadStatus('Publicando noticia...')
-    const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia }
+    const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, orden: ordenNoticia }
     if (imagen_url) payload.imagen_url = imagen_url
 
     let error;
@@ -275,7 +283,7 @@ export default function Dashboard() {
     if (error) setMsgNoticia(`❌ Error: ${error.message}`)
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null)
+      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setOrdenNoticia(0)
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       fetchData()
@@ -297,10 +305,9 @@ export default function Dashboard() {
     if (uploadError) { setMsgAliado(`❌ Error: ${uploadError.message}`); setLoading(false); return }
 
     const logo_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
-    }
     
     setUploadStatus('Guardando aliado...')
-    const payload: any = { nombre: nombreAliado }
+    const payload: any = { nombre: nombreAliado, orden: ordenAliado }
     if (logo_url) payload.logo_url = logo_url
 
     let error;
@@ -315,7 +322,7 @@ export default function Dashboard() {
     if (error) setMsgAliado(`❌ Error: ${error.message}`)
     else {
       setMsgAliado(editingAliadoId ? '✅ Aliado actualizado exitosamente.' : '✅ Aliado agregado exitosamente.')
-      setNombreAliado(''); setFileAliado(null)
+      setNombreAliado(''); setFileAliado(null); setOrdenAliado(0)
       setEditingAliadoId(null)
       if (fileAliadoRef.current) fileAliadoRef.current.value = ''
       fetchData()
@@ -438,6 +445,12 @@ export default function Dashboard() {
                           <option value="Pendiente">🟡 Trámite Pendiente</option>
                           <option value="Inactiva">🔴 Membresía Inactiva</option>
                         </select>
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2">
+                          Posición (Orden Visual)
+                        </Label>
+                        <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </CardContent>
                   </Card>
@@ -586,6 +599,10 @@ export default function Dashboard() {
                       <Label className="text-slate-700 font-bold">Descripción Corta</Label>
                       <textarea required value={descripcionEvento} onChange={e => setDescripcionEvento(e.target.value)} placeholder="Breve descripción del evento..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[100px] resize-y" disabled={loading} />
                     </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
+                      <Input type="number" value={ordenEvento} onChange={e => setOrdenEvento(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                    </div>
                   </CardContent>
                   <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="w-full">
@@ -666,6 +683,10 @@ export default function Dashboard() {
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Imagen Destacada</Label>
                       <Input type="file" accept="image/*" onChange={e => setFileNoticia(e.target.files?.[0] || null)} ref={fileNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
                     </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
+                      <Input type="number" value={ordenNoticia} onChange={e => setOrdenNoticia(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                    </div>
                   </CardContent>
                   <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="w-full">
@@ -740,6 +761,10 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
                       <Input type="file" accept="image/*" onChange={e => setFileAliado(e.target.files?.[0] || null)} ref={fileAliadoRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
+                      <Input type="number" value={ordenAliado} onChange={e => setOrdenAliado(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
                   <div className="bg-slate-50 p-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">

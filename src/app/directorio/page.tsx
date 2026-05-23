@@ -33,6 +33,7 @@ export default function DirectorioPage() {
       const { data, error } = await supabase
         .from('empresas_afiliadas')
         .select('*')
+        .order('orden', { ascending: true })
         .order('nombre')
 
       if (!error && data) {
