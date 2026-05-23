@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CheckCircleIcon, MailIcon, PhoneIcon, ArrowRightIcon, Building2Icon, UserIcon, HashIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 
 export default function ContactoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -169,9 +168,9 @@ export default function ContactoPage() {
 
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Mensaje o Comentarios (Opcional)</label>
-                        <Textarea 
+                        <textarea 
                           placeholder="Háblanos un poco sobre el rubro de tu empresa o cualquier duda que tengas..." 
-                          className="min-h-[120px] bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base resize-none font-medium placeholder:text-slate-400"
+                          className="min-h-[120px] w-full p-4 bg-slate-50/50 border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-xl text-base resize-none font-medium placeholder:text-slate-400"
                         />
                       </div>
 

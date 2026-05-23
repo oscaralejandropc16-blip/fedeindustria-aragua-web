@@ -166,18 +166,23 @@ export default function DirectorioPage() {
                   >
                     
                     {/* Área Superior: Logo/Imagen */}
-                    <div className="h-40 w-full relative flex items-center justify-center bg-white p-6 overflow-hidden border-b border-white/10">
+                    <div className="h-48 w-full relative flex items-center justify-center p-6 overflow-hidden">
+                      {/* Fondo decorativo oscuro */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-[#002b7f]/10 to-transparent pointer-events-none" />
+                      
                       {empresa.logo_url ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img 
-                          src={empresa.logo_url} 
-                          alt={`Logo de ${empresa.nombre}`} 
-                          className="object-contain h-full w-full group-hover:scale-105 transition-transform duration-700 ease-out"
-                        />
+                        <div className="relative w-full h-full bg-white rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-white/5 flex items-center justify-center group-hover:scale-105 transition-transform duration-700 ease-out z-10">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={empresa.logo_url} 
+                            alt={`Logo de ${empresa.nombre}`} 
+                            className="object-contain h-full w-full mix-blend-multiply"
+                          />
+                        </div>
                       ) : (
-                        <div className="flex flex-col items-center gap-3 opacity-50 group-hover:opacity-80 transition-opacity">
-                          <BuildingIcon className="w-10 h-10 text-slate-400" />
-                          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sin Logo</span>
+                        <div className="flex flex-col items-center gap-3 opacity-40 group-hover:opacity-70 transition-opacity z-10">
+                          <BuildingIcon className="w-12 h-12 text-slate-500" />
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Sin Logo</span>
                         </div>
                       )}
                     </div>
@@ -244,16 +249,19 @@ export default function DirectorioPage() {
               </button>
 
               {/* Cabecera del Modal con Logo */}
-              <div className="h-48 w-full relative flex items-center justify-center bg-white p-8 border-b border-white/10">
+              <div className="h-56 w-full relative flex items-center justify-center bg-[#050b1a] p-8 border-b border-white/10 overflow-hidden">
+                <div className="absolute inset-0 bg-[#002b7f]/20 blur-[60px] pointer-events-none" />
                 {selectedEmpresa.logo_url ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img 
-                    src={selectedEmpresa.logo_url} 
-                    alt={`Logo de ${selectedEmpresa.nombre}`} 
-                    className="object-contain h-full w-full drop-shadow-lg"
-                  />
+                  <div className="relative bg-white rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] h-full aspect-video flex items-center justify-center z-10 border border-white/10">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={selectedEmpresa.logo_url} 
+                      alt={`Logo de ${selectedEmpresa.nombre}`} 
+                      className="object-contain h-full w-full mix-blend-multiply"
+                    />
+                  </div>
                 ) : (
-                  <BuildingIcon className="w-20 h-20 text-slate-600 opacity-50" />
+                  <BuildingIcon className="w-20 h-20 text-slate-600 opacity-50 z-10 relative" />
                 )}
                 <div className="absolute bottom-4 left-4">
                    <Badge variant="outline" className={`font-bold px-3 py-1 ${getBadgeVariant(selectedEmpresa.estatus_membresia)} shadow-lg`}>
