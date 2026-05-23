@@ -27,13 +27,15 @@ export default function ContactoPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-slate-50 relative overflow-hidden pt-24 pb-20 lg:pt-32">
-      {/* Elementos decorativos del fondo */}
-      <div className="absolute top-0 left-0 w-full h-96 lg:h-[600px] bg-[#002b7f] z-0" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0% 100%)' }} />
+    <main className="min-h-screen bg-slate-50 relative overflow-hidden">
+      {/* Fondo dividido: Azul Izquierda (o Arriba en móvil) / Claro Derecha */}
+      <div className="absolute top-0 left-0 w-full h-[850px] lg:h-full lg:w-[45%] bg-[#002b7f] z-0 lg:clip-path-none" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)' }} />
+      <div className="hidden lg:block absolute top-0 left-0 w-full h-full bg-[#002b7f] z-0 lg:w-[45%]" />
+      
       <div className="absolute top-20 right-10 w-96 h-96 bg-blue-400/20 rounded-full blur-[100px] z-0 pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-72 h-72 bg-emerald-400/10 rounded-full blur-[80px] z-0 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 pt-24 pb-20 lg:pt-32 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           
           {/* Columna Izquierda: Copy y Beneficios */}
