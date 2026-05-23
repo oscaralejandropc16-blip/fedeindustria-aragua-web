@@ -33,7 +33,7 @@ export default function Home() {
         .from('eventos')
         .select('*')
         .order('orden', { ascending: true })
-        .order('fecha_evento', { ascending: true })
+        .order('fecha', { ascending: true })
         .limit(2)
       if (eventosData) setEventos(eventosData)
 
@@ -302,21 +302,30 @@ export default function Home() {
                     className="group relative overflow-hidden rounded-3xl border border-white/5 hover:border-emerald-500/30 bg-slate-900/50 hover:bg-slate-800/80 backdrop-blur-xl cursor-pointer transition-all duration-500 shadow-xl shadow-black/20"
                   >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-blue-500" />
-                    <div className="p-8 pl-10">
-                      <div className="flex items-center gap-3 mb-4">
-                        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs tracking-widest uppercase">
-                          {new Date(evento.fecha_evento).toLocaleDateString('es-VE', { month: 'short', day: '2-digit' })}
-                        </span>
-                        <span className="text-slate-500 text-sm font-medium">
-                          {new Date(evento.fecha_evento).getFullYear()}
-                        </span>
+                    <div className="p-8 pl-10 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                      {evento.imagen_url && (
+                        <div className="w-full sm:w-32 h-40 sm:h-32 rounded-xl overflow-hidden shadow-lg flex-shrink-0 bg-slate-800">
+                           {/* eslint-disable-next-line @next/next/no-img-element */}
+                           <img src={evento.imagen_url} alt={evento.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 flex-wrap">
+                          <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs tracking-widest uppercase">
+                            {new Date(evento.fecha).toLocaleDateString('es-VE', { month: 'short', day: '2-digit' })}
+                            {evento.fecha_fin ? ` al ${new Date(evento.fecha_fin).toLocaleDateString('es-VE', { month: 'short', day: '2-digit' })}` : ''}
+                          </span>
+                          <span className="text-slate-500 text-sm font-medium">
+                            {new Date(evento.fecha).getFullYear()}
+                          </span>
+                        </div>
+                        <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors tracking-tight leading-snug">
+                          {evento.titulo}
+                        </h4>
+                        <p className="text-slate-400 font-medium line-clamp-2 leading-relaxed">
+                          {evento.descripcion}
+                        </p>
                       </div>
-                      <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors tracking-tight leading-snug">
-                        {evento.titulo}
-                      </h4>
-                      <p className="text-slate-400 font-medium line-clamp-2 leading-relaxed">
-                        {evento.descripcion}
-                      </p>
                     </div>
                   </motion.div>
                 ))}
