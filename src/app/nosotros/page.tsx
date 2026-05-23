@@ -26,7 +26,7 @@ export default function NosotrosPage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-[#002b7f]/10 bg-white px-4 py-1.5 text-sm font-bold text-[#002b7f] shadow-sm mb-8">
               Nuestra Identidad Institucional
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-slate-900 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-slate-900 leading-[1.1]">
               Motor del desarrollo en el <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002b7f] to-blue-500">Centro del País</span>
             </h1>
             <p className="mt-8 text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
@@ -78,7 +78,7 @@ export default function NosotrosPage() {
       <section className="py-24 px-6 bg-white border-t border-slate-100">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Junta Directiva</h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Junta Directiva</h2>
             <p className="mt-4 text-xl text-slate-500 font-medium">Liderazgo comprometido con la excelencia industrial.</p>
           </div>
 

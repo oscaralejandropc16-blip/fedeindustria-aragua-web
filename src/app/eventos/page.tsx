@@ -57,7 +57,7 @@ export default function EventosPage() {
             <CalendarIcon className="w-4 h-4" />
             Agenda Oficial
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-[#002b7f]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-[#002b7f]">
             Próximos Eventos
           </h1>
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">

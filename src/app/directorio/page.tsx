@@ -105,7 +105,7 @@ export default function DirectorioPage() {
             Red de Afiliados Premium
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-[#002b7f]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-[#002b7f]">
             Directorio Empresarial
           </h1>
           

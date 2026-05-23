@@ -83,7 +83,7 @@ export default function Home() {
 
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-[1.05] max-w-5xl"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 tracking-tighter leading-[1.1] max-w-5xl"
           >
             Conectamos el Futuro de la <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002b7f] to-blue-500">Industria</span>
           </motion.h1>
@@ -140,8 +140,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
             <div>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Sala de Prensa</h2>
-              <p className="mt-4 text-xl text-slate-500 font-medium">Mantente al día con nuestros anuncios institucionales y de aliados.</p>
+              <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Sala de Prensa</h2>
+              <p className="mt-4 text-lg md:text-xl text-slate-500 font-medium">Mantente al día con nuestros anuncios institucionales y de aliados.</p>
             </div>
             <Link href="#" className="hidden text-[#002b7f] font-bold hover:text-blue-900 md:flex items-center gap-1 transition-colors">
               Ver todas las noticias <ChevronRightIcon className="w-4 h-4" />
