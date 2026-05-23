@@ -148,6 +148,7 @@ export default function Dashboard() {
     setEstatus(empresa.estatus_membresia)
     setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
+    setCurrentImagenEmpresa(empresa.logo_url || null)
     scrollToTop()
   }
 
