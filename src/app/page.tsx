@@ -77,14 +77,14 @@ export default function Home() {
           >
             <source src="/video-industrial.mp4" type="video/mp4" />
           </video>
-          {/* Glassmorphism Overlay (bg-white/60 + backdrop-blur-md) para legibilidad */}
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-md" />
+          {/* Glassmorphism Overlay Dark */}
+          <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-[6px]" />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm text-sm font-bold text-[#002b7f] mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 shadow-sm text-sm font-bold text-blue-200 mb-8 backdrop-blur-md"
           >
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
             Impulsando el motor productivo de Aragua
@@ -92,14 +92,14 @@ export default function Home() {
 
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 tracking-tighter leading-[1.1] max-w-5xl"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.1] max-w-5xl drop-shadow-2xl"
           >
-            Conectamos el Futuro de la <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002b7f] to-blue-500">Industria</span>
+            Conectamos el Futuro de la <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Industria</span>
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-8 text-xl md:text-2xl text-slate-500 font-medium max-w-3xl leading-relaxed"
+            className="mt-8 text-xl md:text-2xl text-slate-200 font-medium max-w-3xl leading-relaxed drop-shadow-md"
           >
             Únete a la red empresarial más sólida de la región central. Innovación, representación y crecimiento para tu empresa.
           </motion.p>
@@ -108,11 +108,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-12 flex flex-col sm:flex-row items-center gap-6"
           >
-            <Link href="/directorio" className="group h-14 px-8 rounded-full bg-[#002b7f] text-white flex items-center gap-3 font-bold text-lg hover:bg-blue-900 transition-all hover:scale-105 hover:shadow-xl hover:shadow-blue-900/30">
-              Explorar Ecosistema
-              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <Link href="/directorio" className="h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/25 group">
+              Explorar Ecosistema <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/nosotros" className="h-14 px-8 rounded-full bg-white text-slate-700 border border-slate-200 flex items-center gap-3 font-bold text-lg hover:bg-slate-50 hover:border-slate-300 transition-all">
+            <Link href="/nosotros" className="h-14 px-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 font-bold flex items-center justify-center transition-all">
               Conocer a la Junta
             </Link>
           </motion.div>
@@ -130,7 +129,7 @@ export default function Home() {
         
         <div className="flex w-fit">
           <div 
-            className="flex items-center gap-12 md:gap-20 px-6 md:px-10 animate-marquee hover:[animation-play-state:paused]"
+            className="flex items-center gap-12 md:gap-20 px-6 md:px-10 custom-marquee"
           >
             {/* Multiplicamos el array asegurando que haya suficientes para el scroll infinito */}
             {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src, i) => (
