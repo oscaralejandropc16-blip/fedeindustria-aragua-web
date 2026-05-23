@@ -62,9 +62,6 @@ export default function Dashboard() {
   const [ordenAliado, setOrdenAliado] = useState(0)
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
-  // Estado del Dialogo Global
-  const [dialogConfig, setDialogConfig] = useState<{isOpen: boolean, type: 'alert' | 'confirm', title: string, message: string, onConfirm?: () => void}>({isOpen: false, type: 'alert', title: '', message: ''});
-
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
   const [listaEventos, setListaEventos] = useState<any[]>([])
@@ -125,23 +122,12 @@ export default function Dashboard() {
     router.push('/admin/login')
   }
 
-  const handleDelete = (id: number, tabla: string) => {
-    setDialogConfig({
-      isOpen: true,
-      type: 'confirm',
-      title: 'Confirmar Eliminación',
-      message: '¿Estás seguro de que deseas eliminar este registro permanentemente?',
-      onConfirm: async () => {
-        const supabase = createClient()
-        const { error } = await supabase.from(tabla).delete().eq('id', id)
-        if (error) {
-          setDialogConfig({ isOpen: true, type: 'alert', title: 'Error', message: 'Error eliminando: ' + error.message })
-        } else {
-          setDialogConfig({ isOpen: false, type: 'alert', title: '', message: '' })
-          fetchData()
-        }
-      }
-    })
+  const handleDelete = async (id: number, tabla: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este registro permanentemente?')) return;
+    const supabase = createClient()
+    const { error } = await supabase.from(tabla).delete().eq('id', id)
+    if (error) alert('Error eliminando: ' + error.message)
+    else fetchData() // refrescar listas
   }
 
   const scrollToTop = () => {
@@ -687,7 +673,7 @@ export default function Dashboard() {
                                     const selected = e.target.files?.[0];
                                     if (selected) {
                                       if (selected.size > 2 * 1024 * 1024) {
-                                        setDialogConfig({ isOpen: true, type: 'alert', title: 'Archivo muy pesado', message: 'El archivo excede el límite de 2MB. Por favor, comprime la imagen.' });
+                                        alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
                                         if (fileInputRef.current) fileInputRef.current.value = '';
                                         return;
                                       }
@@ -844,7 +830,7 @@ export default function Dashboard() {
                           const selected = e.target.files?.[0];
                           if (selected) {
                             if (selected.size > 2 * 1024 * 1024) {
-                              setDialogConfig({ isOpen: true, type: 'alert', title: 'Archivo muy pesado', message: 'El póster excede el límite de 2MB.' });
+                              alert("El póster excede el límite de 2MB.");
                               if (fileEventoRef.current) fileEventoRef.current.value = '';
                               return;
                             }
@@ -1001,7 +987,7 @@ export default function Dashboard() {
                           const selected = e.target.files?.[0];
                           if (selected) {
                             if (selected.size > 2 * 1024 * 1024) {
-                              setDialogConfig({ isOpen: true, type: 'alert', title: 'Archivo muy pesado', message: 'La foto de portada excede el límite de 2MB.' });
+                              alert("La foto de portada excede el límite de 2MB.");
                               if (fileNoticiaRef.current) fileNoticiaRef.current.value = '';
                               return;
                             }
@@ -1036,7 +1022,7 @@ export default function Dashboard() {
                               
                               const validFiles = newFiles.filter(f => f.size <= 2 * 1024 * 1024);
                               if (validFiles.length < newFiles.length) {
-                                setDialogConfig({ isOpen: true, type: 'alert', title: 'Algunas imágenes descartadas', message: `Se descartaron ${newFiles.length - validFiles.length} imágenes porque exceden el límite de 2MB cada una.` });
+                                alert(`Se descartaron ${newFiles.length - validFiles.length} imágenes porque exceden el límite de 2MB cada una.`);
                               }
 
                               setGaleriaNoticia(prev => {
@@ -1044,7 +1030,7 @@ export default function Dashboard() {
                                 const futureTotal = currentTotal + validFiles.length;
                                 
                                 if (futureTotal > 10) {
-                                  setDialogConfig({ isOpen: true, type: 'alert', title: 'Límite de galería', message: 'El límite es de 10 imágenes en total para la galería. Solo se añadirán las primeras permitidas.' });
+                                  alert(`El límite es de 10 imágenes en total para la galería. Solo se añadirán las primeras permitidas.`);
                                   const allowed = 10 - currentTotal;
                                   return [...prev, ...validFiles.slice(0, Math.max(0, allowed))];
                                 }
@@ -1228,7 +1214,7 @@ export default function Dashboard() {
                           const selected = e.target.files?.[0];
                           if (selected) {
                             if (selected.size > 2 * 1024 * 1024) {
-                              setDialogConfig({ isOpen: true, type: 'alert', title: 'Archivo muy pesado', message: 'El logo del aliado excede el límite de 2MB.' });
+                              alert("El logo del aliado excede el límite de 2MB.");
                               if (fileAliadoRef.current) fileAliadoRef.current.value = '';
                               return;
                             }
@@ -1307,47 +1293,7 @@ export default function Dashboard() {
 
           </Tabs>
         </div>
-      </div>
-
-      {/* DIALOGO PERSONALIZADO */}
-      <AnimatePresence>
-        {dialogConfig.isOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full relative overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-[#002b7f]" />
-              <h3 className="text-xl font-bold text-slate-900 mb-2">{dialogConfig.title}</h3>
-              <p className="text-slate-500 font-medium mb-8 leading-relaxed">{dialogConfig.message}</p>
-              
-              <div className="flex gap-3 justify-end">
-                {dialogConfig.type === 'confirm' && (
-                  <Button 
-                    onClick={() => setDialogConfig({ ...dialogConfig, isOpen: false })} 
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold px-6 h-11"
-                  >
-                    Cancelar
-                  </Button>
-                )}
-                <Button 
-                  onClick={() => {
-                    if (dialogConfig.type === 'confirm' && dialogConfig.onConfirm) {
-                      dialogConfig.onConfirm();
-                    } else {
-                      setDialogConfig({ ...dialogConfig, isOpen: false })
-                    }
-                  }} 
-                  className="bg-[#002b7f] hover:bg-blue-900 text-white rounded-xl font-bold px-6 h-11"
-                >
-                  {dialogConfig.type === 'confirm' ? 'Sí, eliminar' : 'Entendido'}
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
+      </main>
     </div>
   )
 }
