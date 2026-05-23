@@ -267,28 +267,29 @@ export default function Home() {
                 ) : empresas.length === 0 ? (
                   <div className="h-48 rounded-3xl border border-dashed border-white/10 flex items-center justify-center text-slate-500 font-medium">Aún no hay empresas afiliadas.</div>
                 ) : empresas.map((empresa) => (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                    key={empresa.id} 
-                    className="group relative flex items-center gap-6 p-6 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-white/10 backdrop-blur-xl rounded-3xl cursor-pointer transition-all duration-500 overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/0 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white p-3 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-lg shadow-black/20 z-10">
-                      {empresa.logo_url ? <img src={empresa.logo_url} alt="Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" /> : <BuildingIcon className="w-8 h-8 text-slate-300" />}
-                    </div>
-                    
-                    <div className="flex-1 z-10">
-                      <h4 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-200 transition-colors tracking-tight">{empresa.nombre}</h4>
-                      <p className="text-slate-400 font-medium mt-1 text-sm md:text-base">{empresa.rubro || 'Rubro Industrial'}</p>
-                    </div>
-                    
-                    <div className="hidden sm:flex z-10">
-                      <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1 font-bold">
-                        {empresa.estatus_membresia}
-                      </Badge>
-                    </div>
-                  </motion.div>
+                  <Link href="/directorio" key={empresa.id} className="block outline-none">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                      className="group relative flex items-center gap-6 p-6 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-white/10 backdrop-blur-xl rounded-3xl cursor-pointer transition-all duration-500 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/0 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white p-3 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-lg shadow-black/20 z-10">
+                        {empresa.logo_url ? <img src={empresa.logo_url} alt="Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" /> : <BuildingIcon className="w-8 h-8 text-slate-300" />}
+                      </div>
+                      
+                      <div className="flex-1 z-10">
+                        <h4 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-200 transition-colors tracking-tight">{empresa.nombre}</h4>
+                        <p className="text-slate-400 font-medium mt-1 text-sm md:text-base">{empresa.rubro || 'Rubro Industrial'}</p>
+                      </div>
+                      
+                      <div className="hidden sm:flex z-10">
+                        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1 font-bold">
+                          {empresa.estatus_membresia}
+                        </Badge>
+                      </div>
+                    </motion.div>
+                  </Link>
                 ))}
               </div>
             </div>
