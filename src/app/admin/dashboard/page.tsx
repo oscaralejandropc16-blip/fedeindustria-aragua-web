@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Dashboard() {
@@ -39,6 +39,13 @@ export default function Dashboard() {
   const [nombreAliado, setNombreAliado] = useState('')
   const [fileAliado, setFileAliado] = useState<File | null>(null)
 
+  // Estados para las Listas
+  const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
+  const [listaEventos, setListaEventos] = useState<any[]>([])
+  const [listaNoticias, setListaNoticias] = useState<any[]>([])
+  const [listaAliados, setListaAliados] = useState<any[]>([])
+  const [loadingListas, setLoadingListas] = useState(true)
+
   // Estados de carga y mensajes
   const [loading, setLoading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('') 
@@ -52,6 +59,25 @@ export default function Dashboard() {
   const fileNoticiaRef = useRef<HTMLInputElement>(null)
   const fileAliadoRef = useRef<HTMLInputElement>(null)
 
+  const fetchData = async () => {
+    const supabase = createClient()
+    setLoadingListas(true)
+    
+    const { data: emp } = await supabase.from('empresas_afiliadas').select('*').order('id', { ascending: false })
+    if (emp) setListaEmpresas(emp)
+
+    const { data: eve } = await supabase.from('eventos').select('*').order('fecha_evento', { ascending: false })
+    if (eve) setListaEventos(eve)
+
+    const { data: not } = await supabase.from('noticias').select('*').order('fecha_publicacion', { ascending: false })
+    if (not) setListaNoticias(not)
+
+    const { data: ali } = await supabase.from('aliados').select('*').order('id', { ascending: false })
+    if (ali) setListaAliados(ali)
+
+    setLoadingListas(false)
+  }
+
   useEffect(() => {
     const supabase = createClient()
     const checkSession = async () => {
@@ -60,6 +86,7 @@ export default function Dashboard() {
         router.push('/admin/login')
       } else {
         setIsAuthenticated(true)
+        fetchData()
       }
     }
     checkSession()
@@ -69,6 +96,14 @@ export default function Dashboard() {
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/admin/login')
+  }
+
+  const handleDelete = async (id: number, tabla: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este registro permanentemente?')) return;
+    const supabase = createClient()
+    const { error } = await supabase.from(tabla).delete().eq('id', id)
+    if (error) alert('Error eliminando: ' + error.message)
+    else fetchData() // refrescar listas
   }
 
   // --- Handlers de Inserción ---
@@ -113,6 +148,7 @@ export default function Dashboard() {
       setMsg('✅ Empresa registrada exitosamente.')
       setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setFile(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
+      fetchData()
     }
     
     setLoading(false)
@@ -135,6 +171,7 @@ export default function Dashboard() {
     else {
       setMsgEvento('✅ Evento agendado exitosamente.')
       setTituloEvento(''); setDescripcionEvento(''); setFechaEvento('')
+      fetchData()
     }
     setLoading(false)
   }
@@ -170,6 +207,7 @@ export default function Dashboard() {
       setMsgNoticia('✅ Noticia publicada exitosamente.')
       setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
+      fetchData()
     }
     setLoading(false); setUploadStatus('')
   }
@@ -197,6 +235,7 @@ export default function Dashboard() {
       setMsgAliado('✅ Aliado agregado exitosamente.')
       setNombreAliado(''); setFileAliado(null)
       if (fileAliadoRef.current) fileAliadoRef.current.value = ''
+      fetchData()
     }
     setLoading(false); setUploadStatus('')
   }
@@ -374,6 +413,38 @@ export default function Dashboard() {
                   </Card>
 
                 </form>
+
+                {/* LISTA DE EMPRESAS */}
+                <div className="mt-12">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Directorio de Empresas</h3>
+                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    {loadingListas ? (
+                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
+                    ) : listaEmpresas.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay empresas registradas.</div>
+                    ) : (
+                      <ul className="divide-y divide-slate-100">
+                        {listaEmpresas.map(emp => (
+                          <li key={emp.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
+                                {emp.logo_url ? <img src={emp.logo_url} className="w-full h-full object-cover" alt="Logo" /> : <BuildingIcon className="w-5 h-5 text-slate-300" />}
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-slate-900 text-lg leading-tight">{emp.nombre}</h4>
+                                <p className="text-sm text-slate-500 font-medium">{emp.rubro} • <span className={emp.estatus_membresia === 'Activa' ? 'text-emerald-600' : 'text-slate-500'}>{emp.estatus_membresia}</span></p>
+                              </div>
+                            </div>
+                            <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                              <TrashIcon className="w-5 h-5" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
               </motion.div>
             </TabsContent>
 
@@ -409,6 +480,39 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </Card>
+
+                {/* LISTA DE EVENTOS */}
+                <div className="mt-12">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Eventos Programados</h3>
+                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    {loadingListas ? (
+                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
+                    ) : listaEventos.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay eventos programados.</div>
+                    ) : (
+                      <ul className="divide-y divide-slate-100">
+                        {listaEventos.map(eve => (
+                          <li key={eve.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
+                                <span className="text-xs uppercase">{new Date(eve.fecha_evento).toLocaleDateString('es-VE', { month: 'short' })}</span>
+                                <span className="text-lg leading-none">{new Date(eve.fecha_evento).getDate()}</span>
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-slate-900 text-lg leading-tight">{eve.titulo}</h4>
+                                <p className="text-sm text-slate-500 font-medium line-clamp-1">{eve.descripcion}</p>
+                              </div>
+                            </div>
+                            <Button variant="ghost" onClick={() => handleDelete(eve.id, 'eventos')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                              <TrashIcon className="w-5 h-5" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
               </motion.div>
             </TabsContent>
 
@@ -444,6 +548,38 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </Card>
+
+                {/* LISTA DE NOTICIAS */}
+                <div className="mt-12">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Noticias Publicadas</h3>
+                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    {loadingListas ? (
+                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
+                    ) : listaNoticias.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay noticias publicadas.</div>
+                    ) : (
+                      <ul className="divide-y divide-slate-100">
+                        {listaNoticias.map(not => (
+                          <li key={not.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="w-16 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-200">
+                                {not.imagen_url ? <img src={not.imagen_url} className="w-full h-full object-cover" alt="Noticia" /> : <NewspaperIcon className="w-5 h-5 text-slate-300 m-auto h-full" />}
+                              </div>
+                              <div>
+                                <h4 className="font-bold text-slate-900 text-base leading-tight line-clamp-1">{not.titulo}</h4>
+                                <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE')}</p>
+                              </div>
+                            </div>
+                            <Button variant="ghost" onClick={() => handleDelete(not.id, 'noticias')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                              <TrashIcon className="w-5 h-5" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
               </motion.div>
             </TabsContent>
 
@@ -475,6 +611,35 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </Card>
+
+                {/* LISTA DE ALIADOS */}
+                <div className="mt-12">
+                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Aliados Estratégicos</h3>
+                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    {loadingListas ? (
+                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
+                    ) : listaAliados.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay aliados registrados.</div>
+                    ) : (
+                      <ul className="divide-y divide-slate-100">
+                        {listaAliados.map(ali => (
+                          <li key={ali.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="w-20 h-10 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center p-1 border border-slate-200">
+                                <img src={ali.logo_url} className="w-full h-full object-contain" alt="Logo Aliado" />
+                              </div>
+                              <h4 className="font-bold text-slate-900">{ali.nombre}</h4>
+                            </div>
+                            <Button variant="ghost" onClick={() => handleDelete(ali.id, 'aliados')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-12 w-12 p-0 flex-shrink-0">
+                              <TrashIcon className="w-5 h-5" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
               </motion.div>
             </TabsContent>
 
