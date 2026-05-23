@@ -129,10 +129,8 @@ export default function Home() {
         </div>
         
         <div className="flex w-fit">
-          <motion.div 
-            className="flex items-center gap-12 md:gap-20 px-6 md:px-10"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
+          <div 
+            className="flex items-center gap-12 md:gap-20 px-6 md:px-10 animate-marquee hover:[animation-play-state:paused]"
           >
             {/* Multiplicamos el array asegurando que haya suficientes para el scroll infinito */}
             {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src, i) => (
@@ -140,7 +138,7 @@ export default function Home() {
                 <img src={src} alt="Logo Aliado" className="h-full w-auto object-contain max-w-[160px]" />
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
