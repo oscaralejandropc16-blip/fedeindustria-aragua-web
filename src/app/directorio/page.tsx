@@ -304,10 +304,14 @@ export default function DirectorioPage() {
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
                       <PhoneIcon className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Contacto Telefónico</p>
-                        <a href={`tel:${selectedEmpresa.telefono}`} className="text-blue-400 font-bold hover:text-blue-300 transition-colors mt-0.5 block">
-                          {selectedEmpresa.telefono}
-                        </a>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Contacto Telefónico</p>
+                        <div className="flex flex-col gap-1">
+                          {selectedEmpresa.telefono.split(' / ').map((tel, idx) => (
+                            <a key={idx} href={`tel:${tel.trim()}`} className="text-blue-400 font-bold hover:text-blue-300 transition-colors block">
+                              {tel.trim()}
+                            </a>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}

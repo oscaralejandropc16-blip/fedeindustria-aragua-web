@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [rubro, setRubro] = useState('')
   const [direccion, setDireccion] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [telefono2, setTelefono2] = useState('')
   const [instagram, setInstagram] = useState('')
   const [tiktok, setTiktok] = useState('')
   const [web, setWeb] = useState('')
@@ -148,7 +149,9 @@ export default function Dashboard() {
     setRif(empresa.rif)
     setRubro(empresa.rubro || '')
     setDireccion(empresa.direccion || '')
-    setTelefono(empresa.telefono || '')
+    const [tel1, tel2] = (empresa.telefono || '').split(' / ')
+    setTelefono(tel1 || '')
+    setTelefono2(tel2 || '')
     setInstagram(empresa.instagram || '')
     setTiktok(empresa.tiktok || '')
     setWeb(empresa.web || '')
@@ -229,7 +232,8 @@ export default function Dashboard() {
 
     setUploadStatus('Guardando datos de la empresa...')
     
-    const payload: any = { nombre, rif, rubro, direccion, telefono, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
+    const combinedTelefono = [telefono, telefono2].filter(t => t && t.trim() !== '').join(' / ')
+    const payload: any = { nombre, rif, rubro, direccion, telefono: combinedTelefono, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
     if (logo_url !== null) {
       payload.logo_url = logo_url
     } else if (editingEmpresaId && currentImagenEmpresa === null) {
@@ -249,7 +253,7 @@ export default function Dashboard() {
       setMsg(`❌ Error: ${error.message}`)
     } else {
       setMsg(editingEmpresaId ? '✅ Empresa actualizada exitosamente.' : '✅ Empresa registrada exitosamente.')
-      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setOrdenEmpresa(0)
+      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setOrdenEmpresa(0)
       setEditingEmpresaId(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
       fetchData()
@@ -565,7 +569,7 @@ export default function Dashboard() {
                         {editingEmpresaId ? <span>Edición: <span className="font-medium text-slate-500">{nombre}</span></span> : 'Registrar Nueva Empresa'}
                       </h3>
                       {editingEmpresaId && (
-                        <Button variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
@@ -613,8 +617,12 @@ export default function Dashboard() {
                       <div className="space-y-8">
                         <h3 className="font-bold text-slate-900 text-lg border-b border-slate-100 pb-2">Contacto y Ubicación</h3>
                         <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono</Label>
+                          <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Principal</Label>
                           <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        </div>
+                        <div className="space-y-3">
+                          <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Secundario <span className="text-xs text-slate-400 font-normal">(Opcional)</span></Label>
+                          <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-slate-400" /> Dirección Física</Label>
