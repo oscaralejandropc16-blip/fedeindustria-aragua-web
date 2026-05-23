@@ -575,7 +575,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Razón Social o Nombre Comercial</Label>
-                        <Input required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">RIF Empresarial</Label>
@@ -794,7 +794,7 @@ export default function Dashboard() {
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Título del Evento</Label>
-                      <Input required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input id="titulo-evento" name="tituloEvento" autoComplete="off" required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
@@ -971,7 +971,7 @@ export default function Dashboard() {
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Título de la Noticia</Label>
-                      <Input required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input id="titulo-noticia" name="tituloNoticia" autoComplete="off" required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Resumen Breve (Para tarjeta o preview)</Label>
@@ -1206,7 +1206,7 @@ export default function Dashboard() {
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Nombre de la Institución o Marca</Label>
-                      <Input required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input id="nombre-aliado" name="nombreAliado" autoComplete="off" required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
