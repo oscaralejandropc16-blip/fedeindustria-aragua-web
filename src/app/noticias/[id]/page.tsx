@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
-import { ArrowLeftIcon, NewspaperIcon, CalendarIcon, ImageIcon } from 'lucide-react'
+import { ArrowLeftIcon, NewspaperIcon, CalendarIcon, ImageIcon, XIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function NoticiaPage() {
@@ -12,6 +12,18 @@ export default function NoticiaPage() {
   const { id } = params
   const [noticia, setNoticia] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
+
+  // Cerrar lightbox con la tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedImageIndex(null)
+      if (e.key === 'ArrowLeft' && selectedImageIndex !== null && selectedImageIndex > 0) setSelectedImageIndex(prev => prev! - 1)
+      if (e.key === 'ArrowRight' && selectedImageIndex !== null && noticia?.galeria_urls && selectedImageIndex < noticia.galeria_urls.length - 1) setSelectedImageIndex(prev => prev! + 1)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImageIndex, noticia])
 
   useEffect(() => {
     async function fetchNoticia() {
@@ -59,6 +71,52 @@ export default function NoticiaPage() {
 
   return (
     <main className="min-h-screen bg-white">
+      {/* Lightbox Overlay a Pantalla Completa */}
+      {selectedImageIndex !== null && noticia.galeria_urls && (
+        <motion.div 
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-xl flex items-center justify-center"
+        >
+          <button 
+            onClick={() => setSelectedImageIndex(null)}
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-50"
+            title="Cerrar (Esc)"
+          >
+            <XIcon className="w-8 h-8" />
+          </button>
+          
+          {selectedImageIndex > 0 && (
+            <button 
+              onClick={() => setSelectedImageIndex(prev => prev! - 1)}
+              className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors z-50 hidden md:block"
+            >
+              <ChevronLeftIcon className="w-8 h-8" />
+            </button>
+          )}
+
+          {selectedImageIndex < noticia.galeria_urls.length - 1 && (
+            <button 
+              onClick={() => setSelectedImageIndex(prev => prev! + 1)}
+              className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors z-50 hidden md:block"
+            >
+              <ChevronRightIcon className="w-8 h-8" />
+            </button>
+          )}
+
+          <motion.img 
+            key={selectedImageIndex}
+            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}
+            src={noticia.galeria_urls[selectedImageIndex]} 
+            alt="Fullscreen Gallery" 
+            className="max-w-[95vw] md:max-w-[85vw] max-h-[85vh] object-contain drop-shadow-2xl select-none"
+          />
+          
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 font-medium bg-black/40 px-4 py-2 rounded-full backdrop-blur-md text-sm">
+            {selectedImageIndex + 1} de {noticia.galeria_urls.length}
+          </div>
+        </motion.div>
+      )}
+
       {/* Header Articulo */}
       <section className="relative pt-40 pb-16 px-6 bg-slate-50 border-b border-slate-200 overflow-hidden">
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -126,13 +184,17 @@ export default function NoticiaPage() {
                 </h3>
                 
                 {/* Carrusel Horizontal Moderno */}
-                <div className="flex overflow-x-auto gap-6 pb-8 pt-4 snap-x snap-mandatory scroll-smooth" style={{ scrollbarWidth: 'thin' }}>
+                <div className="flex overflow-x-auto gap-6 pb-8 pt-4 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                   {noticia.galeria_urls.map((url: string, index: number) => (
-                    <div key={index} className="flex-none w-[85vw] sm:w-[60vw] md:w-[450px] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer snap-center shrink-0">
+                    <div 
+                      key={index} 
+                      onClick={() => setSelectedImageIndex(index)}
+                      className="flex-none w-[85vw] sm:w-[60vw] md:w-[450px] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer snap-center shrink-0"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`Galería ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#002b7f]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                         <span className="text-white font-bold text-sm tracking-wider uppercase flex items-center gap-2">
+                         <span className="text-white font-bold text-sm tracking-wider uppercase flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                            <ImageIcon className="w-4 h-4" /> Ampliar Imagen
                          </span>
                       </div>

@@ -149,7 +149,7 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Sala de Prensa</h2>
               <p className="mt-4 text-lg md:text-xl text-slate-500 font-medium">Mantente al día con nuestros anuncios institucionales y de aliados.</p>
             </div>
-            <Link href="#" className="hidden text-[#002b7f] font-bold hover:text-blue-900 md:flex items-center gap-1 transition-colors">
+            <Link href="/noticias" className="hidden text-[#002b7f] font-bold hover:text-blue-900 md:flex items-center gap-1 transition-colors">
               Ver todas las noticias <ChevronRightIcon className="w-4 h-4" />
             </Link>
           </div>
