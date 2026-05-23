@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon } from 'lucide-react'
+import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, InstagramIcon } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 
 type Empresa = {
@@ -55,19 +55,19 @@ export default function DirectorioPage() {
     )
   })
 
-  // Funciones auxiliares para dinámica de color (Light Theme)
+  // Funciones auxiliares para dinámica de color (Dark Theme)
   const getHoverStyles = (estatus: string) => {
     const state = estatus.toLowerCase()
-    if (state === 'activa') return 'hover:border-emerald-300 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.3)]'
-    if (state === 'pendiente') return 'hover:border-amber-300 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.3)]'
-    return 'hover:border-slate-300 hover:shadow-[0_20px_40px_-15px_rgba(100,116,139,0.3)]'
+    if (state === 'activa') return 'hover:border-emerald-500/40 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.2)]'
+    if (state === 'pendiente') return 'hover:border-amber-500/40 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.2)]'
+    return 'hover:border-slate-500/40 hover:shadow-[0_20px_40px_-15px_rgba(100,116,139,0.2)]'
   }
 
   const getBadgeVariant = (estatus: string) => {
     const state = estatus.toLowerCase()
-    if (state === 'activa') return 'bg-emerald-100 text-emerald-700 border-emerald-200'
-    if (state === 'pendiente') return 'bg-amber-100 text-amber-700 border-amber-200'
-    return 'bg-slate-100 text-slate-700 border-slate-200'
+    if (state === 'activa') return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+    if (state === 'pendiente') return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+    return 'bg-slate-500/10 text-slate-400 border-slate-500/20'
   }
 
   // Variantes de Framer Motion
@@ -82,13 +82,13 @@ export default function DirectorioPage() {
   }
 
   return (
-    <main className="min-h-screen relative overflow-hidden bg-slate-50">
+    <main className="min-h-screen relative overflow-hidden bg-[#020817]">
       
-      {/* Background Mesh Gradient & Grid (Light Theme) */}
+      {/* Background Mesh Gradient & Grid (Dark Theme) */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-100/60 blur-[120px]" />
-        <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-50/60 blur-[100px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-900/20 blur-[120px]" />
+        <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/10 blur-[100px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 relative z-10 space-y-12">
@@ -100,29 +100,29 @@ export default function DirectorioPage() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex flex-col items-center text-center space-y-6"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#002b7f]/10 bg-white px-4 py-1.5 text-sm font-bold text-[#002b7f] shadow-sm">
-            <SparklesIcon className="w-4 h-4 text-emerald-500" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md px-4 py-1.5 text-sm font-bold text-blue-300 shadow-sm">
+            <SparklesIcon className="w-4 h-4 text-emerald-400" />
             Red de Afiliados Premium
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-[#002b7f]">
-            Directorio Empresarial
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tighter text-white drop-shadow-xl">
+            Directorio <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Empresarial</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-500 max-w-2xl font-medium leading-relaxed">
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl font-medium leading-relaxed">
             Encuentra y conecta con los líderes de la industria en Aragua. Un ecosistema diseñado para la sinergia comercial.
           </p>
           
           <div className="w-full max-w-2xl relative mt-8 group">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-              <SearchIcon className="h-5 w-5 text-slate-400 group-focus-within:text-[#002b7f] transition-colors" />
+              <SearchIcon className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
             </div>
             <Input 
               type="search" 
               placeholder="Buscar por nombre o rubro industrial..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-16 pl-14 bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-2xl text-lg font-medium shadow-sm transition-all"
+              className="w-full h-16 pl-14 bg-slate-900/50 backdrop-blur-xl border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl text-lg font-medium shadow-xl transition-all"
             />
           </div>
         </motion.div>
@@ -131,20 +131,20 @@ export default function DirectorioPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-72 rounded-3xl bg-white border border-slate-100 shadow-sm animate-pulse" />
+              <div key={i} className="h-72 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-sm animate-pulse" />
             ))}
           </div>
         ) : filteredEmpresas.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center py-24 text-center border border-slate-200 rounded-3xl bg-white shadow-sm mt-8"
+            className="flex flex-col items-center justify-center py-24 text-center border border-white/10 rounded-3xl bg-slate-900/50 backdrop-blur-md shadow-sm mt-8"
           >
-            <div className="rounded-full bg-slate-50 p-6 mb-6 border border-slate-100">
-              <SearchIcon className="w-12 h-12 text-slate-400" />
+            <div className="rounded-full bg-white/5 p-6 mb-6 border border-white/5">
+              <SearchIcon className="w-12 h-12 text-slate-500" />
             </div>
-            <h3 className="text-2xl font-bold text-[#002b7f] tracking-tight">No hay coincidencias</h3>
-            <p className="mt-3 text-slate-500 max-w-sm text-lg font-medium">
+            <h3 className="text-2xl font-bold text-white tracking-tight">No hay coincidencias</h3>
+            <p className="mt-3 text-slate-400 max-w-sm text-lg font-medium">
               Prueba con otro rubro o nombre comercial. Nuestro ecosistema siempre está creciendo.
             </p>
           </motion.div>
@@ -164,22 +164,22 @@ export default function DirectorioPage() {
                 >
                   <div 
                     onClick={() => setSelectedEmpresa(empresa)}
-                    className={`group flex flex-col h-full overflow-hidden rounded-3xl bg-white border border-slate-200 transition-all duration-500 hover:-translate-y-2 cursor-pointer ${getHoverStyles(empresa.estatus_membresia)}`}
+                    className={`group flex flex-col h-full overflow-hidden rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/5 transition-all duration-500 hover:-translate-y-2 cursor-pointer ${getHoverStyles(empresa.estatus_membresia)}`}
                   >
                     
                     {/* Área Superior: Logo/Imagen */}
-                    <div className="h-40 w-full relative flex items-center justify-center bg-slate-50/50 p-6 overflow-hidden border-b border-slate-100">
+                    <div className="h-40 w-full relative flex items-center justify-center bg-white/5 p-6 overflow-hidden border-b border-white/5">
                       {empresa.logo_url ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img 
                           src={empresa.logo_url} 
                           alt={`Logo de ${empresa.nombre}`} 
-                          className="object-contain h-full w-full group-hover:scale-105 transition-transform duration-700 ease-out"
+                          className="object-contain h-full w-full group-hover:scale-105 transition-transform duration-700 ease-out drop-shadow-md"
                         />
                       ) : (
-                        <div className="flex flex-col items-center gap-3 opacity-40 group-hover:opacity-80 transition-opacity">
-                          <BuildingIcon className="w-10 h-10 text-[#002b7f]" />
-                          <span className="text-xs font-bold text-[#002b7f] uppercase tracking-widest">Sin Logo</span>
+                        <div className="flex flex-col items-center gap-3 opacity-30 group-hover:opacity-60 transition-opacity">
+                          <BuildingIcon className="w-10 h-10 text-slate-400" />
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Sin Logo</span>
                         </div>
                       )}
                     </div>
@@ -187,10 +187,10 @@ export default function DirectorioPage() {
                     {/* Contenido Textual */}
                     <div className="flex flex-col flex-grow p-6 pt-5">
                       <div className="flex-grow">
-                        <h3 className="text-xl font-extrabold text-slate-900 tracking-tight line-clamp-2 leading-snug group-hover:text-[#002b7f] transition-colors">
+                        <h3 className="text-xl font-extrabold text-white tracking-tight line-clamp-2 leading-snug group-hover:text-blue-300 transition-colors">
                           {empresa.nombre}
                         </h3>
-                        <p className="text-slate-500 mt-2 font-medium text-sm line-clamp-1">
+                        <p className="text-slate-400 mt-2 font-medium text-sm line-clamp-1">
                           {empresa.rubro || 'Rubro Industrial'}
                         </p>
                       </div>
@@ -204,8 +204,8 @@ export default function DirectorioPage() {
                         </Badge>
                         
                         {/* Indicador interactivo */}
-                        <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
-                          <svg className="w-4 h-4 text-[#002b7f]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 border border-blue-500/20">
+                          <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
@@ -235,130 +235,92 @@ export default function DirectorioPage() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-lg bg-[#0a0f1c] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             >
               {/* Botón Cerrar */}
               <button 
                 onClick={() => setSelectedEmpresa(null)} 
-                className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-md hover:bg-slate-100 rounded-full text-slate-600 transition-colors z-20 shadow-sm"
+                className="absolute top-4 right-4 p-2 bg-slate-800/80 backdrop-blur-md hover:bg-slate-700 border border-white/5 rounded-full text-slate-300 transition-colors z-20 shadow-sm"
               >
                 <XIcon className="w-5 h-5" />
               </button>
 
               {/* Cabecera del Modal con Logo */}
-              <div className="h-48 w-full relative flex items-center justify-center bg-slate-50 p-8 border-b border-slate-100">
+              <div className="h-48 w-full relative flex items-center justify-center bg-white/5 p-8 border-b border-white/10">
                 {selectedEmpresa.logo_url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
-                  <img src={selectedEmpresa.logo_url} alt="Logo" className="w-full h-full object-contain drop-shadow-sm" />
+                  <img 
+                    src={selectedEmpresa.logo_url} 
+                    alt={`Logo de ${selectedEmpresa.nombre}`} 
+                    className="object-contain h-full w-full drop-shadow-lg"
+                  />
                 ) : (
-                  <div className="flex flex-col items-center gap-3">
-                    <BuildingIcon className="w-16 h-16 text-[#002b7f] opacity-50" />
-                  </div>
+                  <BuildingIcon className="w-20 h-20 text-slate-600 opacity-50" />
                 )}
+                <div className="absolute bottom-4 left-4">
+                   <Badge variant="outline" className={`font-bold px-3 py-1 ${getBadgeVariant(selectedEmpresa.estatus_membresia)} shadow-lg`}>
+                     {selectedEmpresa.estatus_membresia}
+                   </Badge>
+                </div>
               </div>
 
-              {/* Contenido del Modal */}
-              <div className="p-8 overflow-y-auto">
-                <div className="flex justify-between items-start gap-4 mb-6">
-                  <div>
-                    <h2 className="text-2xl font-extrabold text-[#002b7f] tracking-tight leading-snug">
-                      {selectedEmpresa.nombre}
-                    </h2>
-                    <Badge className={`mt-3 font-bold px-3 py-1 ${getBadgeVariant(selectedEmpresa.estatus_membresia)}`}>
-                      {selectedEmpresa.estatus_membresia}
-                    </Badge>
-                  </div>
+              {/* Cuerpo del Modal */}
+              <div className="p-8 overflow-y-auto custom-scrollbar">
+                <div className="mb-6">
+                  <h2 className="text-2xl font-black text-white tracking-tight leading-snug">{selectedEmpresa.nombre}</h2>
+                  <p className="text-blue-400 font-bold mt-1">{selectedEmpresa.rubro || 'Rubro No Especificado'}</p>
                 </div>
-
-                <div className="space-y-5">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#002b7f]"><BriefcaseIcon className="w-5 h-5" /></div>
+                
+                <div className="space-y-4">
+                  {/* Detalles con iconos minimalistas */}
+                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <HashIcon className="w-5 h-5 text-slate-400 mt-0.5" />
                     <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Rubro Sectorial</p>
-                      <p className="font-medium text-slate-700 mt-0.5">{selectedEmpresa.rubro || 'No especificado'}</p>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">RIF Comercial</p>
+                      <p className="text-white font-medium mt-0.5">{selectedEmpresa.rif}</p>
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#002b7f]"><HashIcon className="w-5 h-5" /></div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">RIF</p>
-                      <p className="font-medium text-slate-700 mt-0.5">{selectedEmpresa.rif}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#002b7f]"><PhoneIcon className="w-5 h-5" /></div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Teléfono de Contacto</p>
-                      <p className="font-medium text-slate-700 mt-0.5">{selectedEmpresa.telefono || 'No disponible'}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4">
-                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#002b7f]"><MapPinIcon className="w-5 h-5" /></div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Dirección Física</p>
-                      <p className="font-medium text-slate-700 mt-0.5 leading-relaxed">{selectedEmpresa.direccion || 'No disponible'}</p>
-                    </div>
-                  </div>
-
-                  {selectedEmpresa.instagram && (
-                    <div className="flex items-start gap-4">
-                      <div className="bg-pink-50 p-2.5 rounded-xl text-pink-600">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                      </div>
+                  
+                  {selectedEmpresa.direccion && (
+                    <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                      <MapPinIcon className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Instagram</p>
-                        <a 
-                          href={`https://instagram.com/${selectedEmpresa.instagram.replace('@', '')}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="font-bold text-pink-600 hover:text-pink-700 mt-0.5 leading-relaxed block hover:underline"
-                        >
-                          {selectedEmpresa.instagram.startsWith('@') ? selectedEmpresa.instagram : `@${selectedEmpresa.instagram}`}
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Ubicación Físca</p>
+                        <p className="text-white font-medium mt-0.5 leading-relaxed">{selectedEmpresa.direccion}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedEmpresa.telefono && (
+                    <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                      <PhoneIcon className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Contacto Telefónico</p>
+                        <a href={`tel:${selectedEmpresa.telefono}`} className="text-blue-400 font-bold hover:text-blue-300 transition-colors mt-0.5 block">
+                          {selectedEmpresa.telefono}
                         </a>
                       </div>
                     </div>
                   )}
 
-                  {selectedEmpresa.tiktok && (
-                    <div className="flex items-start gap-4">
-                      <div className="bg-slate-100 p-2.5 rounded-xl text-slate-900">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">TikTok</p>
-                        <a 
-                          href={`https://tiktok.com/${selectedEmpresa.tiktok.replace('@', '')}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="font-bold text-slate-800 hover:text-slate-900 mt-0.5 leading-relaxed block hover:underline"
-                        >
-                          {selectedEmpresa.tiktok.startsWith('@') ? selectedEmpresa.tiktok : `@${selectedEmpresa.tiktok}`}
-                        </a>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedEmpresa.web && (
-                    <div className="flex items-start gap-4">
-                      <div className="bg-blue-50 p-2.5 rounded-xl text-blue-600">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Página Web</p>
-                        <a 
-                          href={selectedEmpresa.web.startsWith('http') ? selectedEmpresa.web : `https://${selectedEmpresa.web}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="font-bold text-blue-600 hover:text-blue-700 mt-0.5 leading-relaxed block hover:underline"
-                        >
-                          {selectedEmpresa.web.replace(/(^\w+:|^)\/\//, '')}
-                        </a>
-                      </div>
-                    </div>
-                  )}
+                  {/* Enlaces y Redes */}
+                  <div className="pt-4 mt-2 border-t border-white/10 flex flex-wrap gap-3">
+                    {selectedEmpresa.web && (
+                      <a href={selectedEmpresa.web} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-blue-500/25">
+                        <BriefcaseIcon className="w-4 h-4" /> Sitio Web
+                      </a>
+                    )}
+                    {selectedEmpresa.instagram && (
+                      <a href={`https://instagram.com/${selectedEmpresa.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-colors">
+                        <InstagramIcon className="w-4 h-4 text-pink-500" /> Instagram
+                      </a>
+                    )}
+                    {selectedEmpresa.tiktok && (
+                      <a href={`https://tiktok.com/${selectedEmpresa.tiktok.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl transition-colors">
+                        <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.12-3.44-3.17-3.8-5.46-.4-2.51.62-5.18 2.6-6.66 1.1-.81 2.45-1.19 3.81-1.2v4.06c-.85.04-1.74.22-2.39.81-.95.84-1.28 2.29-.86 3.48.45 1.35 1.88 2.31 3.29 2.19 1.45-.11 2.58-1.43 2.52-2.88V.02z"/></svg> TikTok
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
