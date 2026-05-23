@@ -253,8 +253,8 @@ export default function DirectorioPage() {
               </div>
 
               {/* Logo Flotante y Estado */}
-              <div className="relative px-8">
-                <div className="absolute -top-16 left-8 w-32 h-32 bg-white rounded-[2rem] p-4 shadow-2xl shadow-black/60 border-[6px] border-[#0a0f1c] flex items-center justify-center z-10">
+              <div className="relative px-4 sm:px-8">
+                <div className="absolute -top-12 sm:-top-16 left-4 sm:left-8 w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-2xl sm:rounded-[2rem] p-3 sm:p-4 shadow-2xl shadow-black/60 border-4 sm:border-[6px] border-[#0a0f1c] flex items-center justify-center z-10">
                   {selectedEmpresa.logo_url ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img 
@@ -263,18 +263,18 @@ export default function DirectorioPage() {
                       className="object-contain h-full w-full mix-blend-multiply"
                     />
                   ) : (
-                    <BuildingIcon className="w-12 h-12 text-slate-300" />
+                    <BuildingIcon className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300" />
                   )}
                 </div>
-                <div className="absolute -top-5 right-8 z-10">
-                   <Badge variant="outline" className={`font-bold px-4 py-1.5 ${getBadgeVariant(selectedEmpresa.estatus_membresia)} shadow-xl bg-[#0a0f1c]`}>
+                <div className="absolute -top-4 sm:-top-5 right-4 sm:right-8 z-10">
+                   <Badge variant="outline" className={`font-bold px-3 py-1 sm:px-4 sm:py-1.5 text-xs sm:text-sm ${getBadgeVariant(selectedEmpresa.estatus_membresia)} shadow-xl bg-[#0a0f1c]`}>
                      {selectedEmpresa.estatus_membresia}
                    </Badge>
                 </div>
               </div>
 
               {/* Cuerpo del Modal */}
-              <div className="p-8 pt-20 overflow-y-auto custom-scrollbar">
+              <div className="p-6 sm:p-8 pt-16 sm:pt-20 overflow-y-auto custom-scrollbar">
                 <div className="mb-6">
                   <h2 className="text-2xl font-black text-white tracking-tight leading-snug">{selectedEmpresa.nombre}</h2>
                   <p className="text-blue-400 font-bold mt-1">{selectedEmpresa.rubro || 'Rubro No Especificado'}</p>
