@@ -90,10 +90,14 @@ export default function NoticiaPage() {
           {noticia.imagen_url && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}
-              className="w-full h-[40vh] md:h-[60vh] rounded-3xl overflow-hidden shadow-2xl mb-16 -mt-32 relative z-20 border-4 border-white bg-slate-100"
+              className="w-full aspect-video md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl mb-16 -mt-32 relative z-20 border-4 border-white bg-slate-900 flex items-center justify-center"
             >
+              <div className="absolute inset-0 z-0">
+                 {/* eslint-disable-next-line @next/next/no-img-element */}
+                 <img src={noticia.imagen_url} className="w-full h-full object-cover blur-2xl opacity-60 scale-110" alt="" />
+              </div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={noticia.imagen_url} alt={noticia.titulo} className="w-full h-full object-cover object-top" />
+              <img src={noticia.imagen_url} alt={noticia.titulo} className="relative z-10 w-full h-full object-contain" />
             </motion.div>
           )}
 
@@ -101,9 +105,25 @@ export default function NoticiaPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
             className="prose prose-lg md:prose-xl prose-slate max-w-none"
           >
-            <p className="text-slate-600 font-medium leading-relaxed whitespace-pre-wrap text-lg md:text-xl">
+            <p className="text-slate-600 font-medium leading-relaxed whitespace-pre-wrap text-lg md:text-xl mb-12">
               {noticia.resumen}
             </p>
+
+            {/* Galería de imágenes adicionales */}
+            {noticia.galeria_urls && noticia.galeria_urls.length > 0 && (
+              <div className="mt-16 pt-12 border-t border-slate-100">
+                <h3 className="text-2xl font-bold text-slate-900 mb-8">Galería de Imágenes</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {noticia.galeria_urls.map((url: string, index: number) => (
+                    <div key={index} className="rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-slate-50 aspect-[4/3] group cursor-pointer relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </motion.div>
         </div>
       </section>

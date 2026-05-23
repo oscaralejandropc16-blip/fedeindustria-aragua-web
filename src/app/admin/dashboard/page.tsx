@@ -43,6 +43,7 @@ export default function Dashboard() {
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
   const [fileNoticia, setFileNoticia] = useState<File | null>(null)
+  const [galeriaNoticia, setGaleriaNoticia] = useState<FileList | null>(null)
   const [ordenNoticia, setOrdenNoticia] = useState(0)
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
@@ -70,6 +71,7 @@ export default function Dashboard() {
   // Referencias
   const fileInputRef = useRef<HTMLInputElement>(null)
   const fileNoticiaRef = useRef<HTMLInputElement>(null)
+  const galeriaNoticiaRef = useRef<HTMLInputElement>(null)
   const fileAliadoRef = useRef<HTMLInputElement>(null)
 
   const fetchData = async () => {
@@ -159,6 +161,7 @@ export default function Dashboard() {
     setResumenNoticia(noticia.resumen)
     setOrdenNoticia(noticia.orden || 0)
     setFileNoticia(null)
+    setGaleriaNoticia(null)
     scrollToTop()
   }
 
@@ -257,14 +260,14 @@ export default function Dashboard() {
   }
 
   const handleAddNoticia = async (e: React.FormEvent) => {
-    // ... lógica idéntica anterior, omitida por brevedad visual, pero completamente funcional
     e.preventDefault()
     setLoading(true)
     setMsgNoticia('')
-    setUploadStatus('Subiendo imagen de noticia...')
+    setUploadStatus('Subiendo imagen principal de noticia...')
     
     const supabase = createClient()
     let imagen_url = null
+    let galeria_urls: string[] = []
 
     if (fileNoticia) {
       const fileExt = fileNoticia.name.split('.').pop()
@@ -279,9 +282,26 @@ export default function Dashboard() {
       imagen_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
     }
 
+    if (galeriaNoticia && galeriaNoticia.length > 0) {
+      setUploadStatus(`Subiendo ${galeriaNoticia.length} imágenes de galería...`)
+      for (let i = 0; i < galeriaNoticia.length; i++) {
+        const file = galeriaNoticia[i]
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Date.now()}-gal-${i}-${Math.random().toString(36).substring(2)}.${fileExt}`
+        const filePath = `noticias/galeria/${fileName}`
+        
+        const { error: uploadError } = await supabase.storage.from('media_institucional').upload(filePath, file)
+        if (!uploadError) {
+          const url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+          galeria_urls.push(url)
+        }
+      }
+    }
+
     setUploadStatus('Publicando noticia...')
     const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, orden: ordenNoticia }
     if (imagen_url) payload.imagen_url = imagen_url
+    if (galeria_urls.length > 0) payload.galeria_urls = galeria_urls // ESTO REQUIERE LA COLUMNA EN SUPABASE
 
     let error;
     if (editingNoticiaId) {
@@ -292,12 +312,19 @@ export default function Dashboard() {
       error = res.error
     }
 
-    if (error) setMsgNoticia(`❌ Error: ${error.message}`)
+    if (error) {
+      if (error.message.includes('galeria_urls')) {
+        setMsgNoticia(`❌ Error crítico: Falta la columna 'galeria_urls' (tipo text[]) en Supabase. Añádela desde el panel de SQL de Supabase para poder guardar galerías.`)
+      } else {
+        setMsgNoticia(`❌ Error: ${error.message}`)
+      }
+    }
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setOrdenNoticia(0)
+      setTituloNoticia(''); setResumenNoticia(''); setFileNoticia(null); setGaleriaNoticia(null); setOrdenNoticia(0)
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
+      if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
       fetchData()
     }
     setLoading(false); setUploadStatus('')
@@ -751,6 +778,14 @@ export default function Dashboard() {
                           * Ya existe una fotografía guardada. Sube una nueva solo si deseas reemplazarla.
                         </p>
                       )}
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Galería de Imágenes Adicionales (Opcional)</Label>
+                      <Input type="file" accept="image/*" multiple onChange={e => setGaleriaNoticia(e.target.files)} ref={galeriaNoticiaRef} disabled={loading} className="h-12 bg-slate-50 cursor-pointer pt-3 rounded-xl border-slate-200" />
+                      <p className="text-sm text-slate-500 italic mt-2">
+                        * Puedes seleccionar varias fotos a la vez para crear un carrusel dentro de la noticia. <br/>
+                        <span className="font-bold text-red-500">⚠ Requiere añadir la columna 'galeria_urls' (tipo text[]) en la tabla 'noticias' en Supabase.</span>
+                      </p>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
