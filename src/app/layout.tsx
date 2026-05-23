@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import ScrollToTop from "@/components/ScrollToTop";
 import "./globals.css";
 
 // Utilizamos Inter como fuente principal, es la más profesional y limpia para UI corporativa.
@@ -101,7 +102,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-
+        <ScrollToTop />
       </body>
     </html>
   );
