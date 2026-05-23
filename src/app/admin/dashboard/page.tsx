@@ -37,8 +37,12 @@ export default function Dashboard() {
   const [tituloEvento, setTituloEvento] = useState('')
   const [descripcionEvento, setDescripcionEvento] = useState('')
   const [fechaEvento, setFechaEvento] = useState('')
+  const [fechaEventoFin, setFechaEventoFin] = useState('')
   const [ordenEvento, setOrdenEvento] = useState(0)
   const [editingEventoId, setEditingEventoId] = useState<number | null>(null)
+  const [fileEvento, setFileEvento] = useState<File | null>(null)
+  const [currentImagenEvento, setCurrentImagenEvento] = useState<string | null>(null)
+  const fileEventoRef = useRef<HTMLInputElement>(null)
   
   // Estados para Noticias
   const [tituloNoticia, setTituloNoticia] = useState('')
@@ -156,8 +160,11 @@ export default function Dashboard() {
     setEditingEventoId(evento.id)
     setTituloEvento(evento.titulo)
     setDescripcionEvento(evento.descripcion)
-    setFechaEvento(evento.fecha_evento)
+    setFechaEvento(evento.fecha)
+    setFechaEventoFin(evento.fecha_fin || '')
     setOrdenEvento(evento.orden || 0)
+    setCurrentImagenEvento(evento.imagen_url || null)
+    setFileEvento(null)
     scrollToTop()
   }
 
@@ -252,7 +259,36 @@ export default function Dashboard() {
     setMsgEvento('')
     
     const supabase = createClient()
-    const payload = { titulo: tituloEvento, descripcion: descripcionEvento, fecha_evento: fechaEvento, orden: ordenEvento }
+    let imagen_url = null
+
+    if (fileEvento) {
+      const fileExt = fileEvento.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `eventos/${fileName}`
+      const { error: uploadError } = await supabase.storage.from('media_institucional').upload(filePath, fileEvento)
+      if (uploadError) {
+        setMsgEvento(`❌ Error subiendo imagen: ${uploadError.message}`)
+        setLoading(false)
+        return
+      }
+      imagen_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+    }
+
+    const payload: any = { 
+      titulo: tituloEvento, 
+      descripcion: descripcionEvento, 
+      fecha: fechaEvento, 
+      orden: ordenEvento 
+    }
+    
+    if (fechaEventoFin) payload.fecha_fin = fechaEventoFin
+    else payload.fecha_fin = null
+
+    if (imagen_url !== null) {
+      payload.imagen_url = imagen_url
+    } else if (editingEventoId && currentImagenEvento === null) {
+      payload.imagen_url = null
+    }
     
     let error;
     if (editingEventoId) {
@@ -266,7 +302,8 @@ export default function Dashboard() {
     if (error) setMsgEvento(`❌ Error: ${error.message}`)
     else {
       setMsgEvento(editingEventoId ? '✅ Evento actualizado exitosamente.' : '✅ Evento agendado exitosamente.')
-      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setOrdenEvento(0)
+      setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
+      if (fileEventoRef.current) fileEventoRef.current.value = ''
       setEditingEventoId(null)
       fetchData()
     }
@@ -750,13 +787,69 @@ export default function Dashboard() {
                       <Label className="text-slate-700 font-bold">Título del Evento</Label>
                       <Input required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
-                    <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold">Fecha del Evento</Label>
-                      <Input required type="date" value={fechaEvento} onChange={e => setFechaEvento(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Fecha de Inicio</Label>
+                        <Input required type="date" value={fechaEvento} onChange={e => setFechaEvento(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Fecha de Fin (Opcional)</Label>
+                        <Input type="date" value={fechaEventoFin} onChange={e => setFechaEventoFin(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Descripción Corta</Label>
                       <textarea required value={descripcionEvento} onChange={e => setDescripcionEvento(e.target.value)} placeholder="Breve descripción del evento..." className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] min-h-[100px] resize-y" disabled={loading} />
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Póster / Imagen del Evento (Opcional)</Label>
+                      
+                      {editingEventoId && currentImagenEvento && !fileEvento && (
+                        <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={currentImagenEvento} alt="Actual" className="w-20 h-20 object-cover rounded-lg border border-blue-200 shadow-sm" />
+                            <div className="text-sm">
+                              <p className="font-bold text-blue-900">Póster actual guardado</p>
+                              <p className="text-blue-700">Sube uno nuevo abajo si deseas cambiarlo.</p>
+                            </div>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setCurrentImagenEvento(null)}
+                            className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
+                            title="Eliminar póster actual"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3">
+                        <Input type="file" accept="image/*" onChange={e => {
+                          const selected = e.target.files?.[0];
+                          if (selected) {
+                            if (selected.size > 2 * 1024 * 1024) {
+                              alert("El póster excede el límite de 2MB.");
+                              if (fileEventoRef.current) fileEventoRef.current.value = '';
+                              return;
+                            }
+                            setFileEvento(selected);
+                          } else {
+                            setFileEvento(null);
+                          }
+                        }} ref={fileEventoRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        {fileEvento && (
+                          <button 
+                            type="button" 
+                            onClick={() => { setFileEvento(null); if(fileEventoRef.current) fileEventoRef.current.value = '' }}
+                            className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-12 w-12 flex items-center justify-center transition-all shadow-sm flex-shrink-0"
+                            title="Descartar archivo"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
@@ -790,8 +883,8 @@ export default function Dashboard() {
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
-                                      <span className="text-xs uppercase">{new Date(eve.fecha_evento).toLocaleDateString('es-VE', { month: 'short' })}</span>
-                                      <span className="text-lg leading-none">{new Date(eve.fecha_evento).getDate()}</span>
+                                      <span className="text-xs uppercase">{new Date(eve.fecha).toLocaleDateString('es-VE', { month: 'short' })}</span>
+                                      <span className="text-lg leading-none">{new Date(eve.fecha).getDate()}</span>
                                     </div>
                                     <div>
                                       <h4 className="font-bold text-slate-900 text-lg leading-tight">{eve.titulo}</h4>
