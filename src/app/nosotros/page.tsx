@@ -14,7 +14,7 @@ export default function NosotrosPage() {
     <main className="min-h-screen bg-slate-50 overflow-hidden">
       
       {/* Header Institucional Premium */}
-      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+      <section className="relative pt-40 pb-24 px-6 overflow-hidden">
         {/* Abstract Background Elements */}
         <div className="absolute inset-0 z-0">
           <div className="absolute top-[-20%] left-[20%] w-[60%] h-[60%] rounded-full bg-blue-100/50 blur-[120px]" />

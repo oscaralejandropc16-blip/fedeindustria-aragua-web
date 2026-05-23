@@ -65,7 +65,7 @@ export default function Home() {
     <div className="w-full bg-slate-50">
       
       {/* HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-40">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full bg-blue-100/50 blur-[120px]" />
           <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-50/50 blur-[100px]" />
