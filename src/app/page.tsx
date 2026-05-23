@@ -127,7 +127,9 @@ export default function Home() {
         .animate-custom-marquee {
           animation: customMarquee 30s linear infinite;
         }
-        .animate-custom-marquee:hover {
+        .animate-custom-marquee:hover,
+        .animate-custom-marquee:focus-within,
+        .animate-custom-marquee:active {
           animation-play-state: paused;
         }
       `}} />
@@ -145,7 +147,7 @@ export default function Home() {
           >
             {/* Multiplicamos el array asegurando que haya suficientes para el scroll infinito */}
             {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src, i) => (
-              <div key={i} className="h-16 md:h-20 flex items-center justify-center grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all cursor-pointer flex-shrink-0">
+              <div key={i} tabIndex={0} className="h-16 md:h-20 flex items-center justify-center grayscale hover:grayscale-0 focus:grayscale-0 active:grayscale-0 opacity-50 hover:opacity-100 focus:opacity-100 active:opacity-100 transition-all cursor-pointer flex-shrink-0 outline-none">
                 <img src={src} alt="Logo Aliado" className="h-full w-auto object-contain max-w-[160px]" />
               </div>
             ))}
