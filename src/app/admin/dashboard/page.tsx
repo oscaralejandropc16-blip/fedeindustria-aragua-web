@@ -593,6 +593,59 @@ export default function Dashboard() {
               </TabsTrigger>
             </TabsList>
 
+            {/* CONTENIDO HOME */}
+            <TabsContent value="home" className="focus-visible:outline-none">
+              <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 p-8 md:p-12 mb-10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
+                
+                <h3 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3 relative z-10">
+                  <div className="w-10 h-10 bg-[#002b7f]/10 rounded-xl flex items-center justify-center text-[#002b7f]">
+                    <LayoutDashboardIcon className="w-5 h-5" />
+                  </div>
+                  Configuración de la Portada Principal
+                </h3>
+
+                <form onSubmit={handleSaveHomeConfig} className="space-y-8 relative z-10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Título Principal</Label>
+                        <Input value={homeTitulo} onChange={e => setHomeTitulo(e.target.value)} placeholder="Conectamos el Futuro..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" required />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Subtítulo</Label>
+                        <textarea value={homeSubtitulo} onChange={e => setHomeSubtitulo(e.target.value)} placeholder="Únete a la red empresarial..." className="w-full min-h-[120px] p-4 bg-slate-50 border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-xl resize-none" required />
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Video de Fondo (Opcional: Subir nuevo)</Label>
+                        <div className="p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center relative cursor-pointer">
+                          <input type="file" accept="video/mp4,video/webm" onChange={e => setFileHomeVideo(e.target.files?.[0] || null)} ref={fileHomeVideoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                          <div className="flex flex-col items-center justify-center pointer-events-none">
+                            <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
+                            <p className="text-sm font-bold text-slate-700">{fileHomeVideo ? fileHomeVideo.name : 'Haz clic para buscar un video (.mp4)'}</p>
+                            <p className="text-xs text-slate-400 mt-1">Si no subes uno nuevo, se mantendrá el actual.</p>
+                          </div>
+                        </div>
+                      </div>
+                      {homeVideoUrl && (
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 font-bold">Vista Previa del Video Actual</Label>
+                          <video src={homeVideoUrl} className="w-full h-40 object-cover rounded-xl shadow-md border border-slate-200" muted loop autoPlay playsInline />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <Button type="submit" disabled={loading} className="h-14 px-8 bg-[#002b7f] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-[#002b7f]/25 transition-all w-full md:w-auto">
+                    {loading ? uploadStatus || 'Guardando...' : 'Guardar Configuración de Portada'}
+                  </Button>
+                </form>
+              </div>
+            </TabsContent>
+
             {/* CONTENIDO EMPRESAS */}
             <TabsContent value="empresas" className="mt-0 outline-none">
                 <div className="space-y-10">
