@@ -67,9 +67,9 @@ export default function Dashboard() {
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
   // Estados para Config Home
-  const [homeTitulo, setHomeTitulo] = useState('')
-  const [homeSubtitulo, setHomeSubtitulo] = useState('')
-  const [homeVideoUrl, setHomeVideoUrl] = useState('')
+  const [homeTitulo, setHomeTitulo] = useState('Conectamos el Futuro de la Industria')
+  const [homeSubtitulo, setHomeSubtitulo] = useState('Únete a la red empresarial más sólida de la región central. Innovación, representación y crecimiento para tu empresa.')
+  const [homeVideoUrl, setHomeVideoUrl] = useState('/video-industrial.mp4')
   const [fileHomeVideo, setFileHomeVideo] = useState<File | null>(null)
   const fileHomeVideoRef = useRef<HTMLInputElement>(null)
 
