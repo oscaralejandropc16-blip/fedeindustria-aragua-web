@@ -66,6 +66,13 @@ export default function Dashboard() {
   const [ordenAliado, setOrdenAliado] = useState(0)
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
+  // Estados para Config Home
+  const [homeTitulo, setHomeTitulo] = useState('')
+  const [homeSubtitulo, setHomeSubtitulo] = useState('')
+  const [homeVideoUrl, setHomeVideoUrl] = useState('')
+  const [fileHomeVideo, setFileHomeVideo] = useState<File | null>(null)
+  const fileHomeVideoRef = useRef<HTMLInputElement>(null)
+
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
   const [listaEventos, setListaEventos] = useState<any[]>([])
@@ -102,6 +109,13 @@ export default function Dashboard() {
 
     const { data: ali } = await supabase.from('aliados').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (ali) setListaAliados(ali)
+
+    const { data: configHomeData } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
+    if (configHomeData) {
+      setHomeTitulo(configHomeData.titulo)
+      setHomeSubtitulo(configHomeData.subtitulo)
+      setHomeVideoUrl(configHomeData.video_url)
+    }
 
     setLoadingListas(false)
   }
@@ -452,6 +466,28 @@ export default function Dashboard() {
     setLoading(false); setUploadStatus('')
   }
 
+  const handleSaveHomeConfig = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true); setUploadStatus('Guardando configuración...')
+    const supabase = createClient()
+    let finalVideoUrl = homeVideoUrl
+
+    if (fileHomeVideo) {
+      setUploadStatus('Subiendo video (esto puede tardar)...')
+      const fileExt = fileHomeVideo.name.split('.').pop()
+      const fileName = `home-bg-${Date.now()}.${fileExt}`
+      const { error: uploadError } = await supabase.storage.from('media_institucional').upload(`videos/${fileName}`, fileHomeVideo)
+      if (uploadError) { setMsg('❌ Error subiendo video.'); setLoading(false); return }
+      finalVideoUrl = supabase.storage.from('media_institucional').getPublicUrl(`videos/${fileName}`).data.publicUrl
+      setHomeVideoUrl(finalVideoUrl)
+    }
+
+    const { error } = await supabase.from('configuracion_home').upsert({ id: 1, titulo: homeTitulo, subtitulo: homeSubtitulo, video_url: finalVideoUrl })
+    if (error) setMsg(`❌ Error: ${error.message}`)
+    else { setMsg('✅ Configuración de la Portada actualizada exitosamente.'); if (fileHomeVideoRef.current) fileHomeVideoRef.current.value = ''; setFileHomeVideo(null) }
+    setLoading(false); setUploadStatus('')
+  }
+
   // --- Manejo del Drag and Drop (Reordenamiento Visual) ---
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -537,9 +573,12 @@ export default function Dashboard() {
             <p className="text-slate-500 font-medium mt-2">Agrega y administra la información pública del portal web.</p>
           </div>
 
-          <Tabs defaultValue="empresas" className="w-full">
+          <Tabs defaultValue="home" className="w-full">
             {/* TABS ESTILO NAVEGACIÓN MODERNA */}
             <TabsList className="flex flex-wrap w-full md:w-auto h-auto bg-transparent border-b border-slate-200 rounded-none mb-10 gap-8 justify-start p-0">
+              <TabsTrigger value="home" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-[#002b7f] data-[state=active]:text-[#002b7f] text-slate-500 font-bold text-base px-1 pb-4 rounded-none transition-all">
+                <LayoutDashboardIcon className="w-4 h-4 mr-2" /> Portada (Inicio)
+              </TabsTrigger>
               <TabsTrigger value="empresas" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-[#002b7f] data-[state=active]:text-[#002b7f] text-slate-500 font-bold text-base px-1 pb-4 rounded-none transition-all">
                 <BuildingIcon className="w-4 h-4 mr-2" /> Directorio
               </TabsTrigger>

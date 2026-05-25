@@ -12,12 +12,27 @@ export default function Home() {
   const [eventos, setEventos] = useState<any[]>([])
   const [noticias, setNoticias] = useState<any[]>([])
   const [aliadosLogos, setAliadosLogos] = useState<string[]>(['/logo.png'])
+  const [configHome, setConfigHome] = useState({
+    titulo: 'Conectamos el Futuro de la Industria',
+    subtitulo: 'Únete a la red empresarial más sólida de la región central. Innovación, representación y crecimiento para tu empresa.',
+    video_url: '/video-industrial.mp4'
+  })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       const supabase = createClient()
       
+      // Fetch Configuración Home
+      const { data: configData } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
+      if (configData) {
+        setConfigHome({
+          titulo: configData.titulo,
+          subtitulo: configData.subtitulo,
+          video_url: configData.video_url
+        })
+      }
+
       // Fetch Empresas
       const { data: empresasData } = await supabase
         .from('empresas_afiliadas')
@@ -74,8 +89,9 @@ export default function Home() {
             muted 
             playsInline 
             className="absolute inset-0 w-full h-full object-cover"
+            key={configHome.video_url}
           >
-            <source src="/video-industrial.mp4" type="video/mp4" />
+            <source src={configHome.video_url} type="video/mp4" />
           </video>
           {/* Glassmorphism Overlay Dark */}
           <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-[6px]" />
@@ -94,14 +110,14 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.1] max-w-5xl drop-shadow-2xl"
           >
-            Conectamos el Futuro de la <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Industria</span>
+            {configHome.titulo.split(' ').slice(0, -1).join(' ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{configHome.titulo.split(' ').slice(-1)}</span>
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-8 text-xl md:text-2xl text-slate-200 font-medium max-w-3xl leading-relaxed drop-shadow-md"
+            className="mt-8 text-xl md:text-2xl text-slate-200 font-medium max-w-3xl leading-relaxed drop-shadow-md whitespace-pre-line"
           >
-            Únete a la red empresarial más sólida de la región central. Innovación, representación y crecimiento para tu empresa.
+            {configHome.subtitulo}
           </motion.p>
 
           <motion.div 
