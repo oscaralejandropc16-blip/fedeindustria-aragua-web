@@ -57,6 +57,7 @@ export default function Dashboard() {
   const [galeriaNoticia, setGaleriaNoticia] = useState<File[]>([])
   const [currentGaleriaNoticia, setCurrentGaleriaNoticia] = useState<string[]>([])
   const [ordenNoticia, setOrdenNoticia] = useState(0)
+  const [fechaPublicacionNoticia, setFechaPublicacionNoticia] = useState('')
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
   // Estados para Aliados
@@ -197,6 +198,7 @@ export default function Dashboard() {
     setResumenNoticia(noticia.resumen || '')
     setContenidoCompletoNoticia(noticia.contenido_completo || '')
     setOrdenNoticia(noticia.orden || 0)
+    setFechaPublicacionNoticia(noticia.fecha_publicacion ? noticia.fecha_publicacion.split('T')[0] : '')
     setFileNoticia(null)
     setCurrentImagenNoticia(noticia.imagen_url)
     setGaleriaNoticia([])
@@ -378,6 +380,9 @@ export default function Dashboard() {
 
     setUploadStatus('Publicando noticia...')
     const payload: any = { titulo: tituloNoticia, resumen: resumenNoticia, contenido_completo: contenidoCompletoNoticia, orden: ordenNoticia }
+    if (fechaPublicacionNoticia) {
+      payload.fecha_publicacion = fechaPublicacionNoticia
+    }
     if (imagen_url !== null) {
       payload.imagen_url = imagen_url
     } else if (editingNoticiaId && currentImagenNoticia === null) {
@@ -409,7 +414,7 @@ export default function Dashboard() {
     }
     else {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
-      setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setCurrentGaleriaNoticia([]); setOrdenNoticia(0)
+      setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setCurrentGaleriaNoticia([]); setOrdenNoticia(0); setFechaPublicacionNoticia('')
       setEditingNoticiaId(null)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
@@ -1063,15 +1068,21 @@ export default function Dashboard() {
                         {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
                       </h3>
                       {editingNoticiaId && (
-                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); setFechaPublicacionNoticia(''); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
                           <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
                         </Button>
                       )}
                     </div>
                   <CardContent className="p-8 space-y-6 bg-transparent">
-                    <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold">Título de la Noticia</Label>
-                      <Input id="titulo-noticia" name="tituloNoticia" autoComplete="off" required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Título de la Noticia</Label>
+                        <Input id="titulo-noticia" name="tituloNoticia" autoComplete="off" required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Fecha de Publicación</Label>
+                        <Input type="date" value={fechaPublicacionNoticia} onChange={e => setFechaPublicacionNoticia(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Resumen Breve (Para tarjeta o preview)</Label>
