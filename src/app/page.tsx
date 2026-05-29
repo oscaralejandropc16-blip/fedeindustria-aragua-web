@@ -214,7 +214,7 @@ export default function Home() {
                   {/* Contenido Noticia */}
                   <div className="p-6 md:p-8 flex-1 flex flex-col">
                     <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-3">
-                      {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE')}
+                      {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE', { timeZone: 'UTC' })}
                     </span>
                     <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#002b7f] transition-colors line-clamp-2 leading-snug mb-3">
                       {noticia.titulo}
@@ -349,11 +349,11 @@ export default function Home() {
                       <div>
                         <div className="flex items-center gap-3 mb-4 flex-wrap">
                           <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs tracking-widest uppercase">
-                            {new Date(evento.fecha).toLocaleDateString('es-VE', { month: 'short', day: '2-digit' })}
-                            {evento.fecha_fin ? ` al ${new Date(evento.fecha_fin).toLocaleDateString('es-VE', { month: 'short', day: '2-digit' })}` : ''}
+                            {new Date(evento.fecha).toLocaleDateString('es-VE', { timeZone: 'UTC', month: 'short', day: '2-digit' })}
+                            {evento.fecha_fin ? ` al ${new Date(evento.fecha_fin).toLocaleDateString('es-VE', { timeZone: 'UTC', month: 'short', day: '2-digit' })}` : ''}
                           </span>
                           <span className="text-slate-500 text-sm font-medium">
-                            {new Date(evento.fecha).getFullYear()}
+                            {new Date(evento.fecha).getUTCFullYear()}
                           </span>
                         </div>
                         <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors tracking-tight leading-snug">

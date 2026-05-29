@@ -81,7 +81,7 @@ export default function TodasLasNoticiasPage() {
                 <div className="p-8 flex flex-col flex-1">
                   <div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-wider mb-4">
                     <CalendarIcon className="w-3.5 h-3.5" />
-                    {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' })}
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-[#002b7f] transition-colors line-clamp-2">
                     {noticia.titulo}

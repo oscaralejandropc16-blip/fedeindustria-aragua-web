@@ -1025,8 +1025,8 @@ export default function Dashboard() {
                                 <div className="flex items-center justify-between w-full">
                                   <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 text-emerald-700 font-bold">
-                                      <span className="text-xs uppercase">{new Date(eve.fecha).toLocaleDateString('es-VE', { month: 'short' })}</span>
-                                      <span className="text-lg leading-none">{new Date(eve.fecha).getDate()}</span>
+                                      <span className="text-xs uppercase">{new Date(eve.fecha).toLocaleDateString('es-VE', { timeZone: 'UTC', month: 'short' })}</span>
+                                      <span className="text-lg leading-none">{new Date(eve.fecha).getUTCDate()}</span>
                                     </div>
                                     <div>
                                       <h4 className="font-bold text-slate-900 text-lg leading-tight">{eve.titulo}</h4>
@@ -1271,7 +1271,7 @@ export default function Dashboard() {
                                     </div>
                                     <div>
                                       <h4 className="font-bold text-slate-900 text-base leading-tight line-clamp-1">{not.titulo}</h4>
-                                      <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE')}</p>
+                                      <p className="text-xs text-slate-400 font-medium">{new Date(not.fecha_publicacion).toLocaleDateString('es-VE', { timeZone: 'UTC' })}</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-2">

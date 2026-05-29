@@ -132,7 +132,7 @@ export default function NoticiaPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 text-emerald-600 font-bold uppercase tracking-widest text-sm mb-4">
               <CalendarIcon className="w-4 h-4" />
-              {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' })}
+              {new Date(noticia.fecha_publicacion).toLocaleDateString('es-VE', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.1] mb-8">

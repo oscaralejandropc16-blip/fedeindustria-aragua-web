@@ -118,11 +118,11 @@ export default function EventosPage() {
                   <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-[#002b7f] mb-4">
                     <span className="flex items-center gap-1.5 bg-blue-50 px-3 py-1 rounded-full text-[#002b7f] border border-blue-100">
                       <ClockIcon className="w-4 h-4" />
-                      {new Date(evento.fecha).toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                      {new Date(evento.fecha).toLocaleDateString('es-VE', { timeZone: 'UTC', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                       {evento.fecha_fin && (
                         <>
                           <span className="text-slate-400 mx-1">al</span>
-                          {new Date(evento.fecha_fin).toLocaleDateString('es-VE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                          {new Date(evento.fecha_fin).toLocaleDateString('es-VE', { timeZone: 'UTC', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </>
                       )}
                     </span>
