@@ -1,12 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { createClient } from "@/utils/supabase/client"
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/logo.png")
   const pathname = usePathname()
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.from('configuracion_home').select('logo_url').eq('id', 1).single()
+      if (data && data.logo_url) {
+        setLogoUrl(data.logo_url)
+      }
+    }
+    fetchLogo()
+  }, [])
 
   // Evitar mostrar el navbar en las rutas de admin para que no estorbe el dashboard
   if (pathname?.startsWith('/admin')) {
@@ -21,9 +34,9 @@ export default function Navbar() {
           {/* Logo Oficial Extra Grande */}
           <Link href="/" className="flex items-center group relative" onClick={() => setIsMobileMenuOpen(false)}>
             <img 
-              src="/logo.png" 
+              src={logoUrl} 
               alt="Fedeindustria Aragua" 
-              className="w-40 md:w-64 h-auto object-contain mix-blend-multiply transition-transform duration-500" 
+              className="w-40 md:w-64 h-auto object-contain mix-blend-multiply transition-transform duration-500 max-h-24" 
             />
             {/* Fallback Textual por si falla la imagen */}
             <div className="hidden flex-col justify-center">

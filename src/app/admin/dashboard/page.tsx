@@ -73,6 +73,10 @@ export default function Dashboard() {
   const [homeVideoUrl, setHomeVideoUrl] = useState('/video-industrial.mp4')
   const [fileHomeVideo, setFileHomeVideo] = useState<File | null>(null)
   const fileHomeVideoRef = useRef<HTMLInputElement>(null)
+  
+  const [homeLogoUrl, setHomeLogoUrl] = useState('/logo.png')
+  const [fileHomeLogo, setFileHomeLogo] = useState<File | null>(null)
+  const fileHomeLogoRef = useRef<HTMLInputElement>(null)
 
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
@@ -116,6 +120,7 @@ export default function Dashboard() {
       setHomeTitulo(configHomeData.titulo)
       setHomeSubtitulo(configHomeData.subtitulo)
       setHomeVideoUrl(configHomeData.video_url)
+      if (configHomeData.logo_url) setHomeLogoUrl(configHomeData.logo_url)
     }
 
     setLoadingListas(false)
@@ -476,6 +481,7 @@ export default function Dashboard() {
     setLoading(true); setUploadStatus('Guardando configuración...')
     const supabase = createClient()
     let finalVideoUrl = homeVideoUrl
+    let finalLogoUrl = homeLogoUrl
 
     if (fileHomeVideo) {
       setUploadStatus('Subiendo video (esto puede tardar)...')
@@ -487,9 +493,25 @@ export default function Dashboard() {
       setHomeVideoUrl(finalVideoUrl)
     }
 
-    const { error } = await supabase.from('configuracion_home').upsert({ id: 1, titulo: homeTitulo, subtitulo: homeSubtitulo, video_url: finalVideoUrl })
+    if (fileHomeLogo) {
+      setUploadStatus('Subiendo logo...')
+      const fileExt = fileHomeLogo.name.split('.').pop()
+      const fileName = `home-logo-${Date.now()}.${fileExt}`
+      const { error: uploadError } = await supabase.storage.from('media_institucional').upload(`imagenes/${fileName}`, fileHomeLogo)
+      if (uploadError) { setMsg('❌ Error subiendo logo.'); setLoading(false); return }
+      finalLogoUrl = supabase.storage.from('media_institucional').getPublicUrl(`imagenes/${fileName}`).data.publicUrl
+      setHomeLogoUrl(finalLogoUrl)
+    }
+
+    const { error } = await supabase.from('configuracion_home').upsert({ id: 1, titulo: homeTitulo, subtitulo: homeSubtitulo, video_url: finalVideoUrl, logo_url: finalLogoUrl })
     if (error) setMsg(`❌ Error: ${error.message}`)
-    else { setMsg('✅ Configuración de la Portada actualizada exitosamente.'); if (fileHomeVideoRef.current) fileHomeVideoRef.current.value = ''; setFileHomeVideo(null) }
+    else { 
+      setMsg('✅ Configuración de la Portada actualizada exitosamente.'); 
+      if (fileHomeVideoRef.current) fileHomeVideoRef.current.value = ''; 
+      setFileHomeVideo(null);
+      if (fileHomeLogoRef.current) fileHomeLogoRef.current.value = ''; 
+      setFileHomeLogo(null);
+    }
     setLoading(false); setUploadStatus('')
   }
 
@@ -625,6 +647,26 @@ export default function Dashboard() {
 
                     <div className="space-y-6">
                       <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Logo de la Página Web (Opcional: Subir nuevo)</Label>
+                        <div className="p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center relative cursor-pointer">
+                          <input type="file" accept="image/*" onChange={e => setFileHomeLogo(e.target.files?.[0] || null)} ref={fileHomeLogoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                          <div className="flex flex-col items-center justify-center pointer-events-none">
+                            <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
+                            <p className="text-sm font-bold text-slate-700">{fileHomeLogo ? fileHomeLogo.name : 'Haz clic para buscar un logo (.png, .jpg)'}</p>
+                            <p className="text-xs text-slate-400 mt-1">Se recomienda PNG con fondo transparente.</p>
+                          </div>
+                        </div>
+                      </div>
+                      {homeLogoUrl && (
+                        <div className="space-y-2">
+                          <Label className="text-slate-700 font-bold">Vista Previa del Logo Actual</Label>
+                          <div className="p-4 bg-slate-100 rounded-xl border border-slate-200 flex justify-center items-center h-24">
+                            <img src={homeLogoUrl} className="max-h-full object-contain mix-blend-multiply" alt="Logo actual" />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-3 mt-6">
                         <Label className="text-slate-700 font-bold">Video de Fondo (Opcional: Subir nuevo)</Label>
                         <div className="p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center relative cursor-pointer">
                           <input type="file" accept="video/mp4,video/webm" onChange={e => setFileHomeVideo(e.target.files?.[0] || null)} ref={fileHomeVideoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
