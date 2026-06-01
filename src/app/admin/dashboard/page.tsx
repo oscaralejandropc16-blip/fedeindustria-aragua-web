@@ -504,8 +504,13 @@ export default function Dashboard() {
     }
 
     const { error } = await supabase.from('configuracion_home').upsert({ id: 1, titulo: homeTitulo, subtitulo: homeSubtitulo, video_url: finalVideoUrl, logo_url: finalLogoUrl })
-    if (error) setMsg(`❌ Error: ${error.message}`)
-    else { 
+    if (error) {
+      if (error.message.includes('logo_url')) {
+        setMsg(`❌ Error: Falta la columna 'logo_url' (tipo text) en la tabla 'configuracion_home' en Supabase. Añádela desde el panel SQL para guardar el logo.`);
+      } else {
+        setMsg(`❌ Error: ${error.message}`);
+      }
+    } else { 
       setMsg('✅ Configuración de la Portada actualizada exitosamente.'); 
       if (fileHomeVideoRef.current) fileHomeVideoRef.current.value = ''; 
       setFileHomeVideo(null);
@@ -631,6 +636,12 @@ export default function Dashboard() {
                   </div>
                   Configuración de la Portada Principal
                 </h3>
+
+                {msg && (
+                  <div className={`p-4 mb-6 rounded-xl font-bold relative z-10 ${msg.includes('✅') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                    {msg}
+                  </div>
+                )}
 
                 <form onSubmit={handleSaveHomeConfig} className="space-y-8 relative z-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
