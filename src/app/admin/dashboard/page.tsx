@@ -717,206 +717,232 @@ export default function Dashboard() {
                       )}
                     </div>
                 <form onSubmit={handleAddEmpresa} className="space-y-8">
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">Razón Social o Nombre Comercial</Label>
-                        <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                  {/* Grid principal estilo Bento */}
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    
+                    {/* Columna Izquierda: Información Principal y Contacto */}
+                    <div className="xl:col-span-2 space-y-6">
+                      
+                      {/* Bloque: Información Principal */}
+                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <BuildingIcon className="w-4 h-4" />
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Información Principal</h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Razón Social o Nombre Comercial</Label>
+                            <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f] text-base" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">RIF Empresarial</Label>
+                            <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rubro Sectorial</Label>
+                            <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Estatus de Membresía</Label>
+                            <select 
+                              value={estatus} 
+                              onChange={e => setEstatus(e.target.value)} 
+                              className="w-full h-12 rounded-xl border border-slate-200 bg-white shadow-sm px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#002b7f] text-slate-700"
+                              disabled={loading}
+                            >
+                              <option value="Activa">🟢 Membresía Activa</option>
+                              <option value="Pendiente">🟡 Trámite Pendiente</option>
+                              <option value="Inactiva">🔴 Membresía Inactiva</option>
+                              <option value="Desactivada">⛔ Desactivada (Falta de Pago)</option>
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Posición Visual</Label>
+                            <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">RIF Empresarial</Label>
-                        <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">Rubro Sectorial</Label>
-                        <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">Estatus de Membresía</Label>
-                        <select 
-                          value={estatus} 
-                          onChange={e => setEstatus(e.target.value)} 
-                          className="w-full h-12 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#002b7f] text-slate-700"
-                          disabled={loading}
-                        >
-                          <option value="Activa">🟢 Membresía Activa</option>
-                          <option value="Pendiente">🟡 Trámite Pendiente</option>
-                          <option value="Inactiva">🔴 Membresía Inactiva</option>
-                          <option value="Desactivada">⛔ Desactivada (Ej. Falta de Pago)</option>
-                        </select>
-                      </div>
-                      <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold flex items-center gap-2">
-                          Posición (Orden Visual)
-                        </Label>
-                        <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+
+                      {/* Bloque: Contacto y Ubicación */}
+                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                            <MapPinIcon className="w-4 h-4" />
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Contacto y Presencia Web</h4>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Dirección Física</Label>
+                            <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Teléfono Principal</Label>
+                            <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Teléfono 2 <span className="font-normal opacity-70">(Opcional)</span></Label>
+                            <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> Instagram <span className="font-normal opacity-70">(Opcional)</span></Label>
+                            <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg> TikTok <span className="font-normal opacity-70">(Opcional)</span></Label>
+                            <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Página Web <span className="font-normal opacity-70">(Opcional)</span></Label>
+                            <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                  {/* Tarjeta: Contacto e Identidad */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
+                    {/* Columna Derecha: Identidad Visual y Submit */}
+                    <div className="xl:col-span-1 space-y-6">
                       
-                      {/* Columna de Contacto */}
-                      <div className="space-y-8">
-                        <h3 className="font-bold text-slate-900 text-lg border-b border-slate-100 pb-2">Contacto y Ubicación</h3>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Principal</Label>
-                          <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      {/* Bloque: Identidad Visual */}
+                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 h-full flex flex-col">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                            <ImageIcon className="w-4 h-4" />
+                          </div>
+                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Identidad Visual</h4>
                         </div>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Secundario <span className="text-xs text-slate-400 font-normal">(Opcional)</span></Label>
-                          <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                        </div>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-slate-400" /> Dirección Física</Label>
-                          <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                        </div>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2">
-                            <svg className="w-4 h-4 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                            Instagram <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
-                          </Label>
-                          <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                        </div>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2">
-                            <svg className="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-                            TikTok <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
-                          </Label>
-                          <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                        </div>
-                        <div className="space-y-3">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2">
-                            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                            Página Web <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
-                          </Label>
-                          <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                        </div>
-                      </div>
 
-                      {/* Columna de Imagen */}
-                      <div className="space-y-8 md:border-l md:border-slate-100 md:pl-8">
-                        <h3 className="font-bold text-slate-900 text-lg border-b border-slate-100 pb-2">Identidad Visual</h3>
-                        <div className="space-y-4">
-                          <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logotipo de la Empresa</Label>
-                          
+                        <div className="flex-1 flex flex-col gap-4">
                           {editingEmpresaId && currentImagenEmpresa && !file && (
-                            <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
-                              <div className="flex items-center gap-4">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={currentImagenEmpresa} alt="Actual" className="w-20 h-20 object-contain bg-white rounded-lg border border-blue-200 shadow-sm p-1" />
-                                <div className="text-sm">
-                                  <p className="font-bold text-blue-900">Logo actual guardado</p>
-                                  <p className="text-blue-700">Sube uno nuevo abajo si deseas cambiarlo.</p>
-                                </div>
-                              </div>
+                            <div className="p-4 border border-blue-100 bg-white rounded-xl shadow-sm text-center">
+                              <img src={currentImagenEmpresa} alt="Actual" className="w-24 h-24 object-contain mx-auto mb-3 bg-slate-50 rounded-lg p-2 border border-slate-100" />
+                              <p className="text-xs font-bold text-slate-700 mb-2">Logo Actual</p>
                               <button 
                                 type="button" 
                                 onClick={() => setCurrentImagenEmpresa(null)}
-                                className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
-                                title="Eliminar logo actual"
+                                className="text-xs bg-red-50 text-red-600 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-lg transition-all w-full font-medium"
                               >
-                                <XIcon className="w-5 h-5" />
+                                Eliminar Logo
                               </button>
                             </div>
                           )}
 
-                          <div className="flex items-center gap-3">
-                            <div className="border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 p-6 flex flex-col items-center justify-center text-center transition-colors hover:bg-slate-100 hover:border-[#002b7f]/50 group relative flex-1">
-                              <ImageIcon className="w-8 h-8 text-slate-300 mb-2 group-hover:text-[#002b7f] transition-colors" />
-                              <p className="text-sm font-bold text-slate-700">Haz clic para buscar archivo</p>
-                              <p className="text-xs text-slate-400 mt-1">PNG o JPG. Formato cuadrado recomendado.</p>
-                              <input 
-                                type="file" 
-                                accept="image/*" 
-                                onChange={e => {
-                                    const selected = e.target.files?.[0];
-                                    if (selected) {
-                                      if (selected.size > 2 * 1024 * 1024) {
-                                        alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
-                                        if (fileInputRef.current) fileInputRef.current.value = '';
-                                        return;
-                                      }
-                                      setFile(selected);
-                                    } else {
-                                      setFile(null);
+                          <div className={`border-2 border-dashed ${file ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 bg-white hover:border-[#002b7f]/40 hover:bg-slate-50'} rounded-xl p-6 flex-1 flex flex-col items-center justify-center text-center transition-all relative group min-h-[200px]`}>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={e => {
+                                  const selected = e.target.files?.[0];
+                                  if (selected) {
+                                    if (selected.size > 2 * 1024 * 1024) {
+                                      alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
+                                      if (fileInputRef.current) fileInputRef.current.value = '';
+                                      return;
                                     }
-                                  }}
-                                ref={fileInputRef}
-                                disabled={loading}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                              />
-                            </div>
-                            {file && (
-                              <button 
-                                type="button" 
-                                onClick={() => { setFile(null); if(fileInputRef.current) fileInputRef.current.value = '' }}
-                                className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-full p-4 flex flex-col items-center justify-center transition-all shadow-sm"
-                                title="Descartar archivo"
-                              >
-                                <XIcon className="w-6 h-6 mb-2" />
-                                <span className="text-xs font-bold text-center break-all max-w-[80px] line-clamp-2">{file.name}</span>
-                              </button>
+                                    setFile(selected);
+                                  } else {
+                                    setFile(null);
+                                  }
+                                }}
+                              ref={fileInputRef}
+                              disabled={loading}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            />
+                            {file ? (
+                              <div className="flex flex-col items-center z-20 pointer-events-none">
+                                <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
+                                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <p className="text-sm font-bold text-emerald-800 break-all px-2">{file.name}</p>
+                                <p className="text-xs text-emerald-600 mt-1">Listo para subir</p>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col items-center pointer-events-none">
+                                <div className="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                </div>
+                                <p className="text-sm font-bold text-slate-700">Subir nuevo logo</p>
+                                <p className="text-xs text-slate-400 mt-1">PNG o JPG (Máx. 2MB)</p>
+                              </div>
                             )}
                           </div>
                         </div>
                       </div>
 
                     </div>
-                    
-                    {/* Botonera de Acción */}
-                    <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
-                      <div className="w-full">
-                        {msg && <div className={`p-4 rounded-xl font-bold text-sm ${msg.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msg}</div>}
-                        {loading && uploadStatus && <div className="text-sm font-bold text-[#002b7f] mt-2 flex items-center gap-2"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
-                      </div>
-                      <Button type="submit" disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                        {loading ? 'Procesando...' : (editingEmpresaId ? 'Guardar Cambios' : 'Guardar Empresa')}
-                      </Button>
+                  </div>
+                  
+                  {/* Botonera de Acción */}
+                  <div className="pt-6 mt-4 border-t border-slate-100 flex flex-col items-center md:flex-row md:justify-between gap-4">
+                    <div className="w-full md:w-auto flex-1">
+                      {msg && <div className={`p-4 rounded-xl font-bold text-sm flex items-center gap-2 ${msg.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msg}</div>}
+                      {loading && uploadStatus && <div className="text-sm font-bold text-[#002b7f] p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-3"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
                     </div>
+                    <Button type="submit" disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-14 px-12 rounded-xl font-bold shadow-xl shadow-blue-900/20 transition-all text-base flex-shrink-0">
+                      {loading ? 'Procesando...' : (editingEmpresaId ? 'Guardar Cambios' : 'Registrar Empresa')}
+                    </Button>
+                  </div>
 
                 </form>
                   </motion.div>
 
                   {/* LISTA DE EMPRESAS */}
                   <div className="mt-12">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Directorio de Empresas</h3>
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
-                    {loadingListas ? (
-                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
-                    ) : listaEmpresas.length === 0 ? (
-                      <div className="p-8 text-center text-slate-500 font-medium">No hay empresas registradas.</div>
-                    ) : (
-                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'empresas')}>
-                        <SortableContext items={listaEmpresas.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
-                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
-                            {listaEmpresas.map(emp => (
-                              <SortableItem key={emp.id} id={emp.id.toString()}>
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200">
-                                      {emp.logo_url ? <img src={emp.logo_url} className="w-full h-full object-cover" alt="Logo" /> : <BuildingIcon className="w-5 h-5 text-slate-300" />}
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-black text-slate-900 tracking-tight">Empresas Registradas</h3>
+                      <div className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full">{listaEmpresas.length} en total</div>
+                    </div>
+                    
+                    <div className="bg-slate-50/50 rounded-2xl border border-slate-200 p-2 md:p-4 shadow-inner min-h-[200px] max-h-[600px] overflow-y-auto custom-scrollbar">
+                      {loadingListas ? (
+                        <div className="p-12 text-center flex flex-col items-center justify-center">
+                           <div className="w-8 h-8 border-4 border-blue-200 border-t-[#002b7f] rounded-full animate-spin mb-4" />
+                           <p className="text-slate-500 font-medium">Cargando directorio...</p>
+                        </div>
+                      ) : listaEmpresas.length === 0 ? (
+                        <div className="p-16 text-center flex flex-col items-center justify-center bg-white rounded-xl border border-dashed border-slate-200">
+                          <BuildingIcon className="w-12 h-12 text-slate-300 mb-4" />
+                          <p className="text-slate-500 font-medium">No hay empresas registradas todavía.</p>
+                        </div>
+                      ) : (
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'empresas')}>
+                          <SortableContext items={listaEmpresas.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
+                            <ul className="space-y-3">
+                              {listaEmpresas.map(emp => (
+                                <SortableItem key={emp.id} id={emp.id.toString()}>
+                                  <div className="flex flex-col md:flex-row md:items-center justify-between w-full bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group">
+                                    <div className="flex items-center gap-4 mb-4 md:mb-0">
+                                      <div className="w-14 h-14 bg-slate-50 rounded-xl overflow-hidden flex items-center justify-center border border-slate-100 shadow-inner flex-shrink-0 group-hover:scale-105 transition-transform">
+                                        {emp.logo_url ? <img src={emp.logo_url} className="w-full h-full object-contain p-1" alt="Logo" /> : <BuildingIcon className="w-6 h-6 text-slate-300" />}
+                                      </div>
+                                      <div>
+                                        <h4 className="font-bold text-slate-900 text-[15px] leading-tight group-hover:text-[#002b7f] transition-colors">{emp.nombre}</h4>
+                                        <div className="flex items-center gap-2 mt-1">
+                                          <span className="text-xs text-slate-500 font-medium bg-slate-100 px-2 py-0.5 rounded-md">{emp.rubro}</span>
+                                          <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md ${emp.estatus_membresia === 'Activa' ? 'bg-emerald-50 text-emerald-600' : emp.estatus_membresia === 'Pendiente' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'}`}>{emp.estatus_membresia}</span>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{emp.nombre}</h4>
-                                      <p className="text-sm text-slate-500 font-medium">{emp.rubro} • <span className={emp.estatus_membresia === 'Activa' ? 'text-emerald-600' : 'text-slate-500'}>{emp.estatus_membresia}</span></p>
+                                    <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 md:pt-0 md:border-0 md:pl-4">
+                                      <Button variant="ghost" onClick={() => handleEditEmpresa(emp)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg h-9 px-3 flex items-center gap-2 font-medium text-xs">
+                                        <PencilIcon className="w-4 h-4" /> <span className="md:hidden lg:inline">Editar</span>
+                                      </Button>
+                                      <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg h-9 px-3 flex items-center gap-2 font-medium text-xs">
+                                        <TrashIcon className="w-4 h-4" /> <span className="md:hidden lg:inline">Borrar</span>
+                                      </Button>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-2">
-                                    <Button variant="ghost" onClick={() => handleEditEmpresa(emp)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
-                                      <PencilIcon className="w-5 h-5" />
-                                    </Button>
-                                    <Button variant="ghost" onClick={() => handleDelete(emp.id, 'empresas_afiliadas')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
-                                      <TrashIcon className="w-5 h-5" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              </SortableItem>
-                            ))}
-                          </ul>
-                        </SortableContext>
-                      </DndContext>
-                    )}
+                                </SortableItem>
+                              ))}
+                            </ul>
+                          </SortableContext>
+                        </DndContext>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
