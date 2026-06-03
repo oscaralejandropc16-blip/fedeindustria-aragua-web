@@ -660,42 +660,72 @@ export default function Dashboard() {
 
                     <div className="space-y-6">
                       <div className="space-y-3">
-                        <Label className="text-slate-700 font-bold">Logo de la Página Web (Opcional: Subir nuevo)</Label>
-                        <div className="p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center relative cursor-pointer">
-                          <input type="file" accept="image/*" onChange={e => setFileHomeLogo(e.target.files?.[0] || null)} ref={fileHomeLogoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                          <div className="flex flex-col items-center justify-center pointer-events-none">
-                            <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
-                            <p className="text-sm font-bold text-slate-700">{fileHomeLogo ? fileHomeLogo.name : 'Haz clic para buscar un logo (.png, .jpg)'}</p>
-                            <p className="text-xs text-slate-400 mt-1">Se recomienda PNG con fondo transparente.</p>
+                        <Label className="text-slate-700 font-bold">Logo de la Página Web</Label>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          {homeLogoUrl && !fileHomeLogo && (
+                            <div className="w-full sm:w-40 p-4 border border-slate-200 bg-slate-50 rounded-2xl text-center shrink-0 flex flex-col justify-center items-center relative group overflow-hidden">
+                              <img src={homeLogoUrl} className="max-h-16 w-auto object-contain mix-blend-multiply" alt="Logo actual" />
+                              <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span className="text-white text-xs font-bold text-center">Logo<br/>Actual</span>
+                              </div>
+                            </div>
+                          )}
+                          <div className={`w-full border-2 border-dashed ${fileHomeLogo ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-300'} rounded-2xl p-6 transition-all text-center relative cursor-pointer flex-1 flex flex-col items-center justify-center min-h-[120px]`}>
+                            <input type="file" accept="image/*" onChange={e => setFileHomeLogo(e.target.files?.[0] || null)} ref={fileHomeLogoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                            <div className="pointer-events-none flex flex-col items-center">
+                              {fileHomeLogo ? (
+                                <>
+                                  <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                  </div>
+                                  <p className="text-sm font-bold text-emerald-800 break-all">{fileHomeLogo.name}</p>
+                                  <p className="text-xs text-emerald-600 mt-1 font-medium">Listo para subir</p>
+                                </>
+                              ) : (
+                                <>
+                                  <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
+                                  <p className="text-sm font-bold text-slate-700">Subir nuevo logo</p>
+                                  <p className="text-xs text-slate-400 mt-1">PNG o JPG (Fondo transparente)</p>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                      {homeLogoUrl && (
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 font-bold">Vista Previa del Logo Actual</Label>
-                          <div className="p-4 bg-slate-100 rounded-xl border border-slate-200 flex justify-center items-center h-24">
-                            <img src={homeLogoUrl} className="max-h-full object-contain mix-blend-multiply" alt="Logo actual" />
-                          </div>
-                        </div>
-                      )}
 
-                      <div className="space-y-3 mt-6">
-                        <Label className="text-slate-700 font-bold">Video de Fondo (Opcional: Subir nuevo)</Label>
-                        <div className="p-6 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition-colors text-center relative cursor-pointer">
-                          <input type="file" accept="video/mp4,video/webm" onChange={e => setFileHomeVideo(e.target.files?.[0] || null)} ref={fileHomeVideoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                          <div className="flex flex-col items-center justify-center pointer-events-none">
-                            <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
-                            <p className="text-sm font-bold text-slate-700">{fileHomeVideo ? fileHomeVideo.name : 'Haz clic para buscar un video (.mp4)'}</p>
-                            <p className="text-xs text-slate-400 mt-1">Si no subes uno nuevo, se mantendrá el actual.</p>
+                      <div className="space-y-3 mt-8">
+                        <Label className="text-slate-700 font-bold">Video de Fondo Principal</Label>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          {homeVideoUrl && !fileHomeVideo && (
+                            <div className="w-full sm:w-40 p-2 border border-slate-200 bg-slate-50 rounded-2xl text-center shrink-0 flex flex-col justify-center items-center relative group overflow-hidden">
+                              <video src={homeVideoUrl} className="w-full h-20 object-cover rounded-xl shadow-sm" muted loop autoPlay playsInline />
+                              <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                                <span className="text-white text-xs font-bold px-2 text-center">Video Actual</span>
+                              </div>
+                            </div>
+                          )}
+                          <div className={`w-full border-2 border-dashed ${fileHomeVideo ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 bg-slate-50 hover:bg-blue-50/50 hover:border-blue-300'} rounded-2xl p-6 transition-all text-center relative cursor-pointer flex-1 flex flex-col items-center justify-center min-h-[120px]`}>
+                            <input type="file" accept="video/mp4,video/webm" onChange={e => setFileHomeVideo(e.target.files?.[0] || null)} ref={fileHomeVideoRef} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                            <div className="pointer-events-none flex flex-col items-center">
+                              {fileHomeVideo ? (
+                                <>
+                                  <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                                  </div>
+                                  <p className="text-sm font-bold text-emerald-800 break-all">{fileHomeVideo.name}</p>
+                                  <p className="text-xs text-emerald-600 mt-1 font-medium">Listo para subir</p>
+                                </>
+                              ) : (
+                                <>
+                                  <ImageIcon className="w-8 h-8 text-blue-400 mb-2" />
+                                  <p className="text-sm font-bold text-slate-700">Subir nuevo video</p>
+                                  <p className="text-xs text-slate-400 mt-1">Formato MP4</p>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                      {homeVideoUrl && (
-                        <div className="space-y-2">
-                          <Label className="text-slate-700 font-bold">Vista Previa del Video Actual</Label>
-                          <video src={homeVideoUrl} className="w-full h-40 object-cover rounded-xl shadow-md border border-slate-200" muted loop autoPlay playsInline />
-                        </div>
-                      )}
                     </div>
                   </div>
 
