@@ -36,6 +36,7 @@ export default function Dashboard() {
   const [editingEmpresaId, setEditingEmpresaId] = useState<number | null>(null)
   
   // Estados para Eventos
+  const [showFormEvento, setShowFormEvento] = useState(false)
   const [tituloEvento, setTituloEvento] = useState('')
   const [descripcionEvento, setDescripcionEvento] = useState('')
   const [fechaEvento, setFechaEvento] = useState('')
@@ -50,6 +51,7 @@ export default function Dashboard() {
   const fileEventoRef = useRef<HTMLInputElement>(null)
   
   // Estados para Noticias
+  const [showFormNoticia, setShowFormNoticia] = useState(false)
   const [tituloNoticia, setTituloNoticia] = useState('')
   const [resumenNoticia, setResumenNoticia] = useState('')
   const [contenidoCompletoNoticia, setContenidoCompletoNoticia] = useState('')
@@ -62,6 +64,7 @@ export default function Dashboard() {
   const [editingNoticiaId, setEditingNoticiaId] = useState<number | null>(null)
 
   // Estados para Aliados
+  const [showFormAliado, setShowFormAliado] = useState(false)
   const [nombreAliado, setNombreAliado] = useState('')
   const [fileAliado, setFileAliado] = useState<File | null>(null)
   const [currentImagenAliado, setCurrentImagenAliado] = useState<string | null>(null)
@@ -197,7 +200,7 @@ export default function Dashboard() {
     setOrdenEvento(evento.orden || 0)
     setCurrentImagenEvento(evento.imagen_url || null)
     setFileEvento(null)
-    scrollToForm('form-evento-header')
+    setShowFormEvento(true)
   }
 
   const handleEditNoticia = (noticia: any) => {
@@ -211,7 +214,7 @@ export default function Dashboard() {
     setCurrentImagenNoticia(noticia.imagen_url)
     setGaleriaNoticia([])
     setCurrentGaleriaNoticia(noticia.galeria_urls || [])
-    scrollToForm('form-noticia-header')
+    setShowFormNoticia(true)
   }
 
   const handleEditAliado = (aliado: any) => {
@@ -220,7 +223,7 @@ export default function Dashboard() {
     setOrdenAliado(aliado.orden || 0)
     setFileAliado(null)
     setCurrentImagenAliado(aliado.logo_url)
-    scrollToForm('form-aliado-header')
+    setShowFormAliado(true)
   }
 
   // --- Handlers de Inserción/Actualización ---
@@ -343,6 +346,7 @@ export default function Dashboard() {
       setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setOrdenEvento(0); setCurrentImagenEvento(null); setFileEvento(null);
       if (fileEventoRef.current) fileEventoRef.current.value = ''
       setEditingEventoId(null)
+      setShowFormEvento(false)
       fetchData()
     }
     setLoading(false)
@@ -425,6 +429,7 @@ export default function Dashboard() {
       setMsgNoticia(editingNoticiaId ? '✅ Noticia actualizada exitosamente.' : '✅ Noticia publicada exitosamente.')
       setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setGaleriaNoticia([]); setCurrentGaleriaNoticia([]); setOrdenNoticia(0); setFechaPublicacionNoticia('')
       setEditingNoticiaId(null)
+      setShowFormNoticia(false)
       if (fileNoticiaRef.current) fileNoticiaRef.current.value = ''
       if (galeriaNoticiaRef.current) galeriaNoticiaRef.current.value = ''
       fetchData()
@@ -474,6 +479,7 @@ export default function Dashboard() {
       setMsgAliado(editingAliadoId ? '✅ Aliado actualizado exitosamente.' : '✅ Aliado agregado exitosamente.')
       setNombreAliado(''); setFileAliado(null); setOrdenAliado(0)
       setEditingAliadoId(null)
+      setShowFormAliado(false)
       if (fileAliadoRef.current) fileAliadoRef.current.value = ''
       fetchData()
     }
@@ -945,22 +951,20 @@ export default function Dashboard() {
             {/* CONTENIDO EVENTOS */}
             <TabsContent value="eventos" className="mt-0 outline-none">
                 <div className="space-y-10">
-                  {/* Formulario Eventos */}
+                  {showFormEvento ? (
                   <motion.div 
-                    layout
-                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEventoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
                   >
-                    {editingEventoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-emerald-400" />}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-emerald-400" />
                     <div id="form-evento-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <CalendarIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingEventoId ? <span>Edición: <span className="font-medium text-slate-500">{tituloEvento}</span></span> : 'Programar Nuevo Evento'}
                       </h3>
-                      {editingEventoId && (
-                        <Button variant="ghost" onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setFileEvento(null); setCurrentImagenEvento(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
-                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
-                        </Button>
-                      )}
+                      <Button variant="ghost" onClick={() => { setShowFormEvento(false); setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setFileEvento(null); setCurrentImagenEvento(null); setMsgEvento(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver a Agenda
+                      </Button>
                     </div>
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
@@ -1073,11 +1077,19 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </motion.div>
-
-                {/* LISTA DE EVENTOS */}
-                <div className="mt-12">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Eventos Programados</h3>
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Agenda de Eventos <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaEventos.length} en total</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Administra los próximos eventos y actividades.</p>
+                      </div>
+                      <Button onClick={() => { setEditingEventoId(null); setTituloEvento(''); setDescripcionEvento(''); setFechaEvento(''); setFechaEventoFin(''); setUbicacionEvento(''); setLinkDetallesEvento(''); setLinkMapaEvento(''); setFileEvento(null); setCurrentImagenEvento(null); setMsgEvento(''); setShowFormEvento(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                        <PlusIcon className="w-5 h-5" /> Programar Evento
+                      </Button>
+                    </div>
+                    
+                    <div className="p-4 bg-slate-50/50 min-h-[400px]">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaEventos.length === 0 ? (
@@ -1114,30 +1126,29 @@ export default function Dashboard() {
                         </SortableContext>
                       </DndContext>
                     )}
-                  </div>
+                    </div>
+                  </motion.div>
+                  )}
                 </div>
-              </div>
             </TabsContent>
 
             {/* CONTENIDO NOTICIAS */}
             <TabsContent value="noticias" className="mt-0 outline-none">
                 <div className="space-y-10">
-                  {/* Formulario Noticias */}
+                  {showFormNoticia ? (
                   <motion.div 
-                    layout
-                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingNoticiaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
                   >
-                    {editingNoticiaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-amber-400" />}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-amber-400" />
                     <div id="form-noticia-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <NewspaperIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
                       </h3>
-                      {editingNoticiaId && (
-                        <Button variant="ghost" onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); setFechaPublicacionNoticia(''); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
-                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
-                        </Button>
-                      )}
+                      <Button variant="ghost" onClick={() => { setShowFormNoticia(false); setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); setFechaPublicacionNoticia(''); setMsgNoticia(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver a Noticias
+                      </Button>
                     </div>
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1315,11 +1326,19 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </motion.div>
-
-                {/* LISTA DE NOTICIAS */}
-                <div className="mt-12">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Noticias Publicadas</h3>
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Sala de Prensa <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaNoticias.length} en total</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Administra las noticias y notas de prensa publicadas.</p>
+                      </div>
+                      <Button onClick={() => { setEditingNoticiaId(null); setTituloNoticia(''); setResumenNoticia(''); setContenidoCompletoNoticia(''); setFileNoticia(null); setCurrentGaleriaNoticia([]); setGaleriaNoticia([]); setFechaPublicacionNoticia(''); setMsgNoticia(''); setShowFormNoticia(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                        <PlusIcon className="w-5 h-5" /> Redactar Noticia
+                      </Button>
+                    </div>
+                    
+                    <div className="p-4 bg-slate-50/50 min-h-[400px]">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaNoticias.length === 0 ? (
@@ -1355,30 +1374,29 @@ export default function Dashboard() {
                         </SortableContext>
                       </DndContext>
                     )}
-                  </div>
-                </div>
+                    </div>
+                  </motion.div>
+                  )}
                 </div>
             </TabsContent>
 
             {/* CONTENIDO ALIADOS */}
             <TabsContent value="aliados" className="mt-0 outline-none">
                 <div className="space-y-10">
-                  {/* Formulario Aliados */}
+                  {showFormAliado ? (
                   <motion.div 
-                    layout
-                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingAliadoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
                   >
-                    {editingAliadoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-purple-400" />}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-purple-400" />
                     <div id="form-aliado-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <ImageIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingAliadoId ? <span>Edición: <span className="font-medium text-slate-500">{nombreAliado}</span></span> : 'Registrar Nuevo Aliado'}
                       </h3>
-                      {editingAliadoId && (
-                        <Button variant="ghost" onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
-                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
-                        </Button>
-                      )}
+                      <Button variant="ghost" onClick={() => { setShowFormAliado(false); setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); setCurrentImagenAliado(null); setMsgAliado(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver a Aliados
+                      </Button>
                     </div>
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
@@ -1449,11 +1467,19 @@ export default function Dashboard() {
                     </Button>
                   </div>
                 </motion.div>
-
-                {/* LISTA DE ALIADOS */}
-                <div className="mt-12">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Aliados Estratégicos</h3>
-                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Aliados Estratégicos <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaAliados.length} en total</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Gestiona los aliados y partners institucionales.</p>
+                      </div>
+                      <Button onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); setCurrentImagenAliado(null); setMsgAliado(''); setShowFormAliado(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                        <PlusIcon className="w-5 h-5" /> Agregar Aliado
+                      </Button>
+                    </div>
+                    
+                    <div className="p-4 bg-slate-50/50 min-h-[400px]">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaAliados.length === 0 ? (
@@ -1486,8 +1512,9 @@ export default function Dashboard() {
                         </SortableContext>
                       </DndContext>
                     )}
-                  </div>
-                </div>
+                    </div>
+                  </motion.div>
+                  )}
                 </div>
             </TabsContent>
 
