@@ -750,6 +750,7 @@ export default function Dashboard() {
                           <option value="Activa">🟢 Membresía Activa</option>
                           <option value="Pendiente">🟡 Trámite Pendiente</option>
                           <option value="Inactiva">🔴 Membresía Inactiva</option>
+                          <option value="Desactivada">⛔ Desactivada (Ej. Falta de Pago)</option>
                         </select>
                       </div>
                       <div className="space-y-3">
