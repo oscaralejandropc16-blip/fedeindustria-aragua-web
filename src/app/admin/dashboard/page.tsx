@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   // Estados para Empresas
+  const [showFormEmpresa, setShowFormEmpresa] = useState(false)
   const [nombre, setNombre] = useState('')
   const [rif, setRif] = useState('')
   const [rubro, setRubro] = useState('')
@@ -181,7 +182,7 @@ export default function Dashboard() {
     setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
     setCurrentImagenEmpresa(empresa.logo_url || null)
-    scrollToForm('form-empresa-header')
+    setShowFormEmpresa(true)
   }
 
   const handleEditEvento = (evento: any) => {
@@ -278,6 +279,7 @@ export default function Dashboard() {
       setMsg(editingEmpresaId ? '✅ Empresa actualizada exitosamente.' : '✅ Empresa registrada exitosamente.')
       setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setOrdenEmpresa(0)
       setEditingEmpresaId(null)
+      setShowFormEmpresa(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
       fetchData()
     }
@@ -698,25 +700,23 @@ export default function Dashboard() {
               </div>
             </TabsContent>
 
-            {/* CONTENIDO EMPRESAS */}
             <TabsContent value="empresas" className="mt-0 outline-none">
                 <div className="space-y-10">
+                  {showFormEmpresa ? (
                   {/* Formulario Empresas */}
                   <motion.div 
-                    layout
-                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEmpresaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
                   >
-                    {editingEmpresaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-blue-400" />}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-blue-400" />
                     <div id="form-empresa-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <BuildingIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingEmpresaId ? <span>Edición: <span className="font-medium text-slate-500">{nombre}</span></span> : 'Registrar Nueva Empresa'}
                       </h3>
-                      {editingEmpresaId && (
-                        <Button variant="ghost" onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); }} className="text-slate-500 hover:text-red-600 hover:bg-red-50 transition-colors">
-                          <XIcon className="w-4 h-4 mr-2" /> Cancelar Edición
-                        </Button>
-                      )}
+                      <Button variant="ghost" onClick={() => { setShowFormEmpresa(false); setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setMsg(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver al Directorio
+                      </Button>
                     </div>
                 <form onSubmit={handleAddEmpresa} className="space-y-10">
                   
@@ -880,15 +880,20 @@ export default function Dashboard() {
                   </div>
                 </form>
                   </motion.div>
-
+                  ) : (
                   {/* LISTA DE EMPRESAS */}
-                  <div className="mt-12">
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-xl font-black text-slate-900 tracking-tight">Empresas Registradas</h3>
-                      <div className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1.5 rounded-full">{listaEmpresas.length} en total</div>
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Directorio de Empresas <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaEmpresas.length} en total</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Gestiona las empresas afiliadas a Fedeindustria Aragua.</p>
+                      </div>
+                      <Button onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setMsg(''); setShowFormEmpresa(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                        <PlusIcon className="w-5 h-5" /> Registrar Empresa
+                      </Button>
                     </div>
                     
-                    <div className="bg-slate-50/50 rounded-2xl border border-slate-200 p-2 md:p-4 shadow-inner min-h-[200px] max-h-[600px] overflow-y-auto custom-scrollbar">
+                    <div className="p-4 bg-slate-50/50 min-h-[400px]">
                       {loadingListas ? (
                         <div className="p-12 text-center flex flex-col items-center justify-center">
                            <div className="w-8 h-8 border-4 border-blue-200 border-t-[#002b7f] rounded-full animate-spin mb-4" />
@@ -934,7 +939,8 @@ export default function Dashboard() {
                         </DndContext>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
+                  )}
                 </div>
             </TabsContent>
 
