@@ -945,7 +945,6 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-              </div>
             </TabsContent>
 
             {/* CONTENIDO EVENTOS */}
