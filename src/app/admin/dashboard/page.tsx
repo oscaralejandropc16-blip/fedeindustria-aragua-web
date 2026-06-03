@@ -154,12 +154,14 @@ export default function Dashboard() {
     else fetchData() // refrescar listas
   }
 
-  const scrollToTop = () => {
-    const mainEl = document.getElementById('dashboard-main');
-    if (mainEl) {
-      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToForm = (formId: string) => {
+    const formEl = document.getElementById(formId);
+    if (formEl) {
+      formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const mainEl = document.getElementById('dashboard-main');
+      if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
@@ -179,7 +181,7 @@ export default function Dashboard() {
     setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
     setCurrentImagenEmpresa(empresa.logo_url || null)
-    scrollToTop()
+    scrollToForm('form-empresa-header')
   }
 
   const handleEditEvento = (evento: any) => {
@@ -194,7 +196,7 @@ export default function Dashboard() {
     setOrdenEvento(evento.orden || 0)
     setCurrentImagenEvento(evento.imagen_url || null)
     setFileEvento(null)
-    scrollToTop()
+    scrollToForm('form-evento-header')
   }
 
   const handleEditNoticia = (noticia: any) => {
@@ -208,7 +210,7 @@ export default function Dashboard() {
     setCurrentImagenNoticia(noticia.imagen_url)
     setGaleriaNoticia([])
     setCurrentGaleriaNoticia(noticia.galeria_urls || [])
-    scrollToTop()
+    scrollToForm('form-noticia-header')
   }
 
   const handleEditAliado = (aliado: any) => {
@@ -217,7 +219,7 @@ export default function Dashboard() {
     setOrdenAliado(aliado.orden || 0)
     setFileAliado(null)
     setCurrentImagenAliado(aliado.logo_url)
-    scrollToTop()
+    scrollToForm('form-aliado-header')
   }
 
   // --- Handlers de Inserción/Actualización ---
@@ -705,7 +707,7 @@ export default function Dashboard() {
                     className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEmpresaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingEmpresaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-blue-400" />}
-                    <div className="flex items-center justify-between mb-8">
+                    <div id="form-empresa-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <BuildingIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingEmpresaId ? <span>Edición: <span className="font-medium text-slate-500">{nombre}</span></span> : 'Registrar Nueva Empresa'}
@@ -945,7 +947,7 @@ export default function Dashboard() {
                     className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEventoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingEventoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-emerald-400" />}
-                    <div className="flex items-center justify-between mb-8">
+                    <div id="form-evento-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <CalendarIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingEventoId ? <span>Edición: <span className="font-medium text-slate-500">{tituloEvento}</span></span> : 'Programar Nuevo Evento'}
@@ -1122,7 +1124,7 @@ export default function Dashboard() {
                     className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingNoticiaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingNoticiaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-amber-400" />}
-                    <div className="flex items-center justify-between mb-8">
+                    <div id="form-noticia-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <NewspaperIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingNoticiaId ? <span>Edición: <span className="font-medium text-slate-500">{tituloNoticia}</span></span> : 'Redactar Nueva Noticia'}
@@ -1363,7 +1365,7 @@ export default function Dashboard() {
                     className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingAliadoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingAliadoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-purple-400" />}
-                    <div className="flex items-center justify-between mb-8">
+                    <div id="form-aliado-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <ImageIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingAliadoId ? <span>Edición: <span className="font-medium text-slate-500">{nombreAliado}</span></span> : 'Registrar Nuevo Aliado'}
