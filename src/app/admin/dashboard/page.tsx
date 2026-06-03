@@ -703,7 +703,6 @@ export default function Dashboard() {
             <TabsContent value="empresas" className="mt-0 outline-none">
                 <div className="space-y-10">
                   {showFormEmpresa ? (
-                  {/* Formulario Empresas */}
                   <motion.div 
                     initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
                     className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
@@ -881,7 +880,6 @@ export default function Dashboard() {
                 </form>
                   </motion.div>
                   ) : (
-                  {/* LISTA DE EMPRESAS */}
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                     <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div>
