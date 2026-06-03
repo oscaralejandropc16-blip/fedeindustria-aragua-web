@@ -559,7 +559,7 @@ export default function Dashboard() {
   )
 
   return (
-    <Tabs defaultValue="home" className="fixed inset-0 z-[100] bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans">
+    <Tabs defaultValue="home" orientation="vertical" className="fixed inset-0 z-[100] bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans">
       
       {/* SIDEBAR ADMINISTRATIVO */}
       <aside className="w-full md:w-72 md:h-screen bg-white border-r border-slate-200 flex flex-col flex-shrink-0 relative z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
