@@ -716,177 +716,166 @@ export default function Dashboard() {
                         </Button>
                       )}
                     </div>
-                <form onSubmit={handleAddEmpresa} className="space-y-8">
-                  {/* Grid principal estilo Bento */}
-                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    
-                    {/* Columna Izquierda: Información Principal y Contacto */}
-                    <div className="xl:col-span-2 space-y-6">
-                      
-                      {/* Bloque: Información Principal */}
-                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                            <BuildingIcon className="w-4 h-4" />
-                          </div>
-                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Información Principal</h4>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                          <div className="space-y-2 md:col-span-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Razón Social o Nombre Comercial</Label>
-                            <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f] text-base" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">RIF Empresarial</Label>
-                            <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rubro Sectorial</Label>
-                            <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Estatus de Membresía</Label>
-                            <select 
-                              value={estatus} 
-                              onChange={e => setEstatus(e.target.value)} 
-                              className="w-full h-12 rounded-xl border border-slate-200 bg-white shadow-sm px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#002b7f] text-slate-700"
-                              disabled={loading}
-                            >
-                              <option value="Activa">🟢 Membresía Activa</option>
-                              <option value="Pendiente">🟡 Trámite Pendiente</option>
-                              <option value="Inactiva">🔴 Membresía Inactiva</option>
-                              <option value="Desactivada">⛔ Desactivada (Falta de Pago)</option>
-                            </select>
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Posición Visual</Label>
-                            <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Bloque: Contacto y Ubicación */}
-                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                            <MapPinIcon className="w-4 h-4" />
-                          </div>
-                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Contacto y Presencia Web</h4>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                          <div className="space-y-2 md:col-span-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Dirección Física</Label>
-                            <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Teléfono Principal</Label>
-                            <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Teléfono 2 <span className="font-normal opacity-70">(Opcional)</span></Label>
-                            <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> Instagram <span className="font-normal opacity-70">(Opcional)</span></Label>
-                            <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg> TikTok <span className="font-normal opacity-70">(Opcional)</span></Label>
-                            <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                          <div className="space-y-2 md:col-span-2">
-                            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5"><svg className="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Página Web <span className="font-normal opacity-70">(Opcional)</span></Label>
-                            <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
-                          </div>
-                        </div>
-                      </div>
+                <form onSubmit={handleAddEmpresa} className="space-y-10">
+                  
+                  {/* SECCIÓN 1: INFORMACIÓN BÁSICA */}
+                  <div className="space-y-6">
+                    <div className="border-b border-slate-100 pb-3">
+                      <h4 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                        <BuildingIcon className="w-5 h-5 text-blue-600" /> Información Empresarial
+                      </h4>
+                      <p className="text-sm text-slate-500 mt-1">Datos fundamentales de la empresa y su clasificación.</p>
                     </div>
 
-                    {/* Columna Derecha: Identidad Visual y Submit */}
-                    <div className="xl:col-span-1 space-y-6">
-                      
-                      {/* Bloque: Identidad Visual */}
-                      <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 h-full flex flex-col">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
-                            <ImageIcon className="w-4 h-4" />
-                          </div>
-                          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Identidad Visual</h4>
-                        </div>
-
-                        <div className="flex-1 flex flex-col gap-4">
-                          {editingEmpresaId && currentImagenEmpresa && !file && (
-                            <div className="p-4 border border-blue-100 bg-white rounded-xl shadow-sm text-center">
-                              <img src={currentImagenEmpresa} alt="Actual" className="w-24 h-24 object-contain mx-auto mb-3 bg-slate-50 rounded-lg p-2 border border-slate-100" />
-                              <p className="text-xs font-bold text-slate-700 mb-2">Logo Actual</p>
-                              <button 
-                                type="button" 
-                                onClick={() => setCurrentImagenEmpresa(null)}
-                                className="text-xs bg-red-50 text-red-600 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-lg transition-all w-full font-medium"
-                              >
-                                Eliminar Logo
-                              </button>
-                            </div>
-                          )}
-
-                          <div className={`border-2 border-dashed ${file ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 bg-white hover:border-[#002b7f]/40 hover:bg-slate-50'} rounded-xl p-6 flex-1 flex flex-col items-center justify-center text-center transition-all relative group min-h-[200px]`}>
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={e => {
-                                  const selected = e.target.files?.[0];
-                                  if (selected) {
-                                    if (selected.size > 2 * 1024 * 1024) {
-                                      alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
-                                      if (fileInputRef.current) fileInputRef.current.value = '';
-                                      return;
-                                    }
-                                    setFile(selected);
-                                  } else {
-                                    setFile(null);
-                                  }
-                                }}
-                              ref={fileInputRef}
-                              disabled={loading}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                            />
-                            {file ? (
-                              <div className="flex flex-col items-center z-20 pointer-events-none">
-                                <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
-                                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-                                </div>
-                                <p className="text-sm font-bold text-emerald-800 break-all px-2">{file.name}</p>
-                                <p className="text-xs text-emerald-600 mt-1">Listo para subir</p>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center pointer-events-none">
-                                <div className="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                                </div>
-                                <p className="text-sm font-bold text-slate-700">Subir nuevo logo</p>
-                                <p className="text-xs text-slate-400 mt-1">PNG o JPG (Máx. 2MB)</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label className="text-sm font-bold text-slate-700">Razón Social o Nombre Comercial</Label>
+                        <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500 text-base" disabled={loading} />
                       </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700">RIF Empresarial</Label>
+                        <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700">Rubro Sectorial</Label>
+                        <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700">Estatus de Membresía</Label>
+                        <select 
+                          value={estatus} 
+                          onChange={e => setEstatus(e.target.value)} 
+                          className="w-full h-12 rounded-xl border border-slate-200 bg-white shadow-sm px-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700"
+                          disabled={loading}
+                        >
+                          <option value="Activa">🟢 Membresía Activa</option>
+                          <option value="Pendiente">🟡 Trámite Pendiente</option>
+                          <option value="Inactiva">🔴 Membresía Inactiva</option>
+                          <option value="Desactivada">⛔ Desactivada (Falta de Pago)</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700">Posición Visual</Label>
+                        <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                    </div>
+                  </div>
 
+                  {/* SECCIÓN 2: CONTACTO */}
+                  <div className="space-y-6">
+                    <div className="border-b border-slate-100 pb-3">
+                      <h4 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                        <MapPinIcon className="w-5 h-5 text-emerald-600" /> Contacto y Ubicación
+                      </h4>
+                      <p className="text-sm text-slate-500 mt-1">Información de contacto público y redes sociales.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label className="text-sm font-bold text-slate-700">Dirección Física</Label>
+                        <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700">Teléfono Principal</Label>
+                        <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700 flex items-center gap-1">Teléfono Secundario <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
+                        <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700 flex items-center gap-2"><svg className="w-4 h-4 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> Instagram <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
+                        <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700 flex items-center gap-2"><svg className="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg> TikTok <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
+                        <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label className="text-sm font-bold text-slate-700 flex items-center gap-2"><svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Página Web <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
+                        <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECCIÓN 3: IDENTIDAD VISUAL */}
+                  <div className="space-y-6">
+                    <div className="border-b border-slate-100 pb-3">
+                      <h4 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-purple-600" /> Identidad Visual
+                      </h4>
+                      <p className="text-sm text-slate-500 mt-1">Logotipo oficial para el directorio.</p>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {editingEmpresaId && currentImagenEmpresa && !file && (
+                        <div className="w-full md:w-64 p-4 border border-slate-200 bg-slate-50 rounded-2xl text-center shrink-0 flex flex-col justify-between">
+                          <div>
+                            <img src={currentImagenEmpresa} alt="Actual" className="w-24 h-24 object-contain mx-auto mb-3 bg-white rounded-lg p-2 border border-slate-200 shadow-sm" />
+                            <p className="text-sm font-bold text-slate-700 mb-2">Logo Actual</p>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setCurrentImagenEmpresa(null)}
+                            className="text-xs bg-white border border-red-200 text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition-all w-full font-bold shadow-sm mt-4"
+                          >
+                            Eliminar Logo
+                          </button>
+                        </div>
+                      )}
+
+                      <div className={`w-full border-2 border-dashed ${file ? 'border-emerald-400 bg-emerald-50/50' : 'border-slate-200 bg-slate-50/50 hover:border-blue-300 hover:bg-blue-50/30'} rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all relative group min-h-[160px]`}>
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={e => {
+                              const selected = e.target.files?.[0];
+                              if (selected) {
+                                if (selected.size > 2 * 1024 * 1024) {
+                                  alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
+                                  if (fileInputRef.current) fileInputRef.current.value = '';
+                                  return;
+                                }
+                                setFile(selected);
+                              } else {
+                                setFile(null);
+                              }
+                            }}
+                          ref={fileInputRef}
+                          disabled={loading}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+                        {file ? (
+                          <div className="flex flex-col items-center z-20 pointer-events-none">
+                            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p className="text-sm font-bold text-emerald-800 break-all px-2">{file.name}</p>
+                            <p className="text-xs text-emerald-600 mt-1 font-medium">Listo para subir</p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center pointer-events-none">
+                            <div className="w-12 h-12 bg-white shadow-sm border border-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-3 group-hover:text-blue-600 group-hover:border-blue-200 transition-colors">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            </div>
+                            <p className="text-sm font-bold text-slate-700">Arrastra o haz clic para subir logo</p>
+                            <p className="text-xs text-slate-500 mt-1">Formato PNG o JPG. Tamaño recomendado 500x500px (Máx. 2MB)</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
-                  {/* Botonera de Acción */}
-                  <div className="pt-6 mt-4 border-t border-slate-100 flex flex-col items-center md:flex-row md:justify-between gap-4">
+                  {/* BOTONERA DE ACCIÓN */}
+                  <div className="pt-8 mt-8 border-t border-slate-100 flex flex-col md:flex-row items-center md:justify-between gap-4">
                     <div className="w-full md:w-auto flex-1">
-                      {msg && <div className={`p-4 rounded-xl font-bold text-sm flex items-center gap-2 ${msg.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msg}</div>}
-                      {loading && uploadStatus && <div className="text-sm font-bold text-[#002b7f] p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-3"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
+                      {msg && <div className={`p-4 rounded-xl font-bold text-sm flex items-center gap-2 ${msg.includes('❌') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>{msg}</div>}
+                      {loading && uploadStatus && <div className="text-sm font-bold text-blue-700 p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-3"><div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" /> {uploadStatus}</div>}
                     </div>
-                    <Button type="submit" disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-14 px-12 rounded-xl font-bold shadow-xl shadow-blue-900/20 transition-all text-base flex-shrink-0">
+                    <Button type="submit" disabled={loading} className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white h-14 px-12 rounded-xl font-bold shadow-md shadow-blue-600/20 transition-all text-base flex-shrink-0">
                       {loading ? 'Procesando...' : (editingEmpresaId ? 'Guardar Cambios' : 'Registrar Empresa')}
                     </Button>
                   </div>
-
                 </form>
                   </motion.div>
 
