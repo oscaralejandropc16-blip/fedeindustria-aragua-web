@@ -627,7 +627,7 @@ export default function Dashboard() {
 
             {/* CONTENIDO HOME */}
             <TabsContent value="home" className="focus-visible:outline-none">
-              <div className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 p-8 md:p-12 mb-10 relative overflow-hidden">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 p-8 md:p-12 mb-10 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
                 
                 <h3 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3 relative z-10">
@@ -648,7 +648,7 @@ export default function Dashboard() {
                     <div className="space-y-6">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Título Principal</Label>
-                        <Input value={homeTitulo} onChange={e => setHomeTitulo(e.target.value)} placeholder="Conectamos el Futuro..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" required />
+                        <Input value={homeTitulo} onChange={e => setHomeTitulo(e.target.value)} placeholder="Conectamos el Futuro..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" required />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Subtítulo</Label>
@@ -710,7 +710,7 @@ export default function Dashboard() {
                   {/* Formulario Empresas */}
                   <motion.div 
                     layout
-                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingEmpresaId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEmpresaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingEmpresaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-blue-400" />}
                     <div className="flex items-center justify-between mb-8">
@@ -729,15 +729,15 @@ export default function Dashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Razón Social o Nombre Comercial</Label>
-                        <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input id="nombre-empresa" name="nombreEmpresa" autoComplete="off" required value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej. Manufacturas Aragua C.A." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">RIF Empresarial</Label>
-                        <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input required value={rif} onChange={e => setRif(e.target.value)} placeholder="J-12345678-9" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Rubro Sectorial</Label>
-                        <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input required value={rubro} onChange={e => setRubro(e.target.value)} placeholder="Ej. Metalmecánica, Textil..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Estatus de Membresía</Label>
@@ -757,7 +757,7 @@ export default function Dashboard() {
                         <Label className="text-slate-700 font-bold flex items-center gap-2">
                           Posición (Orden Visual)
                         </Label>
-                        <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input type="number" value={ordenEmpresa} onChange={e => setOrdenEmpresa(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </div>
 
@@ -769,36 +769,36 @@ export default function Dashboard() {
                         <h3 className="font-bold text-slate-900 text-lg border-b border-slate-100 pb-2">Contacto y Ubicación</h3>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Principal</Label>
-                          <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="0243-5550000" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-slate-400" /> Teléfono Secundario <span className="text-xs text-slate-400 font-normal">(Opcional)</span></Label>
-                          <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input value={telefono2} onChange={e => setTelefono2(e.target.value)} placeholder="0414-1234567" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-slate-400" /> Dirección Física</Label>
-                          <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input required value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Ej. Zona Industrial San Vicente..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2">
                             <svg className="w-4 h-4 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                             Instagram <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
                           </Label>
-                          <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2">
                             <svg className="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
                             TikTok <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
                           </Label>
-                          <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                         <div className="space-y-3">
                           <Label className="text-slate-700 font-bold flex items-center gap-2">
                             <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                             Página Web <span className="text-xs text-slate-400 font-normal">(Opcional)</span>
                           </Label>
-                          <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                          <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                         </div>
                       </div>
 
@@ -889,7 +889,7 @@ export default function Dashboard() {
                   {/* LISTA DE EMPRESAS */}
                   <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Directorio de Empresas</h3>
-                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaEmpresas.length === 0 ? (
@@ -936,7 +936,7 @@ export default function Dashboard() {
                   {/* Formulario Eventos */}
                   <motion.div 
                     layout
-                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingEventoId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingEventoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingEventoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-emerald-400" />}
                     <div className="flex items-center justify-between mb-8">
@@ -953,31 +953,31 @@ export default function Dashboard() {
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Título del Evento</Label>
-                      <Input id="titulo-evento" name="tituloEvento" autoComplete="off" required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input id="titulo-evento" name="tituloEvento" autoComplete="off" required value={tituloEvento} onChange={e => setTituloEvento(e.target.value)} placeholder="Ej. Asamblea Anual 2026..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Fecha de Inicio</Label>
-                        <Input required type="date" value={fechaEvento} onChange={e => setFechaEvento(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input required type="date" value={fechaEvento} onChange={e => setFechaEvento(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Fecha de Fin (Opcional)</Label>
-                        <Input type="date" value={fechaEventoFin} onChange={e => setFechaEventoFin(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input type="date" value={fechaEventoFin} onChange={e => setFechaEventoFin(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-slate-400" /> Ubicación (Opcional)</Label>
-                        <Input value={ubicacionEvento} onChange={e => setUbicacionEvento(e.target.value)} placeholder="Ej. Hotel Eurobuilding, Caracas" className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input value={ubicacionEvento} onChange={e => setUbicacionEvento(e.target.value)} placeholder="Ej. Hotel Eurobuilding, Caracas" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Link de Google Maps (Opcional)</Label>
-                        <Input type="url" value={linkMapaEvento} onChange={e => setLinkMapaEvento(e.target.value)} placeholder="https://maps.app.goo.gl/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input type="url" value={linkMapaEvento} onChange={e => setLinkMapaEvento(e.target.value)} placeholder="https://maps.app.goo.gl/..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Link "Ver Detalles" Externo (Opcional)</Label>
-                      <Input type="url" value={linkDetallesEvento} onChange={e => setLinkDetallesEvento(e.target.value)} placeholder="https://instagram.com/p/..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input type="url" value={linkDetallesEvento} onChange={e => setLinkDetallesEvento(e.target.value)} placeholder="https://instagram.com/p/..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Descripción Corta</Label>
@@ -1049,7 +1049,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
-                      <Input type="number" value={ordenEvento} onChange={e => setOrdenEvento(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input type="number" value={ordenEvento} onChange={e => setOrdenEvento(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
                   <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -1065,7 +1065,7 @@ export default function Dashboard() {
                 {/* LISTA DE EVENTOS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Eventos Programados</h3>
-                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaEventos.length === 0 ? (
@@ -1113,7 +1113,7 @@ export default function Dashboard() {
                   {/* Formulario Noticias */}
                   <motion.div 
                     layout
-                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingNoticiaId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingNoticiaId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingNoticiaId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-amber-400" />}
                     <div className="flex items-center justify-between mb-8">
@@ -1131,11 +1131,11 @@ export default function Dashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Título de la Noticia</Label>
-                        <Input id="titulo-noticia" name="tituloNoticia" autoComplete="off" required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input id="titulo-noticia" name="tituloNoticia" autoComplete="off" required value={tituloNoticia} onChange={e => setTituloNoticia(e.target.value)} placeholder="Ej. Fedeindustria firma nueva alianza con..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                       <div className="space-y-3">
                         <Label className="text-slate-700 font-bold">Fecha de Publicación</Label>
-                        <Input type="date" value={fechaPublicacionNoticia} onChange={e => setFechaPublicacionNoticia(e.target.value)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                        <Input type="date" value={fechaPublicacionNoticia} onChange={e => setFechaPublicacionNoticia(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -1291,7 +1291,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
-                      <Input type="number" value={ordenNoticia} onChange={e => setOrdenNoticia(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input type="number" value={ordenNoticia} onChange={e => setOrdenNoticia(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
                   <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -1307,7 +1307,7 @@ export default function Dashboard() {
                 {/* LISTA DE NOTICIAS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Noticias Publicadas</h3>
-                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaNoticias.length === 0 ? (
@@ -1354,7 +1354,7 @@ export default function Dashboard() {
                   {/* Formulario Aliados */}
                   <motion.div 
                     layout
-                    className={`rounded-[2rem] p-8 md:p-10 transition-all duration-700 ${editingAliadoId ? 'bg-white border border-[#002b7f]/20 shadow-[0_20px_60px_-15px_rgba(0,43,127,0.15)] ring-1 ring-[#002b7f]/5 scale-[1.01] md:scale-[1.02] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
+                    className={`rounded-2xl p-8 md:p-10 transition-all duration-700 ${editingAliadoId ? 'bg-white border border-slate-200 shadow-lg shadow-blue-500/5 scale-[1.01] relative z-10 overflow-hidden' : 'bg-white border border-slate-100 shadow-sm hover:shadow-md'}`}
                   >
                     {editingAliadoId && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-purple-400" />}
                     <div className="flex items-center justify-between mb-8">
@@ -1371,7 +1371,7 @@ export default function Dashboard() {
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Nombre de la Institución o Marca</Label>
-                      <Input id="nombre-aliado" name="nombreAliado" autoComplete="off" required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input id="nombre-aliado" name="nombreAliado" autoComplete="off" required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
@@ -1425,7 +1425,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-3">
                       <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
-                      <Input type="number" value={ordenAliado} onChange={e => setOrdenAliado(parseInt(e.target.value) || 0)} className="h-12 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Input type="number" value={ordenAliado} onChange={e => setOrdenAliado(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                   </CardContent>
                   <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -1441,7 +1441,7 @@ export default function Dashboard() {
                 {/* LISTA DE ALIADOS */}
                 <div className="mt-12">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200 pb-2">Aliados Estratégicos</h3>
-                  <div className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col max-h-[600px] overflow-y-auto custom-scrollbar">
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaAliados.length === 0 ? (
