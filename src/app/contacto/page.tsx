@@ -9,14 +9,41 @@ export default function ContactoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [nombre, setNombre] = useState('')
+  const [rif, setRif] = useState('')
+  const [contacto, setContacto] = useState('')
+  const [email, setEmail] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [mensaje, setMensaje] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    // Simular envío
-    setTimeout(() => {
+    
+    const { createClient } = await import('@/utils/supabase/client')
+    const supabase = createClient()
+    
+    const payload = {
+      empresa: nombre,
+      rif: rif,
+      persona_contacto: contacto,
+      email: email,
+      telefono: telefono,
+      mensaje: mensaje,
+      estatus: 'Pendiente'
+    }
+
+    const { error } = await supabase.from('solicitudes_afiliacion').insert([payload])
+
+    if (error) {
+      console.error(error)
+      alert('Error enviando la solicitud. Asegúrese de haber creado la tabla en Supabase.')
       setIsSubmitting(false)
-      setIsSubmitted(true)
-    }, 1500)
+      return
+    }
+
+    setIsSubmitting(false)
+    setIsSubmitted(true)
   }
 
   const beneficios = [
@@ -139,13 +166,13 @@ export default function ContactoPage() {
                           <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                             <Building2Icon className="w-4 h-4 text-[#002b7f]" /> Nombre de la Empresa *
                           </label>
-                          <Input required placeholder="Ej. Inversiones Aragua C.A." className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
+                          <Input required value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ej. Inversiones Aragua C.A." className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                             <HashIcon className="w-4 h-4 text-[#002b7f]" /> RIF Comercial *
                           </label>
-                          <Input required placeholder="Ej. J-12345678-9" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base uppercase font-medium placeholder:text-slate-400" />
+                          <Input required value={rif} onChange={(e) => setRif(e.target.value)} placeholder="Ej. J-12345678-9" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base uppercase font-medium placeholder:text-slate-400" />
                         </div>
                       </div>
 
@@ -153,7 +180,7 @@ export default function ContactoPage() {
                         <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                           <UserIcon className="w-4 h-4 text-[#002b7f]" /> Persona de Contacto *
                         </label>
-                        <Input required placeholder="Ej. Juan Pérez - Director General" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
+                        <Input required value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="Ej. Juan Pérez - Director General" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,19 +188,21 @@ export default function ContactoPage() {
                           <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                             <MailIcon className="w-4 h-4 text-[#002b7f]" /> Correo Electrónico *
                           </label>
-                          <Input required type="email" placeholder="contacto@empresa.com" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
+                          <Input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contacto@empresa.com" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                             <PhoneIcon className="w-4 h-4 text-[#002b7f]" /> Teléfono Móvil *
                           </label>
-                          <Input required type="tel" placeholder="+58 (414) 123-4567" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
+                          <Input required type="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="+58 (414) 123-4567" className="h-14 bg-slate-50/50 border-slate-200 focus-visible:ring-[#002b7f] rounded-xl text-base font-medium placeholder:text-slate-400" />
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Mensaje o Comentarios (Opcional)</label>
                         <textarea 
+                          value={mensaje}
+                          onChange={(e) => setMensaje(e.target.value)}
                           placeholder="Háblanos un poco sobre el rubro de tu empresa o cualquier duda que tengas..." 
                           className="min-h-[120px] w-full p-4 bg-slate-50/50 border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-xl text-base resize-none font-medium placeholder:text-slate-400"
                         />

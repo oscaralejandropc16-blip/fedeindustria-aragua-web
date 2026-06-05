@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon, InboxIcon, CheckCircleIcon, MailIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -87,6 +87,7 @@ export default function Dashboard() {
   const [listaEventos, setListaEventos] = useState<any[]>([])
   const [listaNoticias, setListaNoticias] = useState<any[]>([])
   const [listaAliados, setListaAliados] = useState<any[]>([])
+  const [listaSolicitudes, setListaSolicitudes] = useState<any[]>([])
   const [loadingListas, setLoadingListas] = useState(true)
 
   // Estados de carga y mensajes
@@ -118,6 +119,9 @@ export default function Dashboard() {
 
     const { data: ali } = await supabase.from('aliados').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (ali) setListaAliados(ali)
+
+    const { data: sol } = await supabase.from('solicitudes_afiliacion').select('*').order('created_at', { ascending: false })
+    if (sol) setListaSolicitudes(sol)
 
     const { data: configHomeData } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
     if (configHomeData) {
@@ -530,6 +534,13 @@ export default function Dashboard() {
     setLoading(false); setUploadStatus('')
   }
 
+  const handleUpdateSolicitud = async (id: number, nuevoEstatus: string) => {
+    const supabase = createClient()
+    const { error } = await supabase.from('solicitudes_afiliacion').update({ estatus: nuevoEstatus }).eq('id', id)
+    if (error) alert('Error actualizando estado: ' + error.message)
+    else fetchData()
+  }
+
   // --- Manejo del Drag and Drop (Reordenamiento Visual) ---
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -600,6 +611,14 @@ export default function Dashboard() {
           </TabsTrigger>
           <TabsTrigger value="aliados" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <ImageIcon className="w-5 h-5" /> Aliados
+          </TabsTrigger>
+          <TabsTrigger value="solicitudes" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100 relative">
+            <InboxIcon className="w-5 h-5" /> Solicitudes de Afiliación
+            {listaSolicitudes.filter(s => s.estatus === 'Pendiente').length > 0 && (
+              <span className="absolute right-4 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                {listaSolicitudes.filter(s => s.estatus === 'Pendiente').length}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -1546,6 +1565,97 @@ export default function Dashboard() {
                   </motion.div>
                   )}
                 </div>
+            </TabsContent>
+
+            {/* MÓDULO DE SOLICITUDES DE AFILIACIÓN */}
+            <TabsContent value="solicitudes" className="mt-0 outline-none">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-[#002b7f]/5 p-8 md:p-12 mb-10">
+                <h3 className="text-2xl font-black text-slate-900 mb-2 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                    <InboxIcon className="w-5 h-5" />
+                  </div>
+                  Buzón de Solicitudes de Afiliación
+                </h3>
+                <p className="text-slate-500 mb-8 font-medium">Gestiona las solicitudes de empresas interesadas en unirse a Fedeindustria Aragua.</p>
+
+                <div className="space-y-4">
+                  {listaSolicitudes.length === 0 ? (
+                    <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                      <InboxIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                      <h4 className="text-lg font-bold text-slate-600">No hay solicitudes</h4>
+                      <p className="text-slate-400">Aún no se han recibido formularios de contacto.</p>
+                    </div>
+                  ) : (
+                    listaSolicitudes.map((sol) => (
+                      <div key={sol.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                        {/* Indicador lateral */}
+                        <div className={`absolute top-0 left-0 w-1.5 h-full ${sol.estatus === 'Pendiente' ? 'bg-red-500' : sol.estatus === 'Contactada' ? 'bg-amber-400' : 'bg-emerald-500'}`} />
+                        
+                        <div className="flex flex-col md:flex-row justify-between gap-6 pl-4">
+                          <div className="space-y-4 flex-1">
+                            <div>
+                              <div className="flex items-center gap-3 mb-1">
+                                <h4 className="text-xl font-black text-slate-900">{sol.empresa}</h4>
+                                <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${sol.estatus === 'Pendiente' ? 'bg-red-50 text-red-600 border-red-200' : sol.estatus === 'Contactada' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                                  {sol.estatus}
+                                </span>
+                              </div>
+                              <p className="text-slate-500 font-bold text-sm">RIF: {sol.rif}</p>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                              <div>
+                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Contacto</p>
+                                <p className="text-slate-800 font-medium">{sol.persona_contacto}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Fecha</p>
+                                <p className="text-slate-800 font-medium">{new Date(sol.created_at).toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</p>
+                              </div>
+                            </div>
+                            
+                            {sol.mensaje && (
+                              <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                                <p className="text-xs text-blue-400 font-bold uppercase tracking-widest mb-1">Mensaje Adjunto</p>
+                                <p className="text-slate-700 font-medium text-sm leading-relaxed">{sol.mensaje}</p>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex flex-col gap-3 min-w-[200px] border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest text-center md:text-left mb-1">Acciones Rápidas</p>
+                            <a 
+                              href={`https://wa.me/${sol.telefono.replace(/\D/g,'')}?text=Hola%20${encodeURIComponent(sol.persona_contacto)},%20hemos%20recibido%20su%20solicitud%20de%20afiliación%20para%20${encodeURIComponent(sol.empresa)}%20en%20Fedeindustria%20Aragua.`} 
+                              target="_blank" rel="noopener noreferrer" 
+                              className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-2.5 px-4 rounded-xl transition-colors shadow-sm"
+                            >
+                              <PhoneIcon className="w-4 h-4" /> WhatsApp
+                            </a>
+                            <a 
+                              href={`mailto:${sol.email}?subject=Respuesta a Solicitud de Afiliación - Fedeindustria Aragua`} 
+                              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl transition-colors shadow-sm"
+                            >
+                              <MailIcon className="w-4 h-4" /> Enviar Correo
+                            </a>
+                            
+                            <div className="h-px w-full bg-slate-100 my-1" />
+                            
+                            <select 
+                              value={sol.estatus} 
+                              onChange={(e) => handleUpdateSolicitud(sol.id, e.target.value)}
+                              className="w-full text-sm font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                              <option value="Pendiente">Marcar Pendiente</option>
+                              <option value="Contactada">Marcar Contactada</option>
+                              <option value="Completada">Marcar Completada</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
             </TabsContent>
 
         </div>
