@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 export default function ContactoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const [nombre, setNombre] = useState('')
   const [rif, setRif] = useState('')
@@ -19,6 +20,7 @@ export default function ContactoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitError(null)
     
     const { createClient } = await import('@/utils/supabase/client')
     const supabase = createClient()
@@ -37,7 +39,7 @@ export default function ContactoPage() {
 
     if (error) {
       console.error(error)
-      alert('Error enviando la solicitud. Asegúrese de haber creado la tabla en Supabase.')
+      setSubmitError('No pudimos procesar tu solicitud. Verifica tu conexión o intenta más tarde.')
       setIsSubmitting(false)
       return
     }
@@ -159,6 +161,18 @@ export default function ContactoPage() {
                   <>
                     <h2 className="text-2xl md:text-3xl font-black text-[#002b7f] mb-2 tracking-tight">Formulario de Afiliación</h2>
                     <p className="text-slate-500 font-medium mb-8">Completa tus datos y da el primer paso hacia el éxito institucional.</p>
+
+                    {submitError && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                        className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-red-600"
+                      >
+                        <div className="w-5 h-5 mt-0.5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                          <span className="font-bold text-red-500 text-sm">!</span>
+                        </div>
+                        <p className="font-medium text-sm leading-relaxed">{submitError}</p>
+                      </motion.div>
+                    )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
