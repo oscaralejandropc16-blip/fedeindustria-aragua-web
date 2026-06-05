@@ -60,10 +60,16 @@ export default function TodasLasNoticiasPage() {
                 className="group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 hover:border-[#002b7f]/20 transition-all duration-300 flex flex-col"
               >
                 {/* Foto Noticia */}
-                <div className="h-56 relative bg-slate-100 overflow-hidden">
+                <div className="h-56 relative bg-slate-900 overflow-hidden">
                   {noticia.imagen_url ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img src={noticia.imagen_url} alt={noticia.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <>
+                      <div className="absolute inset-0 z-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={noticia.imagen_url} className="w-full h-full object-cover blur-xl opacity-50 scale-110 group-hover:scale-125 transition-transform duration-700 ease-out" alt="" />
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={noticia.imagen_url} alt={noticia.titulo} className="relative z-10 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out" />
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-slate-100">
                       <NewspaperIcon className="w-12 h-12 text-slate-300" />
