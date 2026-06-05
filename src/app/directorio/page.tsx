@@ -59,7 +59,7 @@ export default function DirectorioPage() {
   const getHoverStyles = (estatus: string) => {
     const state = estatus.toLowerCase()
     if (state === 'desactivada' || state === 'inactiva') {
-      return 'hover:border-red-500/40 hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.15)] opacity-50 grayscale'
+      return 'hover:border-red-500/40 hover:shadow-[0_20px_40px_-15px_rgba(239,68,68,0.15)] opacity-70'
     }
     // Usamos un hover unificado azul corporativo sin importar el estatus, para que se vea más limpio
     return 'hover:border-blue-500/40 hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.15)]'
@@ -69,7 +69,7 @@ export default function DirectorioPage() {
     const state = estatus.toLowerCase()
     if (state === 'activa') return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
     if (state === 'pendiente') return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-    if (state === 'desactivada' || state === 'inactiva') return 'bg-red-500/10 text-red-500 border-red-500/20'
+    if (state === 'desactivada' || state === 'inactiva') return 'bg-red-500/10 text-red-400 border-red-500/30 font-bold'
     return 'bg-slate-500/10 text-slate-400 border-slate-500/20'
   }
 
