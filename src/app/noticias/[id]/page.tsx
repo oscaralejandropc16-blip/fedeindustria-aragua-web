@@ -189,14 +189,10 @@ export default function NoticiaPage() {
                     <div 
                       key={index} 
                       onClick={() => setSelectedImageIndex(index)}
-                      className="flex-none w-[85vw] sm:w-[60vw] md:w-[450px] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-900 relative group cursor-pointer snap-center shrink-0"
+                      className="flex-none w-[85vw] sm:w-[60vw] md:w-[450px] aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50 relative group cursor-pointer snap-center shrink-0"
                     >
-                      <div className="absolute inset-0 z-0">
-                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                         <img src={url} className="w-full h-full object-cover blur-xl opacity-50 scale-110 group-hover:scale-125 transition-transform duration-700 ease-out" alt="" />
-                      </div>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt={`Galería ${index + 1}`} className="relative z-10 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out" />
+                      <img src={url} alt={`Galería ${index + 1}`} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#002b7f]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                          <span className="text-white font-bold text-sm tracking-wider uppercase flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                            <ImageIcon className="w-4 h-4" /> Ampliar Imagen
