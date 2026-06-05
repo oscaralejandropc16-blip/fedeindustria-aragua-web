@@ -11,8 +11,43 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Fedeindustria Aragua | Desarrollo y Producción Nacional",
-  description: "Cúpula empresarial de referencia en la región central, liderando la transformación industrial de Aragua hacia un modelo productivo moderno.",
+  metadataBase: new URL('https://fedeindustria-aragua-web.vercel.app'),
+  title: {
+    default: "Fedeindustria Aragua | Impulsando el Motor Productivo",
+    template: "%s | Fedeindustria Aragua"
+  },
+  description: "Cúpula empresarial de referencia en la región central de Venezuela, liderando la transformación industrial de Aragua hacia un modelo productivo moderno. Directorio, eventos y noticias.",
+  keywords: ["Fedeindustria Aragua", "Fedeindustria", "Cámara de Industriales Aragua", "Cúpula empresarial Aragua", "Empresas en Aragua", "Industria Maracay", "Producción nacional Venezuela", "Directorio empresarial Aragua", "Noticias industriales Aragua"],
+  authors: [{ name: "Fedeindustria Aragua" }],
+  creator: "Fedeindustria Aragua",
+  publisher: "Fedeindustria Aragua",
+  openGraph: {
+    title: 'Fedeindustria Aragua | Desarrollo y Producción Nacional',
+    description: 'Cúpula empresarial de referencia en la región central, liderando la transformación industrial de Aragua hacia un modelo productivo moderno.',
+    url: 'https://fedeindustria-aragua-web.vercel.app',
+    siteName: 'Fedeindustria Aragua',
+    locale: 'es_VE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Fedeindustria Aragua',
+    description: 'Cúpula empresarial de referencia en la región central de Venezuela.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://fedeindustria-aragua-web.vercel.app',
+  },
 };
 
 export const viewport = {
