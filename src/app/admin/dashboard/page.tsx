@@ -612,10 +612,13 @@ export default function Dashboard() {
           <TabsTrigger value="aliados" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <ImageIcon className="w-5 h-5" /> Aliados
           </TabsTrigger>
-          <TabsTrigger value="solicitudes" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100 relative">
-            <InboxIcon className="w-5 h-5" /> Solicitudes de Afiliación
+          <TabsTrigger value="solicitudes" className="w-full flex items-center justify-between gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <InboxIcon className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate whitespace-nowrap">Solicitudes de Afiliación</span>
+            </div>
             {listaSolicitudes.filter(s => s.estatus === 'Pendiente').length > 0 && (
-              <span className="absolute right-4 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+              <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full flex-shrink-0 shadow-sm">
                 {listaSolicitudes.filter(s => s.estatus === 'Pendiente').length}
               </span>
             )}
