@@ -6,8 +6,7 @@ import { cookies } from 'next/headers'
 export const revalidate = 60;
 
 export default async function Home() {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = await createClient()
 
   // Fetch Configuración Home
   const { data: configData } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
