@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon, InboxIcon, CheckCircleIcon, MailIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon, InboxIcon, CheckCircleIcon, MailIcon, UsersIcon, FolderOpenIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -71,6 +71,15 @@ export default function Dashboard() {
   const [ordenAliado, setOrdenAliado] = useState(0)
   const [editingAliadoId, setEditingAliadoId] = useState<number | null>(null)
 
+  // Estados para Junta Directiva
+  const [showFormDirectiva, setShowFormDirectiva] = useState(false)
+  const [nombreDirectiva, setNombreDirectiva] = useState('')
+  const [cargoDirectiva, setCargoDirectiva] = useState('')
+  const [fileDirectiva, setFileDirectiva] = useState<File | null>(null)
+  const [currentImagenDirectiva, setCurrentImagenDirectiva] = useState<string | null>(null)
+  const [ordenDirectiva, setOrdenDirectiva] = useState(0)
+  const [editingDirectivaId, setEditingDirectivaId] = useState<number | null>(null)
+
   // Estados para Config Home
   const [homeTitulo, setHomeTitulo] = useState('Conectamos el Futuro de la Industria')
   const [homeSubtitulo, setHomeSubtitulo] = useState('Únete a la red empresarial más sólida de la región central. Innovación, representación y crecimiento para tu empresa.')
@@ -87,8 +96,17 @@ export default function Dashboard() {
   const [listaEventos, setListaEventos] = useState<any[]>([])
   const [listaNoticias, setListaNoticias] = useState<any[]>([])
   const [listaAliados, setListaAliados] = useState<any[]>([])
+  const [listaDirectiva, setListaDirectiva] = useState<any[]>([])
   const [listaSolicitudes, setListaSolicitudes] = useState<any[]>([])
   const [loadingListas, setLoadingListas] = useState(true)
+
+  // Estados para Medios (Galería Global)
+  const [listaMedios, setListaMedios] = useState<any[]>([])
+  const [loadingMedios, setLoadingMedios] = useState(false)
+  const [msgMedios, setMsgMedios] = useState('')
+  // Estado para Modal Global
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, title: string, message: string, onConfirm: () => void}>({ isOpen: false, title: '', message: '', onConfirm: () => {} });
+  const [selectedMedios, setSelectedMedios] = useState<string[]>([])
 
   // Estados de carga y mensajes
   const [loading, setLoading] = useState(false)
@@ -97,12 +115,88 @@ export default function Dashboard() {
   const [msgEvento, setMsgEvento] = useState('')
   const [msgNoticia, setMsgNoticia] = useState('')
   const [msgAliado, setMsgAliado] = useState('')
+  const [msgDirectiva, setMsgDirectiva] = useState('')
   
   // Referencias
   const fileInputRef = useRef<HTMLInputElement>(null)
   const fileNoticiaRef = useRef<HTMLInputElement>(null)
   const galeriaNoticiaRef = useRef<HTMLInputElement>(null)
   const fileAliadoRef = useRef<HTMLInputElement>(null)
+  const fileDirectivaRef = useRef<HTMLInputElement>(null)
+
+  
+  const fetchMedios = async () => {
+    setLoadingMedios(true)
+    const supabase = createClient()
+    const carpetas = ['', 'empresas', 'eventos', 'noticias', 'noticias/galeria', 'aliados', 'videos', 'imagenes', 'directiva']
+    let todosLosArchivos: any[] = []
+
+    for (const carpeta of carpetas) {
+      const { data, error } = await supabase.storage.from('media_institucional').list(carpeta, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'created_at', order: 'desc' },
+      })
+      
+      if (data) {
+        const archivos = data.filter(f => f.id && f.name !== '.emptyFolderPlaceholder')
+        archivos.forEach(file => {
+          const path = carpeta === '' ? file.name : `${carpeta}/${file.name}`
+          const url = supabase.storage.from('media_institucional').getPublicUrl(path).data.publicUrl
+          todosLosArchivos.push({ ...file, path, url, carpeta: carpeta === '' ? 'raíz' : carpeta })
+        })
+      }
+    }
+    
+    todosLosArchivos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    setListaMedios(todosLosArchivos)
+    setLoadingMedios(false)
+  }
+
+  
+  const handleBulkDeleteMedios = () => {
+    if (selectedMedios.length === 0) return;
+    setConfirmModal({
+      isOpen: true,
+      title: 'Eliminación Masiva',
+      message: `¿Estás seguro de eliminar ${selectedMedios.length} archivos seleccionados permanentemente?`,
+      onConfirm: async () => {
+        setLoadingMedios(true);
+        const supabase = createClient();
+        const { error } = await supabase.storage.from('media_institucional').remove(selectedMedios);
+        if (error) {
+          alert('Error eliminando: ' + error.message);
+          setLoadingMedios(false);
+        } else {
+          setSelectedMedios([]);
+          fetchMedios();
+        }
+      }
+    });
+  }
+
+  const toggleMedioSelection = (path: string) => {
+    setSelectedMedios(prev => 
+      prev.includes(path) ? prev.filter(p => p !== path) : [...prev, path]
+    )
+  }
+
+  const handleDeleteMedio = (path: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Eliminar Archivo',
+      message: '¿Estás seguro de eliminar permanentemente este archivo? Se romperán las imágenes en la web si está en uso.',
+      onConfirm: async () => {
+        const supabase = createClient()
+        const { error } = await supabase.storage.from('media_institucional').remove([path])
+        if (error) {
+          alert('Error eliminando: ' + error.message)
+        } else {
+          fetchMedios()
+        }
+      }
+    });
+  }
 
   const fetchData = async () => {
     const supabase = createClient()
@@ -119,6 +213,9 @@ export default function Dashboard() {
 
     const { data: ali } = await supabase.from('aliados').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
     if (ali) setListaAliados(ali)
+
+    const { data: dir } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true }).order('id', { ascending: false })
+    if (dir) setListaDirectiva(dir)
 
     const { data: sol } = await supabase.from('solicitudes_afiliacion').select('*').order('created_at', { ascending: false })
     if (sol) setListaSolicitudes(sol)
@@ -228,6 +325,16 @@ export default function Dashboard() {
     setFileAliado(null)
     setCurrentImagenAliado(aliado.logo_url)
     setShowFormAliado(true)
+  }
+
+  const handleEditDirectiva = (miembro: any) => {
+    setEditingDirectivaId(miembro.id)
+    setNombreDirectiva(miembro.nombre)
+    setCargoDirectiva(miembro.cargo)
+    setOrdenDirectiva(miembro.orden || 0)
+    setFileDirectiva(null)
+    setCurrentImagenDirectiva(miembro.imagen_url)
+    setShowFormDirectiva(true)
   }
 
   // --- Handlers de Inserción/Actualización ---
@@ -490,6 +597,54 @@ export default function Dashboard() {
     setLoading(false); setUploadStatus('')
   }
 
+  const handleAddDirectiva = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true); setMsgDirectiva(''); 
+    
+    const supabase = createClient()
+    let imagen_url = null;
+
+    if (fileDirectiva) {
+      setUploadStatus('Subiendo foto...')
+      const fileExt = fileDirectiva.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `directiva/${fileName}`
+
+      const { error: uploadError } = await supabase.storage.from('media_institucional').upload(filePath, fileDirectiva)
+      if (uploadError) { setMsgDirectiva(`❌ Error: ${uploadError.message}`); setLoading(false); return }
+
+      imagen_url = supabase.storage.from('media_institucional').getPublicUrl(filePath).data.publicUrl
+    }
+    
+    setUploadStatus('Guardando miembro...')
+    const payload: any = { nombre: nombreDirectiva, cargo: cargoDirectiva, orden: ordenDirectiva }
+    if (imagen_url !== null) {
+      payload.imagen_url = imagen_url
+    } else if (editingDirectivaId && currentImagenDirectiva === null) {
+      payload.imagen_url = null
+    }
+
+    let error;
+    if (editingDirectivaId) {
+      const res = await supabase.from('junta_directiva').update(payload).eq('id', editingDirectivaId)
+      error = res.error
+    } else {
+      const res = await supabase.from('junta_directiva').insert([payload])
+      error = res.error
+    }
+
+    if (error) setMsgDirectiva(`❌ Error: ${error.message}`)
+    else {
+      setMsgDirectiva(editingDirectivaId ? '✅ Miembro actualizado exitosamente.' : '✅ Miembro agregado exitosamente.')
+      setNombreDirectiva(''); setCargoDirectiva(''); setFileDirectiva(null); setOrdenDirectiva(0)
+      setEditingDirectivaId(null)
+      setShowFormDirectiva(false)
+      if (fileDirectivaRef.current) fileDirectivaRef.current.value = ''
+      fetchData()
+    }
+    setLoading(false); setUploadStatus('')
+  }
+
   const handleSaveHomeConfig = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setUploadStatus('Guardando configuración...')
@@ -559,6 +714,7 @@ export default function Dashboard() {
     if (tipo === 'eventos') { items = listaEventos; setItems = setListaEventos; tabla = 'eventos' }
     if (tipo === 'noticias') { items = listaNoticias; setItems = setListaNoticias; tabla = 'noticias' }
     if (tipo === 'aliados') { items = listaAliados; setItems = setListaAliados; tabla = 'aliados' }
+    if (tipo === 'directiva') { items = listaDirectiva; setItems = setListaDirectiva; tabla = 'junta_directiva' }
 
     const oldIndex = items.findIndex((item) => item.id.toString() === active.id.toString());
     const newIndex = items.findIndex((item) => item.id.toString() === over.id.toString());
@@ -611,6 +767,13 @@ export default function Dashboard() {
           </TabsTrigger>
           <TabsTrigger value="aliados" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <ImageIcon className="w-5 h-5" /> Aliados
+          </TabsTrigger>
+          <TabsTrigger value="directiva" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
+            <UsersIcon className="w-5 h-5" /> Junta Directiva
+          </TabsTrigger>
+          
+          <TabsTrigger value="medios" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100" onClick={() => fetchMedios()}>
+            <FolderOpenIcon className="w-5 h-5" /> Galería de Medios
           </TabsTrigger>
           <TabsTrigger value="solicitudes" className="w-full flex items-center justify-between gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <div className="flex items-center gap-3 overflow-hidden">
@@ -890,8 +1053,8 @@ export default function Dashboard() {
                           onChange={e => {
                               const selected = e.target.files?.[0];
                               if (selected) {
-                                if (selected.size > 2 * 1024 * 1024) {
-                                  alert("El archivo excede el límite de 2MB. Por favor, comprime la imagen.");
+                                if (selected.size > 10 * 1024 * 1024) {
+                                  alert("El archivo excede el límite de 10MB. Por favor, comprime la imagen.");
                                   if (fileInputRef.current) fileInputRef.current.value = '';
                                   return;
                                 }
@@ -1079,8 +1242,8 @@ export default function Dashboard() {
                         <Input type="file" accept="image/*" onChange={e => {
                           const selected = e.target.files?.[0];
                           if (selected) {
-                            if (selected.size > 2 * 1024 * 1024) {
-                              alert("El póster excede el límite de 2MB.");
+                            if (selected.size > 10 * 1024 * 1024) {
+                              alert("El póster excede el límite de 10MB.");
                               if (fileEventoRef.current) fileEventoRef.current.value = '';
                               return;
                             }
@@ -1249,8 +1412,8 @@ export default function Dashboard() {
                         <Input type="file" accept="image/*" onChange={e => {
                           const selected = e.target.files?.[0];
                           if (selected) {
-                            if (selected.size > 2 * 1024 * 1024) {
-                              alert("La foto de portada excede el límite de 2MB.");
+                            if (selected.size > 10 * 1024 * 1024) {
+                              alert("La foto de portada excede el límite de 10MB.");
                               if (fileNoticiaRef.current) fileNoticiaRef.current.value = '';
                               return;
                             }
@@ -1283,9 +1446,9 @@ export default function Dashboard() {
                             if (e.target.files && e.target.files.length > 0) {
                               const newFiles = Array.from(e.target.files);
                               
-                              const validFiles = newFiles.filter(f => f.size <= 2 * 1024 * 1024);
+                              const validFiles = newFiles.filter(f => f.size <= 10 * 1024 * 1024);
                               if (validFiles.length < newFiles.length) {
-                                alert(`Se descartaron ${newFiles.length - validFiles.length} imágenes porque exceden el límite de 2MB cada una.`);
+                                alert(`Se descartaron ${newFiles.length - validFiles.length} imágenes porque exceden el límite de 10MB cada una.`);
                               }
 
                               setGaleriaNoticia(prev => {
@@ -1483,8 +1646,8 @@ export default function Dashboard() {
                         <Input type="file" accept="image/*" onChange={e => {
                           const selected = e.target.files?.[0];
                           if (selected) {
-                            if (selected.size > 2 * 1024 * 1024) {
-                              alert("El logo del aliado excede el límite de 2MB.");
+                            if (selected.size > 10 * 1024 * 1024) {
+                              alert("El logo del aliado excede el límite de 10MB.");
                               if (fileAliadoRef.current) fileAliadoRef.current.value = '';
                               return;
                             }
@@ -1568,6 +1731,226 @@ export default function Dashboard() {
                   </motion.div>
                   )}
                 </div>
+            </TabsContent>
+
+            {/* CONTENIDO JUNTA DIRECTIVA */}
+            <TabsContent value="directiva" className="mt-0 outline-none">
+                <div className="space-y-10">
+                  {showFormDirectiva ? (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-2xl p-8 md:p-10 transition-all duration-700 bg-white border border-slate-200 shadow-xl shadow-[#002b7f]/5 relative z-10 overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#002b7f] to-orange-400" />
+                    <div id="form-directiva-header" className="flex items-center justify-between mb-8">
+                      <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
+                        <UsersIcon className="w-6 h-6 text-[#002b7f]/70" />
+                        {editingDirectivaId ? <span>Edición: <span className="font-medium text-slate-500">{nombreDirectiva}</span></span> : 'Registrar Nuevo Miembro'}
+                      </h3>
+                      <Button variant="ghost" onClick={() => { setShowFormDirectiva(false); setEditingDirectivaId(null); setNombreDirectiva(''); setCargoDirectiva(''); setFileDirectiva(null); setCurrentImagenDirectiva(null); setMsgDirectiva(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver a Junta Directiva
+                      </Button>
+                    </div>
+                  <CardContent className="p-8 space-y-6 bg-transparent">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Nombre Completo</Label>
+                        <Input id="nombre-directiva" name="nombreDirectiva" autoComplete="off" required value={nombreDirectiva} onChange={e => setNombreDirectiva(e.target.value)} placeholder="Ej. Juan Pérez" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold">Cargo</Label>
+                        <Input id="cargo-directiva" name="cargoDirectiva" autoComplete="off" required value={cargoDirectiva} onChange={e => setCargoDirectiva(e.target.value)} placeholder="Ej. Presidente" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Fotografía</Label>
+                      
+                      {editingDirectivaId && currentImagenDirectiva && !fileDirectiva && (
+                        <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
+                          <div className="flex items-center gap-4">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={currentImagenDirectiva} alt="Actual" className="w-20 h-20 object-cover bg-white rounded-lg border border-blue-200 shadow-sm p-1" />
+                            <div className="text-sm">
+                              <p className="font-bold text-blue-900">Foto actual guardada</p>
+                              <p className="text-blue-700">Sube una nueva abajo si deseas cambiarla.</p>
+                            </div>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setCurrentImagenDirectiva(null)}
+                            className="bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-full p-2 transition-all shadow-sm"
+                            title="Eliminar foto actual"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3">
+                        <Input type="file" accept="image/*" onChange={e => {
+                          const selected = e.target.files?.[0];
+                          if (selected) {
+                            if (selected.size > 10 * 1024 * 1024) {
+                              alert("La imagen excede el límite de 10MB.");
+                              if (fileDirectivaRef.current) fileDirectivaRef.current.value = '';
+                              return;
+                            }
+                            setFileDirectiva(selected);
+                          } else {
+                            setFileDirectiva(null);
+                          }
+                        }} ref={fileDirectivaRef} disabled={loading} className="h-12 bg-white shadow-sm cursor-pointer pt-3 rounded-xl border-slate-200 flex-1" />
+                        {fileDirectiva && (
+                          <button 
+                            type="button" 
+                            onClick={() => { setFileDirectiva(null); if(fileDirectivaRef.current) fileDirectivaRef.current.value = '' }}
+                            className="bg-slate-100 text-slate-500 hover:bg-red-500 hover:text-white rounded-xl h-12 w-12 flex items-center justify-center transition-all shadow-sm flex-shrink-0"
+                            title="Descartar archivo"
+                          >
+                            <XIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <Label className="text-slate-700 font-bold">Posición (Orden Visual)</Label>
+                      <Input type="number" value={ordenDirectiva} onChange={e => setOrdenDirectiva(parseInt(e.target.value) || 0)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                    </div>
+                  </CardContent>
+                  <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="w-full">
+                      {msgDirectiva && <div className={`p-4 rounded-xl font-bold text-sm ${msgDirectiva.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgDirectiva}</div>}
+                    </div>
+                    <Button onClick={handleAddDirectiva} disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
+                      {loading ? 'Procesando...' : (editingDirectivaId ? 'Guardar Cambios' : 'Agregar Miembro')}
+                    </Button>
+                  </div>
+                </motion.div>
+                  ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Junta Directiva <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaDirectiva.length} miembros</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Gestiona los miembros de la Junta Directiva.</p>
+                      </div>
+                      <Button onClick={() => { setEditingDirectivaId(null); setNombreDirectiva(''); setCargoDirectiva(''); setFileDirectiva(null); setCurrentImagenDirectiva(null); setMsgDirectiva(''); setShowFormDirectiva(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                        <PlusIcon className="w-5 h-5" /> Agregar Miembro
+                      </Button>
+                    </div>
+                    
+                    <div className="p-4 bg-slate-50/50 min-h-[400px]">
+                    {loadingListas ? (
+                      <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
+                    ) : listaDirectiva.length === 0 ? (
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay miembros registrados.</div>
+                    ) : (
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'directiva')}>
+                        <SortableContext items={listaDirectiva.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
+                          <ul className="divide-y divide-slate-100/0 space-y-2 p-2">
+                            {listaDirectiva.map(dir => (
+                              <SortableItem key={dir.id} id={dir.id.toString()}>
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-slate-100 rounded-full overflow-hidden flex items-center justify-center border border-slate-200">
+                                      {dir.imagen_url ? <img src={dir.imagen_url} className="w-full h-full object-cover" alt={dir.nombre} /> : <UsersIcon className="w-5 h-5 text-slate-400" />}
+                                    </div>
+                                    <div>
+                                      <h4 className="font-bold text-slate-900">{dir.nombre}</h4>
+                                      <p className="text-xs font-bold text-blue-600 uppercase tracking-widest">{dir.cargo}</p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button variant="ghost" onClick={() => handleEditDirectiva(dir)} className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <PencilIcon className="w-5 h-5" />
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => handleDelete(dir.id, 'junta_directiva')} className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl h-10 w-10 p-0 flex-shrink-0">
+                                      <TrashIcon className="w-5 h-5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </ul>
+                        </SortableContext>
+                      </DndContext>
+                    )}
+                    </div>
+                  </motion.div>
+                  )}
+                </div>
+            </TabsContent>
+
+            
+            {/* CONTENIDO MEDIOS */}
+            <TabsContent value="medios" className="mt-0 outline-none">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-[#002b7f]/5 overflow-hidden flex flex-col min-h-[600px]">
+                <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">
+                      Galería de Medios <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaMedios.length} archivos</span>
+                    </h3>
+                    <p className="text-sm text-slate-500 mt-1">Visualiza y elimina los archivos subidos al servidor (imágenes, videos).</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {selectedMedios.length > 0 && (
+                      <Button onClick={handleBulkDeleteMedios} className="bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl h-11 px-5 flex gap-2 items-center shadow-lg shadow-red-500/20 transition-all">
+                        <TrashIcon className="w-4 h-4" /> Eliminar {selectedMedios.length}
+                      </Button>
+                    )}
+                    <Button onClick={() => { setSelectedMedios([]); fetchMedios(); }} className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                      Actualizar
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="p-6 bg-slate-50/50 flex-1">
+                  {loadingMedios ? (
+                    <div className="flex justify-center py-20 text-slate-500 font-medium animate-pulse">Cargando biblioteca de medios...</div>
+                  ) : listaMedios.length === 0 ? (
+                    <div className="text-center py-20 text-slate-500 font-medium">No hay archivos multimedia.</div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                      {listaMedios.map((file, i) => {
+                        const isSelected = selectedMedios.includes(file.path);
+                        return (
+                        <div key={i} onClick={() => toggleMedioSelection(file.path)} className={`group cursor-pointer relative bg-white border-2 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all aspect-square flex flex-col ${isSelected ? 'border-red-500 ring-4 ring-red-500/10' : 'border-slate-200'}`}>
+                          
+                          {/* Checkbox Overlay */}
+                          <div className="absolute top-3 left-3 z-20">
+                            <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-red-500 border-red-500 text-white' : 'bg-white/80 border-slate-300 text-transparent'}`}>
+                              <CheckCircleIcon className="w-4 h-4" />
+                            </div>
+                          </div>
+
+                          <div className="flex-1 bg-slate-100 relative overflow-hidden flex items-center justify-center p-2">
+                            {file.metadata?.mimetype?.startsWith('video/') ? (
+                              <video src={file.url} className="w-full h-full object-cover rounded-xl" muted />
+                            ) : (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={file.url} className="w-full h-full object-contain drop-shadow-sm" alt={file.name} loading="lazy" />
+                            )}
+                            <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                              <a href={file.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="bg-white text-slate-900 rounded-full p-2 hover:scale-110 transition-transform shadow-lg" title="Ver original">
+                                <ImageIcon className="w-4 h-4" />
+                              </a>
+                              <button onClick={(e) => { e.stopPropagation(); handleDeleteMedio(file.path); }} className="bg-red-500 text-white rounded-full p-2 hover:scale-110 transition-transform shadow-lg" title="Eliminar archivo">
+                                <TrashIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="p-3 border-t border-slate-100 bg-white">
+                            <p className="text-xs font-bold text-slate-800 truncate" title={file.name}>{file.name}</p>
+                            <div className="flex justify-between items-center mt-1">
+                              <p className="text-[10px] font-bold text-[#002b7f] uppercase tracking-wider bg-blue-50 px-1.5 py-0.5 rounded">{file.carpeta}</p>
+                              <p className="text-[10px] text-slate-400 font-medium">{((file.metadata?.size || 0) / 1024).toFixed(0)} KB</p>
+                            </div>
+                          </div>
+                        </div>
+                      )})}
+                    </div>
+                  )}
+                </div>
+              </div>
             </TabsContent>
 
             {/* MÓDULO DE SOLICITUDES DE AFILIACIÓN */}

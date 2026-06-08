@@ -96,10 +96,15 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
       <section className="py-24 relative overflow-hidden bg-white border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }} 
+              whileInView={{ opacity: 1, x: 0 }} 
+              viewport={{ once: true }} 
+              transition={{ duration: 0.6 }}
+            >
               <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Sala de Prensa</h2>
               <p className="mt-4 text-lg md:text-xl text-slate-500 font-medium">Mantente al día con nuestros anuncios institucionales y de aliados.</p>
-            </div>
+            </motion.div>
             <Link href="/noticias" className="hidden text-[#002b7f] font-bold hover:text-blue-900 md:flex items-center gap-1 transition-colors">
               Ver todas las noticias <ChevronRightIcon className="w-4 h-4" />
             </Link>
@@ -111,8 +116,15 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
                  Aún no hay noticias publicadas.
                </div>
             ) : (
-              noticias.map((noticia: any) => (
-                <div key={noticia.id} className="group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
+              noticias.map((noticia: any, index: number) => (
+                <motion.div 
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: index * 0.15, ease: "easeOut" }}
+                  key={noticia.id} 
+                  className="group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col"
+                >
                   <div className="h-56 relative bg-slate-100 overflow-hidden">
                     {noticia.imagen_url ? (
                       <Image src={noticia.imagen_url} alt={noticia.titulo} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out" />
@@ -138,7 +150,7 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
                       </Link>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))
             )}
           </div>
@@ -149,14 +161,19 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
       <section className="py-32 bg-[#020817] relative overflow-hidden border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-400 mb-6 uppercase tracking-widest">
                 Ecosistema en Tiempo Real
               </div>
               <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter">
                 Pulso <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Industrial</span>
               </h2>
-            </div>
+            </motion.div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -174,9 +191,15 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
               <div className="flex flex-col gap-4">
                 {empresas.length === 0 ? (
                   <div className="h-48 rounded-3xl border border-dashed border-white/10 flex items-center justify-center text-slate-500 font-medium">Aún no hay empresas.</div>
-                ) : empresas.map((empresa: any) => (
+                ) : empresas.map((empresa: any, index: number) => (
                   <Link href="/directorio" key={empresa.id} className="block outline-none">
-                    <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="group relative flex items-center gap-6 p-6 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-white/10 backdrop-blur-xl rounded-3xl cursor-pointer transition-all duration-500 overflow-hidden">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }} 
+                      whileInView={{ opacity: 1, x: 0 }} 
+                      viewport={{ once: true, margin: "-50px" }} 
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="group relative flex items-center gap-6 p-6 bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 hover:border-white/10 backdrop-blur-xl rounded-3xl cursor-pointer transition-all duration-500 overflow-hidden"
+                    >
                       <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white p-3 flex-shrink-0 relative overflow-hidden shadow-lg z-10">
                         {empresa.logo_url ? <Image src={empresa.logo_url} alt={empresa.nombre} fill sizes="80px" className="object-contain p-2 group-hover:scale-110 transition-transform duration-500" /> : <BuildingIcon className="w-8 h-8 text-slate-300 absolute inset-0 m-auto" />}
                       </div>
@@ -211,9 +234,15 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
                   <div className="flex-1 rounded-3xl border border-dashed border-white/10 bg-white/[0.02] flex flex-col items-center justify-center p-8">
                     <p className="text-slate-400 font-medium">No hay eventos próximos agendados.</p>
                   </div>
-                ) : eventos.map((evento: any) => (
+                ) : eventos.map((evento: any, index: number) => (
                   <Link href="/eventos" key={evento.id} className="block group outline-none">
-                    <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative overflow-hidden rounded-3xl border border-white/5 bg-slate-900/50 backdrop-blur-xl transition-all duration-500">
+                    <motion.div 
+                      initial={{ opacity: 0, x: 20 }} 
+                      whileInView={{ opacity: 1, x: 0 }} 
+                      viewport={{ once: true, margin: "-50px" }} 
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="relative overflow-hidden rounded-3xl border border-white/5 bg-slate-900/50 backdrop-blur-xl transition-all duration-500"
+                    >
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-blue-500" />
                     <div className="p-8 pl-10 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                       {evento.imagen_url && (

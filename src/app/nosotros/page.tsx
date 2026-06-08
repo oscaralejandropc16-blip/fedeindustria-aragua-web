@@ -3,8 +3,20 @@
 import { BuildingIcon, UsersIcon, CheckCircleIcon, ArrowRightIcon } from 'lucide-react'
 import { motion, Variants } from 'framer-motion'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 
 export default function NosotrosPage() {
+  const [directiva, setDirectiva] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchDirectiva = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true })
+      if (data) setDirectiva(data)
+    }
+    fetchDirectiva()
+  }, [])
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -74,7 +86,7 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      {/* Junta Directiva (Placeholders) */}
+      {/* Junta Directiva */}
       <section className="py-24 px-6 bg-white border-t border-slate-100">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -82,25 +94,30 @@ export default function NosotrosPage() {
             <p className="mt-4 text-xl text-slate-500 font-medium">Liderazgo comprometido con la excelencia industrial.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { role: 'Presidente', name: 'Nombre del Presidente' },
-              { role: 'Vicepresidente', name: 'Nombre del Vicepresidente' },
-              { role: 'Director Ejecutivo', name: 'Nombre del Director' }
-            ].map((persona, i) => (
+          <div className="flex flex-wrap justify-center gap-8">
+            {directiva.length === 0 ? (
+               <div className="w-full text-center py-12 text-slate-500 font-medium">
+                 Cargando directorio...
+               </div>
+            ) : directiva.map((persona, i) => (
               <motion.div 
-                key={i}
+                key={persona.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="group flex flex-col items-center text-center p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-xl hover:border-slate-200 transition-all duration-300"
+                className="group flex flex-col items-center text-center p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-xl hover:border-slate-200 transition-all duration-300 w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-sm"
               >
-                <div className="w-32 h-32 mb-6 rounded-full bg-slate-200 border-4 border-white shadow-md flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
-                  <UsersIcon className="w-10 h-10 text-slate-400" />
+                <div className="w-56 h-56 mb-8 rounded-full bg-slate-200 border-[6px] border-white shadow-xl flex items-center justify-center overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                  {persona.imagen_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={persona.imagen_url} alt={persona.nombre} className="w-full h-full object-cover" />
+                  ) : (
+                    <UsersIcon className="w-10 h-10 text-slate-400" />
+                  )}
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900">{persona.name}</h3>
-                <p className="text-[#002b7f] font-bold mt-2 uppercase tracking-widest text-sm">{persona.role}</p>
+                <h3 className="text-2xl font-bold text-slate-900">{persona.nombre}</h3>
+                <p className="text-[#002b7f] font-bold mt-2 uppercase tracking-widest text-sm">{persona.cargo}</p>
               </motion.div>
             ))}
           </div>
