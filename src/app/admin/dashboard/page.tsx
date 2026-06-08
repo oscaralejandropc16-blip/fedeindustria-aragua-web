@@ -750,7 +750,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <TabsList className="flex-1 flex flex-col justify-start h-full p-6 space-y-2 bg-transparent border-none">
+        <TabsList className="flex-1 flex flex-col justify-start p-6 space-y-2 bg-transparent border-none overflow-y-auto">
           <div className="px-2 mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400 w-full text-left">Módulos Principales</div>
           
           <TabsTrigger value="home" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
