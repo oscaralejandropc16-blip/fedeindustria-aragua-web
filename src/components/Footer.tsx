@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { MapPinIcon, PhoneIcon, MailIcon } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 
 export default function Footer() {
   const [logoUrl, setLogoUrl] = useState("/logo.png")
+  const pathname = usePathname()
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -18,6 +20,11 @@ export default function Footer() {
     }
     fetchLogo()
   }, [])
+
+  // Evitar mostrar el footer en las rutas de admin para que no cause scroll en el dashboard
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
 
   return (
     <footer className="bg-[#020a1f] text-white pt-24 pb-12 border-t border-white/10 relative overflow-hidden">
