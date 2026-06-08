@@ -702,7 +702,7 @@ export default function Dashboard() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const handleDragEnd = async (event: any, tipo: 'empresas' | 'eventos' | 'noticias' | 'aliados') => {
+  const handleDragEnd = async (event: any, tipo: 'empresas' | 'eventos' | 'noticias' | 'aliados' | 'directiva') => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
