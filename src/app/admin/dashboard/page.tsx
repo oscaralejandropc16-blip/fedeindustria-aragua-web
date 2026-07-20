@@ -975,6 +975,12 @@ export default function Dashboard() {
                     </div>
                   </div>
 
+                  {msg && (
+                    <div className={`p-4 mt-8 mb-6 rounded-xl font-bold relative z-10 ${msg.includes('✅') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                      {msg}
+                    </div>
+                  )}
+
                   <Button type="submit" disabled={loading} className="h-14 px-8 bg-[#002b7f] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-[#002b7f]/25 transition-all w-full md:w-auto">
                     {loading ? uploadStatus || 'Guardando...' : 'Guardar Configuración de Portada'}
                   </Button>
