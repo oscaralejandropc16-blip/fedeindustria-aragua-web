@@ -25,12 +25,12 @@ export default function Footer() {
       if (data) {
         if (data.logo_url) setLogoUrl(data.logo_url)
         setContactData({
-          telefono_1: data.telefono_1 || '0242-6888183',
-          telefono_2: data.telefono_2 || '0424-5401990',
-          telefono_3: data.telefono_3 || '0414-4677830',
-          email_1: data.email_1 || 'fedeindustriaregistroaragua@gmail.com',
-          email_2: data.email_2 || 'fedeindustriaaragua@gmail.com',
-          direccion: data.direccion || 'Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.'
+          telefono_1: data.telefono_1 ?? '0242-6888183',
+          telefono_2: data.telefono_2 ?? '0424-5401990',
+          telefono_3: data.telefono_3 ?? '0414-4677830',
+          email_1: data.email_1 ?? 'fedeindustriaregistroaragua@gmail.com',
+          email_2: data.email_2 ?? 'fedeindustriaaragua@gmail.com',
+          direccion: data.direccion ?? 'Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.'
         })
       }
     }

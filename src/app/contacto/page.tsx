@@ -31,11 +31,11 @@ export default function ContactoPage() {
       const { data } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
       if (data) {
         setContactData({
-          telefono_1: data.telefono_1 || '0242-6888183',
-          telefono_2: data.telefono_2 || '0424-5401990',
-          telefono_3: data.telefono_3 || '0414-4677830',
-          email_1: data.email_1 || 'fedeindustriaregistroaragua@gmail.com',
-          email_2: data.email_2 || 'fedeindustriaaragua@gmail.com'
+          telefono_1: data.telefono_1 ?? '0242-6888183',
+          telefono_2: data.telefono_2 ?? '0424-5401990',
+          telefono_3: data.telefono_3 ?? '0414-4677830',
+          email_1: data.email_1 ?? 'fedeindustriaregistroaragua@gmail.com',
+          email_2: data.email_2 ?? 'fedeindustriaaragua@gmail.com'
         })
       }
     }

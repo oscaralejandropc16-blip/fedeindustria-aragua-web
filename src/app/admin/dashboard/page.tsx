@@ -234,12 +234,12 @@ export default function Dashboard() {
       setHomeSubtitulo(configHomeData.subtitulo)
       setHomeVideoUrl(configHomeData.video_url)
       if (configHomeData.logo_url) setHomeLogoUrl(configHomeData.logo_url)
-      if (configHomeData.telefono_1) setHomeTelefono1(configHomeData.telefono_1)
-      if (configHomeData.telefono_2) setHomeTelefono2(configHomeData.telefono_2)
-      if (configHomeData.telefono_3) setHomeTelefono3(configHomeData.telefono_3)
-      if (configHomeData.email_1) setHomeEmail1(configHomeData.email_1)
-      if (configHomeData.email_2) setHomeEmail2(configHomeData.email_2)
-      if (configHomeData.direccion) setHomeDireccion(configHomeData.direccion)
+      if (configHomeData.telefono_1 !== null && configHomeData.telefono_1 !== undefined) setHomeTelefono1(configHomeData.telefono_1)
+      if (configHomeData.telefono_2 !== null && configHomeData.telefono_2 !== undefined) setHomeTelefono2(configHomeData.telefono_2)
+      if (configHomeData.telefono_3 !== null && configHomeData.telefono_3 !== undefined) setHomeTelefono3(configHomeData.telefono_3)
+      if (configHomeData.email_1 !== null && configHomeData.email_1 !== undefined) setHomeEmail1(configHomeData.email_1)
+      if (configHomeData.email_2 !== null && configHomeData.email_2 !== undefined) setHomeEmail2(configHomeData.email_2)
+      if (configHomeData.direccion !== null && configHomeData.direccion !== undefined) setHomeDireccion(configHomeData.direccion)
     }
 
     setLoadingListas(false)
