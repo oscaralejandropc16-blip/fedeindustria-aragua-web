@@ -91,6 +91,14 @@ export default function Dashboard() {
   const [fileHomeLogo, setFileHomeLogo] = useState<File | null>(null)
   const fileHomeLogoRef = useRef<HTMLInputElement>(null)
 
+  // Estados de Contacto Global
+  const [homeTelefono1, setHomeTelefono1] = useState('0242-6888183')
+  const [homeTelefono2, setHomeTelefono2] = useState('0424-5401990')
+  const [homeTelefono3, setHomeTelefono3] = useState('0414-4677830')
+  const [homeEmail1, setHomeEmail1] = useState('fedeindustriaregistroaragua@gmail.com')
+  const [homeEmail2, setHomeEmail2] = useState('fedeindustriaaragua@gmail.com')
+  const [homeDireccion, setHomeDireccion] = useState('Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.')
+
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
   const [listaEventos, setListaEventos] = useState<any[]>([])
@@ -226,6 +234,12 @@ export default function Dashboard() {
       setHomeSubtitulo(configHomeData.subtitulo)
       setHomeVideoUrl(configHomeData.video_url)
       if (configHomeData.logo_url) setHomeLogoUrl(configHomeData.logo_url)
+      if (configHomeData.telefono_1) setHomeTelefono1(configHomeData.telefono_1)
+      if (configHomeData.telefono_2) setHomeTelefono2(configHomeData.telefono_2)
+      if (configHomeData.telefono_3) setHomeTelefono3(configHomeData.telefono_3)
+      if (configHomeData.email_1) setHomeEmail1(configHomeData.email_1)
+      if (configHomeData.email_2) setHomeEmail2(configHomeData.email_2)
+      if (configHomeData.direccion) setHomeDireccion(configHomeData.direccion)
     }
 
     setLoadingListas(false)
@@ -672,10 +686,25 @@ export default function Dashboard() {
       setHomeLogoUrl(finalLogoUrl)
     }
 
-    const { error } = await supabase.from('configuracion_home').upsert({ id: 1, titulo: homeTitulo, subtitulo: homeSubtitulo, video_url: finalVideoUrl, logo_url: finalLogoUrl })
+    const payloadHome = { 
+      id: 1, 
+      titulo: homeTitulo, 
+      subtitulo: homeSubtitulo, 
+      video_url: finalVideoUrl, 
+      logo_url: finalLogoUrl,
+      telefono_1: homeTelefono1,
+      telefono_2: homeTelefono2,
+      telefono_3: homeTelefono3,
+      email_1: homeEmail1,
+      email_2: homeEmail2,
+      direccion: homeDireccion 
+    };
+    const { error } = await supabase.from('configuracion_home').upsert(payloadHome)
     if (error) {
       if (error.message.includes('logo_url')) {
         setMsg(`❌ Error: Falta la columna 'logo_url' (tipo text) en la tabla 'configuracion_home' en Supabase. Añádela desde el panel SQL para guardar el logo.`);
+      } else if (error.message.includes('telefono_1') || error.message.includes('email_1')) {
+        setMsg(`❌ Error: Faltan las columnas de contacto en Supabase (telefono_1, telefono_2, telefono_3, email_1, email_2, direccion). Añádelas como texto (text) en la tabla 'configuracion_home'.`);
       } else {
         setMsg(`❌ Error: ${error.message}`);
       }
@@ -910,6 +939,38 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6 mt-10 border-t border-slate-100 pt-8 md:col-span-2">
+                    <h4 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><PhoneIcon className="w-5 h-5 text-[#002b7f]" /> Información de Contacto Global</h4>
+                    <p className="text-sm text-slate-500 mb-6">Esta información se actualizará automáticamente en el Footer y en la página de Contacto de toda la web.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-blue-500" /> Teléfono 1</Label>
+                        <Input value={homeTelefono1} onChange={e => setHomeTelefono1(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-blue-500" /> Teléfono 2 (Opcional)</Label>
+                        <Input value={homeTelefono2} onChange={e => setHomeTelefono2(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><PhoneIcon className="w-4 h-4 text-blue-500" /> Teléfono 3 (Opcional)</Label>
+                        <Input value={homeTelefono3} onChange={e => setHomeTelefono3(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><MailIcon className="w-4 h-4 text-red-500" /> Email Principal</Label>
+                        <Input value={homeEmail1} onChange={e => setHomeEmail1(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
+                      </div>
+                      <div className="space-y-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><MailIcon className="w-4 h-4 text-red-500" /> Email Secundario (Opcional)</Label>
+                        <Input value={homeEmail2} onChange={e => setHomeEmail2(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
+                      </div>
+                      <div className="space-y-3 lg:col-span-3">
+                        <Label className="text-slate-700 font-bold flex items-center gap-2"><MapPinIcon className="w-4 h-4 text-emerald-500" /> Dirección Principal</Label>
+                        <Input value={homeDireccion} onChange={e => setHomeDireccion(e.target.value)} className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" />
                       </div>
                     </div>
                   </div>

@@ -8,14 +8,30 @@ import { createClient } from "@/utils/supabase/client"
 
 export default function Footer() {
   const [logoUrl, setLogoUrl] = useState("/logo.png")
+  const [contactData, setContactData] = useState<any>({
+    telefono_1: '0242-6888183',
+    telefono_2: '0424-5401990',
+    telefono_3: '0414-4677830',
+    email_1: 'fedeindustriaregistroaragua@gmail.com',
+    email_2: 'fedeindustriaaragua@gmail.com',
+    direccion: 'Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.'
+  })
   const pathname = usePathname()
 
   useEffect(() => {
     const fetchLogo = async () => {
       const supabase = createClient()
-      const { data } = await supabase.from('configuracion_home').select('logo_url').eq('id', 1).single()
-      if (data && data.logo_url) {
-        setLogoUrl(data.logo_url)
+      const { data } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
+      if (data) {
+        if (data.logo_url) setLogoUrl(data.logo_url)
+        setContactData({
+          telefono_1: data.telefono_1 || '0242-6888183',
+          telefono_2: data.telefono_2 || '0424-5401990',
+          telefono_3: data.telefono_3 || '0414-4677830',
+          email_1: data.email_1 || 'fedeindustriaregistroaragua@gmail.com',
+          email_2: data.email_2 || 'fedeindustriaaragua@gmail.com',
+          direccion: data.direccion || 'Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.'
+        })
       }
     }
     fetchLogo()
@@ -58,21 +74,21 @@ export default function Footer() {
           <ul className="space-y-5 text-slate-300 font-medium">
             <li className="flex items-start gap-4 group">
               <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><MapPinIcon className="w-5 h-5 text-white" /></div>
-              <span className="mt-1 leading-relaxed">Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.</span>
+              <span className="mt-1 leading-relaxed">{contactData.direccion}</span>
             </li>
             <li className="flex items-start gap-4 group">
               <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><PhoneIcon className="w-5 h-5 text-white" /></div>
               <div className="flex flex-col gap-1">
-                <a href="tel:02426888183" className="hover:text-white transition-colors">0242-6888183</a>
-                <a href="tel:04245401990" className="hover:text-white transition-colors">0424-5401990</a>
-                <a href="tel:04144677830" className="hover:text-white transition-colors">0414-4677830</a>
+                {contactData.telefono_1 && <a href={`tel:${contactData.telefono_1.replace(/\D/g, '')}`} className="hover:text-white transition-colors">{contactData.telefono_1}</a>}
+                {contactData.telefono_2 && <a href={`tel:${contactData.telefono_2.replace(/\D/g, '')}`} className="hover:text-white transition-colors">{contactData.telefono_2}</a>}
+                {contactData.telefono_3 && <a href={`tel:${contactData.telefono_3.replace(/\D/g, '')}`} className="hover:text-white transition-colors">{contactData.telefono_3}</a>}
               </div>
             </li>
             <li className="flex items-start gap-4 group">
               <div className="bg-white/10 p-2.5 rounded-xl group-hover:bg-[#002b7f] transition-colors"><MailIcon className="w-5 h-5 text-white" /></div>
               <div className="flex flex-col gap-1 text-sm lowercase break-words">
-                <a href="mailto:fedeindustriaregistroaragua@gmail.com" className="hover:text-white transition-colors block">fedeindustriaregistroaragua@gmail.com</a>
-                <a href="mailto:fedeindustriaaragua@gmail.com" className="hover:text-white transition-colors block">fedeindustriaaragua@gmail.com</a>
+                {contactData.email_1 && <a href={`mailto:${contactData.email_1}`} className="hover:text-white transition-colors block">{contactData.email_1}</a>}
+                {contactData.email_2 && <a href={`mailto:${contactData.email_2}`} className="hover:text-white transition-colors block">{contactData.email_2}</a>}
               </div>
             </li>
           </ul>

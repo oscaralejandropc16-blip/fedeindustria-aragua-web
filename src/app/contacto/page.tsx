@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { CheckCircleIcon, MailIcon, PhoneIcon, ArrowRightIcon, Building2Icon, UserIcon, HashIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -16,6 +16,31 @@ export default function ContactoPage() {
   const [email, setEmail] = useState('')
   const [telefono, setTelefono] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [contactData, setContactData] = useState<any>({
+    telefono_1: '0242-6888183',
+    telefono_2: '0424-5401990',
+    telefono_3: '0414-4677830',
+    email_1: 'fedeindustriaregistroaragua@gmail.com',
+    email_2: 'fedeindustriaaragua@gmail.com'
+  })
+
+  useEffect(() => {
+    const fetchContact = async () => {
+      const { createClient } = await import('@/utils/supabase/client')
+      const supabase = createClient()
+      const { data } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
+      if (data) {
+        setContactData({
+          telefono_1: data.telefono_1 || '0242-6888183',
+          telefono_2: data.telefono_2 || '0424-5401990',
+          telefono_3: data.telefono_3 || '0414-4677830',
+          email_1: data.email_1 || 'fedeindustriaregistroaragua@gmail.com',
+          email_2: data.email_2 || 'fedeindustriaaragua@gmail.com'
+        })
+      }
+    }
+    fetchContact()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -109,9 +134,9 @@ export default function ContactoPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-blue-200 uppercase tracking-widest mb-1">Llámanos</p>
-                  <p className="font-bold text-white text-sm">0242-6888183</p>
-                  <p className="font-bold text-white text-sm">0424-5401990</p>
-                  <p className="font-bold text-white text-sm">0414-4677830</p>
+                  {contactData.telefono_1 && <p className="font-bold text-white text-sm">{contactData.telefono_1}</p>}
+                  {contactData.telefono_2 && <p className="font-bold text-white text-sm">{contactData.telefono_2}</p>}
+                  {contactData.telefono_3 && <p className="font-bold text-white text-sm">{contactData.telefono_3}</p>}
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -120,8 +145,8 @@ export default function ContactoPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-blue-200 uppercase tracking-widest mb-1">Escríbenos</p>
-                  <p className="font-bold text-white text-xs lowercase">fedeindustriaregistroaragua@gmail.com</p>
-                  <p className="font-bold text-white text-xs lowercase">fedeindustriaaragua@gmail.com</p>
+                  {contactData.email_1 && <p className="font-bold text-white text-xs lowercase">{contactData.email_1}</p>}
+                  {contactData.email_2 && <p className="font-bold text-white text-xs lowercase">{contactData.email_2}</p>}
                 </div>
               </div>
             </div>
