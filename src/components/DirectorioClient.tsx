@@ -31,7 +31,22 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
     return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
   }
 
+  const [selectedEstatus, setSelectedEstatus] = useState<'todas' | 'activas' | 'pendientes' | 'inactivas'>('todas')
+
+  const countTodas = empresasIniciales.length
+  const countActivas = empresasIniciales.filter(e => (e.estatus_membresia || '').toLowerCase() === 'activa').length
+  const countPendientes = empresasIniciales.filter(e => (e.estatus_membresia || '').toLowerCase() === 'pendiente').length
+  const countInactivas = empresasIniciales.filter(e => {
+    const st = (e.estatus_membresia || '').toLowerCase()
+    return st === 'inactiva' || st === 'desactivada'
+  }).length
+
   const filteredEmpresas = empresasIniciales.filter((empresa) => {
+    const status = (empresa.estatus_membresia || '').toLowerCase()
+    if (selectedEstatus === 'activas' && status !== 'activa') return false
+    if (selectedEstatus === 'pendientes' && status !== 'pendiente') return false
+    if (selectedEstatus === 'inactivas' && status !== 'inactiva' && status !== 'desactivada') return false
+
     if (!searchQuery.trim()) return true
     const query = normalizeText(searchQuery)
     return (
@@ -43,6 +58,11 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
       normalizeText(empresa.email).includes(query)
     )
   })
+
+  const handleEstatusChange = (val: 'todas' | 'activas' | 'pendientes' | 'inactivas') => {
+    setSelectedEstatus(val)
+    setCurrentPage(1)
+  }
 
   const ITEMS_PER_PAGE = 12
   const [currentPage, setCurrentPage] = useState(1)
@@ -123,17 +143,81 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
             Encuentra y conecta con los líderes de la industria en Aragua. Un ecosistema diseñado para la sinergia comercial.
           </p>
           
-          <div className="w-full max-w-2xl relative mt-8 group">
-            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-              <SearchIcon className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+          <div className="w-full max-w-2xl space-y-4 mt-8">
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+                <SearchIcon className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+              </div>
+              <Input 
+                type="search" 
+                placeholder="Buscar por nombre o rubro industrial..." 
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="w-full h-16 pl-14 bg-slate-900/50 backdrop-blur-xl border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl text-lg font-medium shadow-xl transition-all"
+              />
             </div>
-            <Input 
-              type="search" 
-              placeholder="Buscar por nombre o rubro industrial..." 
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full h-16 pl-14 bg-slate-900/50 backdrop-blur-xl border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl text-lg font-medium shadow-xl transition-all"
-            />
+
+            {/* Filtros por Estatus de Membresía */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2">
+              <button
+                onClick={() => handleEstatusChange('todas')}
+                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 border ${
+                  selectedEstatus === 'todas'
+                    ? 'bg-blue-600/20 border-blue-500 text-blue-300 shadow-lg shadow-blue-500/10'
+                    : 'bg-slate-900/40 border-white/10 text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <span>Todas</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-extrabold ${selectedEstatus === 'todas' ? 'bg-blue-500 text-white' : 'bg-white/10 text-slate-400'}`}>
+                  {countTodas}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleEstatusChange('activas')}
+                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 border ${
+                  selectedEstatus === 'activas'
+                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-500/10'
+                    : 'bg-slate-900/40 border-white/10 text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Activas</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-extrabold ${selectedEstatus === 'activas' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-slate-400'}`}>
+                  {countActivas}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleEstatusChange('pendientes')}
+                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 border ${
+                  selectedEstatus === 'pendientes'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-lg shadow-amber-500/10'
+                    : 'bg-slate-900/40 border-white/10 text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>Pendientes</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-extrabold ${selectedEstatus === 'pendientes' ? 'bg-amber-500 text-white' : 'bg-white/10 text-slate-400'}`}>
+                  {countPendientes}
+                </span>
+              </button>
+
+              <button
+                onClick={() => handleEstatusChange('inactivas')}
+                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 border ${
+                  selectedEstatus === 'inactivas'
+                    ? 'bg-red-500/20 border-red-500 text-red-300 shadow-lg shadow-red-500/10'
+                    : 'bg-slate-900/40 border-white/10 text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-red-400" />
+                <span>Inactivas</span>
+                <span className={`px-2 py-0.5 rounded-full text-xs font-extrabold ${selectedEstatus === 'inactivas' ? 'bg-red-500 text-white' : 'bg-white/10 text-slate-400'}`}>
+                  {countInactivas}
+                </span>
+              </button>
+            </div>
           </div>
         </motion.div>
 
