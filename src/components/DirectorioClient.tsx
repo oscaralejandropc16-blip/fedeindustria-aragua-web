@@ -26,11 +26,21 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa | null>(null)
 
+  const normalizeText = (text: string | null | undefined) => {
+    if (!text) return ''
+    return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  }
+
   const filteredEmpresas = empresasIniciales.filter((empresa) => {
-    const query = searchQuery.toLowerCase()
+    if (!searchQuery.trim()) return true
+    const query = normalizeText(searchQuery)
     return (
-      empresa.nombre.toLowerCase().includes(query) ||
-      (empresa.rubro && empresa.rubro.toLowerCase().includes(query))
+      normalizeText(empresa.nombre).includes(query) ||
+      normalizeText(empresa.rubro).includes(query) ||
+      normalizeText(empresa.rif).includes(query) ||
+      normalizeText(empresa.direccion).includes(query) ||
+      normalizeText(empresa.telefono).includes(query) ||
+      normalizeText(empresa.email).includes(query)
     )
   })
 
