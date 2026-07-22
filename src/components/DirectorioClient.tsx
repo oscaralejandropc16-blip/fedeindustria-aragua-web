@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, MailIcon } from 'lucide-react'
+import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, MailIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 import Image from 'next/image'
 
@@ -43,6 +43,27 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
       normalizeText(empresa.email).includes(query)
     )
   })
+
+  const ITEMS_PER_PAGE = 12
+  const [currentPage, setCurrentPage] = useState(1)
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    setCurrentPage(1)
+  }
+
+  const totalPages = Math.ceil(filteredEmpresas.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredEmpresas.length)
+  const paginatedEmpresas = filteredEmpresas.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+      gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const getHoverStyles = (estatus: string) => {
     const state = estatus.toLowerCase()
@@ -110,7 +131,7 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
               type="search" 
               placeholder="Buscar por nombre o rubro industrial..." 
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full h-16 pl-14 bg-slate-900/50 backdrop-blur-xl border-white/10 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl text-lg font-medium shadow-xl transition-all"
             />
           </div>
@@ -132,79 +153,124 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
             </p>
           </motion.div>
         ) : (
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-8"
-          >
-            <AnimatePresence>
-              {filteredEmpresas.map((empresa) => (
-                <motion.div 
-                  variants={itemVariants}
-                  key={empresa.id}
-                  layout
-                >
-                  <div 
-                    onClick={() => setSelectedEmpresa(empresa)}
-                    className={`group flex flex-col h-full overflow-hidden rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/5 transition-all duration-500 hover:-translate-y-2 cursor-pointer ${getHoverStyles(empresa.estatus_membresia)}`}
+          <div ref={gridRef} className="space-y-10 pt-4">
+            <motion.div 
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              <AnimatePresence mode="wait">
+                {paginatedEmpresas.map((empresa) => (
+                  <motion.div 
+                    variants={itemVariants}
+                    key={empresa.id}
+                    layout
                   >
-                    
-                    {/* Banner Superior oscuro */}
-                    <div className="h-32 w-full relative bg-gradient-to-tr from-[#002b7f]/40 to-[#0a0f1c] border-b border-white/5 overflow-hidden">
-                      <div className="absolute inset-0 bg-[#002b7f]/20 blur-[40px]" />
-                    </div>
-
-                    {/* Contenedor del Logo (Flotante estilo perfil) */}
-                    <div className="relative px-6">
-                      <div className="absolute -top-12 left-6 w-24 h-24 bg-white rounded-2xl p-2.5 shadow-xl shadow-black/50 border-4 border-[#0a0f1c] flex items-center justify-center z-10 group-hover:-translate-y-1 transition-transform duration-500 overflow-hidden">
-                        {empresa.logo_url ? (
-                          <Image 
-                            src={empresa.logo_url} 
-                            alt={`Logo de ${empresa.nombre}`} 
-                            fill
-                            sizes="96px"
-                            className="object-contain p-1 mix-blend-multiply drop-shadow-sm"
-                          />
-                        ) : (
-                          <BuildingIcon className="w-8 h-8 text-slate-300" />
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Contenido Textual */}
-                    <div className="flex flex-col flex-grow p-6 pt-16">
-                      <div className="flex-grow">
-                        <h3 className="text-xl font-extrabold text-white tracking-tight line-clamp-2 leading-snug group-hover:text-blue-300 transition-colors">
-                          {empresa.nombre}
-                        </h3>
-                        <p className="text-slate-400 mt-2 font-medium text-sm line-clamp-1">
-                          {empresa.rubro || 'Rubro Industrial'}
-                        </p>
-                      </div>
+                    <div 
+                      onClick={() => setSelectedEmpresa(empresa)}
+                      className={`group flex flex-col h-full overflow-hidden rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/5 transition-all duration-500 hover:-translate-y-2 cursor-pointer ${getHoverStyles(empresa.estatus_membresia)}`}
+                    >
                       
-                      <div className="mt-6 flex items-center justify-between">
-                        <Badge 
-                          variant="outline"
-                          className={`font-bold px-3 py-1 ${getBadgeVariant(empresa.estatus_membresia)}`}
-                        >
-                          {empresa.estatus_membresia}
-                        </Badge>
-                        
-                        {/* Indicador interactivo */}
-                        <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 border border-blue-500/20">
-                          <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                          </svg>
+                      {/* Banner Superior oscuro */}
+                      <div className="h-32 w-full relative bg-gradient-to-tr from-[#002b7f]/40 to-[#0a0f1c] border-b border-white/5 overflow-hidden">
+                        <div className="absolute inset-0 bg-[#002b7f]/20 blur-[40px]" />
+                      </div>
+
+                      {/* Contenedor del Logo (Flotante estilo perfil) */}
+                      <div className="relative px-6">
+                        <div className="absolute -top-12 left-6 w-24 h-24 bg-white rounded-2xl p-2.5 shadow-xl shadow-black/50 border-4 border-[#0a0f1c] flex items-center justify-center z-10 group-hover:-translate-y-1 transition-transform duration-500 overflow-hidden">
+                          {empresa.logo_url ? (
+                            <Image 
+                              src={empresa.logo_url} 
+                              alt={`Logo de ${empresa.nombre}`} 
+                              fill
+                              sizes="96px"
+                              className="object-contain p-1 mix-blend-multiply drop-shadow-sm"
+                            />
+                          ) : (
+                            <BuildingIcon className="w-8 h-8 text-slate-300" />
+                          )}
                         </div>
                       </div>
-                    </div>
+                      
+                      {/* Contenido Textual */}
+                      <div className="flex flex-col flex-grow p-6 pt-16">
+                        <div className="flex-grow">
+                          <h3 className="text-xl font-extrabold text-white tracking-tight line-clamp-2 leading-snug group-hover:text-blue-300 transition-colors">
+                            {empresa.nombre}
+                          </h3>
+                          <p className="text-slate-400 mt-2 font-medium text-sm line-clamp-1">
+                            {empresa.rubro || 'Rubro Industrial'}
+                          </p>
+                        </div>
+                        
+                        <div className="mt-6 flex items-center justify-between">
+                          <Badge 
+                            variant="outline"
+                            className={`font-bold px-3 py-1 ${getBadgeVariant(empresa.estatus_membresia)}`}
+                          >
+                            {empresa.estatus_membresia}
+                          </Badge>
+                          
+                          {/* Indicador interactivo */}
+                          <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 border border-blue-500/20">
+                            <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
 
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* BARRA DE PAGINACIÓN */}
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10 text-sm font-medium">
+                <p className="text-slate-400">
+                  Mostrando <span className="font-bold text-white">{startIndex + 1}</span> a <span className="font-bold text-white">{endIndex}</span> de <span className="font-bold text-white">{filteredEmpresas.length}</span> empresas
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-slate-300 font-bold hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                  >
+                    <ChevronLeftIcon className="w-4 h-4" /> Anterior
+                  </button>
+
+                  <div className="flex items-center gap-1.5 overflow-x-auto max-w-[280px] sm:max-w-none py-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        className={`w-10 h-10 rounded-xl font-bold transition-all flex items-center justify-center shrink-0 ${
+                          currentPage === pageNum
+                            ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/25 scale-105'
+                            : 'bg-slate-900/40 text-slate-400 hover:text-white hover:bg-slate-800 border border-white/10'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+
+                  <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-slate-300 font-bold hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                  >
+                    Siguiente <ChevronRightIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
