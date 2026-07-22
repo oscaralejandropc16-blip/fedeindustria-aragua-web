@@ -801,7 +801,7 @@ export default function Dashboard() {
             <NewspaperIcon className="w-5 h-5" /> Sala de Prensa
           </TabsTrigger>
           <TabsTrigger value="aliados" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
-            <ImageIcon className="w-5 h-5" /> Aliados
+            <ImageIcon className="w-5 h-5" /> Carrusel de Logos (Inicio)
           </TabsTrigger>
           <TabsTrigger value="directiva" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <UsersIcon className="w-5 h-5" /> Junta Directiva
@@ -1686,19 +1686,19 @@ export default function Dashboard() {
                     <div id="form-aliado-header" className="flex items-center justify-between mb-8">
                       <h3 className="text-2xl font-black flex items-center gap-3 text-[#002b7f] tracking-tight">
                         <ImageIcon className="w-6 h-6 text-[#002b7f]/70" />
-                        {editingAliadoId ? <span>Edición: <span className="font-medium text-slate-500">{nombreAliado}</span></span> : 'Registrar Nuevo Aliado'}
+                        {editingAliadoId ? <span>Edición: <span className="font-medium text-slate-500">{nombreAliado}</span></span> : 'Agregar Logo al Carrusel'}
                       </h3>
                       <Button variant="ghost" onClick={() => { setShowFormAliado(false); setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); setCurrentImagenAliado(null); setMsgAliado(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
-                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver a Aliados
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver al Carrusel
                       </Button>
                     </div>
                   <CardContent className="p-8 space-y-6 bg-transparent">
                     <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold">Nombre de la Institución o Marca</Label>
-                      <Input id="nombre-aliado" name="nombreAliado" autoComplete="off" required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Banesco, Movilnet..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
+                      <Label className="text-slate-700 font-bold">Nombre de la Empresa o Marca</Label>
+                      <Input id="nombre-aliado" name="nombreAliado" autoComplete="off" required value={nombreAliado} onChange={e => setNombreAliado(e.target.value)} placeholder="Ej. Bera, Nuciven, Lumalac..." className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-[#002b7f]" disabled={loading} />
                     </div>
                     <div className="space-y-3">
-                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial</Label>
+                      <Label className="text-slate-700 font-bold flex items-center gap-2"><ImageIcon className="w-4 h-4 text-slate-400" /> Logo Oficial para el Carrusel</Label>
                       
                       {editingAliadoId && currentImagenAliado && !fileAliado && (
                         <div className="mb-4 flex items-center justify-between p-4 border border-blue-100 bg-blue-50/50 rounded-xl relative group">
@@ -1726,7 +1726,7 @@ export default function Dashboard() {
                           const selected = e.target.files?.[0];
                           if (selected) {
                             if (selected.size > 10 * 1024 * 1024) {
-                              alert("El logo del aliado excede el límite de 10MB.");
+                              alert("El logo excede el límite de 10MB.");
                               if (fileAliadoRef.current) fileAliadoRef.current.value = '';
                               return;
                             }
@@ -1757,7 +1757,7 @@ export default function Dashboard() {
                       {msgAliado && <div className={`p-4 rounded-xl font-bold text-sm ${msgAliado.includes('❌') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}`}>{msgAliado}</div>}
                     </div>
                     <Button onClick={handleAddAliado} disabled={loading} className="w-full md:w-auto bg-[#002b7f] hover:bg-blue-900 text-white h-12 px-10 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition-all text-base flex-shrink-0">
-                      {loading ? 'Procesando...' : (editingAliadoId ? 'Guardar Cambios' : 'Agregar Aliado')}
+                      {loading ? 'Procesando...' : (editingAliadoId ? 'Guardar Cambios' : 'Agregar Logo al Carrusel')}
                     </Button>
                   </div>
                 </motion.div>
@@ -1765,11 +1765,11 @@ export default function Dashboard() {
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                     <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
                       <div>
-                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Aliados Estratégicos <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaAliados.length} en total</span></h3>
-                        <p className="text-sm text-slate-500 mt-1">Gestiona los aliados y partners institucionales.</p>
+                        <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Carrusel de Logos (Inicio) <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaAliados.length} en total</span></h3>
+                        <p className="text-sm text-slate-500 mt-1">Gestiona las marcas y logos de empresas que se desplazan horizontalmente en la portada principal.</p>
                       </div>
                       <Button onClick={() => { setEditingAliadoId(null); setNombreAliado(''); setFileAliado(null); setCurrentImagenAliado(null); setMsgAliado(''); setShowFormAliado(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
-                        <PlusIcon className="w-5 h-5" /> Agregar Aliado
+                        <PlusIcon className="w-5 h-5" /> Agregar Logo
                       </Button>
                     </div>
                     
@@ -1777,7 +1777,7 @@ export default function Dashboard() {
                     {loadingListas ? (
                       <div className="p-8 text-center text-slate-500 font-medium animate-pulse">Cargando registros...</div>
                     ) : listaAliados.length === 0 ? (
-                      <div className="p-8 text-center text-slate-500 font-medium">No hay aliados registrados.</div>
+                      <div className="p-8 text-center text-slate-500 font-medium">No hay logos registrados en el carrusel todavía.</div>
                     ) : (
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'aliados')}>
                         <SortableContext items={listaAliados.map(e => e.id.toString())} strategy={verticalListSortingStrategy}>
