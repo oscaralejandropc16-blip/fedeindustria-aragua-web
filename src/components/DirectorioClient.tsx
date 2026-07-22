@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon } from 'lucide-react'
+import { SearchIcon, BuildingIcon, SparklesIcon, XIcon, MapPinIcon, PhoneIcon, HashIcon, BriefcaseIcon, MailIcon } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 import Image from 'next/image'
 
@@ -19,6 +19,7 @@ type Empresa = {
   instagram: string | null
   tiktok: string | null
   web: string | null
+  email: string | null
 }
 
 export default function DirectorioClient({ empresasIniciales }: { empresasIniciales: Empresa[] }) {
@@ -288,6 +289,18 @@ export default function DirectorioClient({ empresasIniciales }: { empresasInicia
                             </a>
                           ))}
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedEmpresa.email && (
+                    <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                      <MailIcon className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Correo Electrónico</p>
+                        <a href={`mailto:${selectedEmpresa.email}`} className="text-blue-400 font-bold hover:text-blue-300 transition-colors block break-all">
+                          {selectedEmpresa.email}
+                        </a>
                       </div>
                     </div>
                   )}

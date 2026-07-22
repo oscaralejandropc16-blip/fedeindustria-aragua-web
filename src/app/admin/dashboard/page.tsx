@@ -29,6 +29,7 @@ export default function Dashboard() {
   const [instagram, setInstagram] = useState('')
   const [tiktok, setTiktok] = useState('')
   const [web, setWeb] = useState('')
+  const [email, setEmail] = useState('')
   const [estatus, setEstatus] = useState('Activa')
   const [ordenEmpresa, setOrdenEmpresa] = useState(0)
   const [file, setFile] = useState<File | null>(null)
@@ -296,6 +297,7 @@ export default function Dashboard() {
     setInstagram(empresa.instagram || '')
     setTiktok(empresa.tiktok || '')
     setWeb(empresa.web || '')
+    setEmail(empresa.email || '')
     setEstatus(empresa.estatus_membresia)
     setOrdenEmpresa(empresa.orden || 0)
     setFile(null)
@@ -385,7 +387,7 @@ export default function Dashboard() {
     setUploadStatus('Guardando datos de la empresa...')
     
     const combinedTelefono = [telefono, telefono2].filter(t => t && t.trim() !== '').join(' / ')
-    const payload: any = { nombre, rif, rubro, direccion, telefono: combinedTelefono, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
+    const payload: any = { nombre, rif, rubro, direccion, telefono: combinedTelefono, email: email.trim() || null, instagram, tiktok, web, estatus_membresia: estatus, orden: ordenEmpresa }
     if (logo_url !== null) {
       payload.logo_url = logo_url
     } else if (editingEmpresaId && currentImagenEmpresa === null) {
@@ -402,10 +404,14 @@ export default function Dashboard() {
     }
 
     if (error) {
-      setMsg(`❌ Error: ${error.message}`)
+      if (error.message.includes('email')) {
+        setMsg(`❌ Error: Falta la columna 'email' en la tabla 'empresas_afiliadas' en Supabase. Ejecuta el archivo SQL update_empresas_email.sql en tu panel de Supabase.`)
+      } else {
+        setMsg(`❌ Error: ${error.message}`)
+      }
     } else {
       setMsg(editingEmpresaId ? '✅ Empresa actualizada exitosamente.' : '✅ Empresa registrada exitosamente.')
-      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setOrdenEmpresa(0)
+      setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setEmail(''); setFile(null); setOrdenEmpresa(0)
       setEditingEmpresaId(null)
       setShowFormEmpresa(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -1001,7 +1007,7 @@ export default function Dashboard() {
                         <BuildingIcon className="w-6 h-6 text-[#002b7f]/70" />
                         {editingEmpresaId ? <span>Edición: <span className="font-medium text-slate-500">{nombre}</span></span> : 'Registrar Nueva Empresa'}
                       </h3>
-                      <Button variant="ghost" onClick={() => { setShowFormEmpresa(false); setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setMsg(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
+                      <Button variant="ghost" onClick={() => { setShowFormEmpresa(false); setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setEmail(''); setFile(null); setMsg(''); }} className="text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors rounded-xl h-10 px-4 font-bold">
                         <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver al Directorio
                       </Button>
                     </div>
@@ -1080,7 +1086,13 @@ export default function Dashboard() {
                         <Label className="text-sm font-bold text-slate-700 flex items-center gap-2"><svg className="w-4 h-4 text-slate-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg> TikTok <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
                         <Input value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tuempresa" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
                       </div>
-                      <div className="space-y-2 md:col-span-2">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                          <MailIcon className="w-4 h-4 text-blue-600" /> Correo Electrónico <span className="text-xs font-normal text-slate-400">(Opcional)</span>
+                        </Label>
+                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="contacto@empresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
+                      </div>
+                      <div className="space-y-2">
                         <Label className="text-sm font-bold text-slate-700 flex items-center gap-2"><svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Página Web <span className="text-xs font-normal text-slate-400">(Opcional)</span></Label>
                         <Input value={web} onChange={e => setWeb(e.target.value)} placeholder="www.tuempresa.com" className="h-12 bg-white border-slate-200 shadow-sm rounded-xl focus-visible:ring-blue-500" disabled={loading} />
                       </div>
@@ -1174,7 +1186,7 @@ export default function Dashboard() {
                         <h3 className="text-xl font-black flex items-center gap-2 text-slate-900 tracking-tight">Directorio de Empresas <span className="bg-[#002b7f]/10 text-[#002b7f] text-xs font-bold px-2.5 py-1 rounded-full ml-2">{listaEmpresas.length} en total</span></h3>
                         <p className="text-sm text-slate-500 mt-1">Gestiona las empresas afiliadas a Fedeindustria Aragua.</p>
                       </div>
-                      <Button onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setFile(null); setMsg(''); setShowFormEmpresa(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
+                      <Button onClick={() => { setEditingEmpresaId(null); setNombre(''); setRif(''); setRubro(''); setDireccion(''); setTelefono(''); setTelefono2(''); setInstagram(''); setTiktok(''); setWeb(''); setEmail(''); setFile(null); setMsg(''); setShowFormEmpresa(true); }} className="bg-[#002b7f] hover:bg-blue-900 text-white shadow-md shadow-[#002b7f]/20 font-bold rounded-xl h-11 px-5 flex gap-2 items-center transition-all">
                         <PlusIcon className="w-5 h-5" /> Registrar Empresa
                       </Button>
                     </div>

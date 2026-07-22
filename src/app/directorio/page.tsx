@@ -9,7 +9,7 @@ export default async function DirectorioPage() {
   // Proyección de columnas estrictamente necesarias
   const { data: empresas } = await supabase
     .from('empresas_afiliadas')
-    .select('id, nombre, rif, rubro, logo_url, telefono, direccion, estatus_membresia, instagram, tiktok, web')
+    .select('id, nombre, rif, rubro, logo_url, telefono, direccion, estatus_membresia, instagram, tiktok, web, email')
     .order('orden', { ascending: true })
     .order('nombre')
     // Limitando a 24 para evitar sobrecarga inicial.
