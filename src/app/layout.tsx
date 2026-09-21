@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     "Fedeindustria Aragua",
     "fedeindustriaragua",
     "Fedeindustria",
+    "feindustria",
+    "feindustriaragua",
+    "fedeindustria maracay",
     "fedeindustriaragua.org.ve",
     "www.fedeindustriaragua.org.ve",
     "Cámara de Industriales Aragua",
@@ -33,7 +36,9 @@ export const metadata: Metadata = {
     "Noticias industriales Aragua",
     "Eventos empresariales Maracay",
     "Comercio Aragua",
-    "Sector productivo Aragua"
+    "Sector productivo Aragua",
+    "Fedeindustria regional",
+    "CIEA Aragua"
   ],
   authors: [{ name: "Fedeindustria Aragua", url: "https://www.fedeindustriaragua.org.ve" }],
   creator: "Fedeindustria Aragua",
@@ -104,8 +109,12 @@ const jsonLd = {
       "name": "Fedeindustria Aragua",
       "alternateName": [
         "Fedeindustria",
+        "feindustria",
         "fedeindustriaragua",
+        "feindustriaragua",
+        "Fedeindustria Aragua",
         "Fedeindustria Estado Aragua",
+        "Fedeindustria Maracay",
         "Cámara de Industriales de Aragua",
         "Fedeindustria Aragua Oficial"
       ],
@@ -120,6 +129,15 @@ const jsonLd = {
       "@id": "https://www.fedeindustriaragua.org.ve/#organization",
       "name": "Fedeindustria Aragua",
       "legalName": "Cámara de Industriales, Empresarios y Comerciantes del Estado Aragua",
+      "alternateName": [
+        "Fedeindustria Aragua",
+        "Fedeindustria",
+        "feindustria",
+        "fedeindustriaragua",
+        "feindustriaragua",
+        "Fedeindustria Maracay",
+        "Cámara de Industriales de Aragua"
+      ],
       "url": "https://www.fedeindustriaragua.org.ve",
       "logo": {
         "@type": "ImageObject",
