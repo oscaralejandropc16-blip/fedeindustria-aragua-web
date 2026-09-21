@@ -8,12 +8,21 @@ import { createClient } from '@/utils/supabase/client'
 
 export default function NosotrosPage() {
   const [directiva, setDirectiva] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchDirectiva = async () => {
-      const supabase = createClient()
-      const { data } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true })
-      if (data) setDirectiva(data)
+      try {
+        const supabase = createClient()
+        const { data } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true })
+        if (data && data.length > 0) {
+          setDirectiva(data)
+        }
+      } catch (err) {
+        console.error('Error cargando directiva:', err)
+      } finally {
+        setLoading(false)
+      }
     }
     fetchDirectiva()
   }, [])
@@ -95,10 +104,30 @@ export default function NosotrosPage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-8">
-            {directiva.length === 0 ? (
-               <div className="w-full text-center py-12 text-slate-500 font-medium">
-                 Cargando directorio...
-               </div>
+            {loading ? (
+              <div className="flex flex-wrap justify-center gap-8 w-full py-8">
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className="flex flex-col items-center p-8 bg-slate-100/70 rounded-3xl animate-pulse w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] max-w-sm">
+                    <div className="w-48 h-48 mb-6 rounded-full bg-slate-200" />
+                    <div className="h-6 w-36 bg-slate-200 rounded-lg mb-3" />
+                    <div className="h-4 w-28 bg-slate-200 rounded-lg" />
+                  </div>
+                ))}
+              </div>
+            ) : directiva.length === 0 ? (
+              <div className="flex flex-col items-center text-center p-10 bg-slate-50 rounded-3xl border border-slate-200/80 max-w-xl mx-auto shadow-sm">
+                <div className="w-16 h-16 bg-blue-50 text-[#002b7f] rounded-2xl flex items-center justify-center mb-5 border border-blue-100 shadow-sm">
+                  <UsersIcon className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Comité y Junta Directiva</h3>
+                <p className="text-slate-500 font-medium mb-6 leading-relaxed">
+                  Liderado por la presidencia de <strong>Florimar Ontiveros</strong>. La nómina y estructura de la Junta Directiva se encuentra en proceso de actualización en este portal.
+                </p>
+                <Link href="/contacto" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#002b7f] text-white font-bold text-sm hover:bg-blue-900 transition-all shadow-md hover:shadow-blue-900/20">
+                  Contactar con la Directiva
+                  <ArrowRightIcon className="w-4 h-4" />
+                </Link>
+              </div>
             ) : directiva.map((persona, i) => (
               <motion.div 
                 key={persona.id}
