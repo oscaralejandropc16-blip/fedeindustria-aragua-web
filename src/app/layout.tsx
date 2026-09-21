@@ -74,6 +74,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.fedeindustriaragua.org.ve',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   verification: {
     google: 'googleda7f5277621fb132',
   },
