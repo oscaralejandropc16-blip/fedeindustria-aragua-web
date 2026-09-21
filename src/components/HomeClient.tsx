@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRightIcon, BuildingIcon, ChevronRightIcon, NewspaperIcon, CalendarIcon } from 'lucide-react'
+import { ArrowRightIcon, BuildingIcon, ChevronRightIcon, NewspaperIcon, CalendarIcon, TrendingUpIcon, ShieldCheckIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 
@@ -12,7 +12,7 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
     <div className="w-full bg-slate-50">
       
       {/* HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden py-20 sm:py-28">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <video 
             autoPlay loop muted playsInline 
@@ -21,44 +21,107 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
           >
             <source src={configHome.video_url} type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-slate-900/75 backdrop-blur-[6px]" />
+          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-[5px]" />
+          {/* Subtle Ambient Aurora Light */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] md:w-[850px] h-[300px] sm:h-[420px] bg-gradient-to-tr from-blue-600/25 via-cyan-500/15 to-transparent blur-[100px] sm:blur-[140px] pointer-events-none rounded-full" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10 text-center flex flex-col items-center">
+          
+          {/* EDITORIAL LUXURY KICKER (TENDENCIA MODERNA) */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/10 border border-white/20 shadow-sm text-xs sm:text-sm font-semibold text-blue-200 mb-6 sm:mb-8 backdrop-blur-md max-w-[90vw] text-center"
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center gap-3 sm:gap-4 mb-5 sm:mb-8"
           >
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
-            <span className="sm:hidden">Impulsando el Motor Productivo</span>
-            <span className="hidden sm:inline">Impulsando el motor productivo de Aragua</span>
+            <div className="h-px w-6 sm:w-14 bg-gradient-to-r from-transparent to-cyan-400/80" />
+            <span className="text-[11px] sm:text-xs md:text-sm font-bold tracking-[0.22em] sm:tracking-[0.28em] uppercase text-cyan-300 drop-shadow-[0_0_12px_rgba(34,211,238,0.45)] select-none">
+              Cúpula Empresarial de Aragua
+            </span>
+            <div className="h-px w-6 sm:w-14 bg-gradient-to-l from-transparent to-cyan-400/80" />
           </motion.div>
 
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.1] max-w-5xl drop-shadow-2xl"
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight sm:tracking-tighter leading-[1.08] max-w-5xl drop-shadow-2xl"
           >
-            {configHome.titulo.split(' ').slice(0, -1).join(' ')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{configHome.titulo.split(' ').slice(-1)}</span>
+            {configHome.titulo.split(' ').slice(0, -1).join(' ')}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-200">
+              {configHome.titulo.split(' ').slice(-1)}
+            </span>
           </motion.h1>
 
           <motion.p 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-8 text-xl md:text-2xl text-slate-200 font-medium max-w-3xl leading-relaxed drop-shadow-md whitespace-pre-line"
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-6 sm:mt-8 text-base sm:text-xl md:text-2xl text-slate-200/90 font-normal sm:font-medium max-w-3xl leading-relaxed drop-shadow-md whitespace-pre-line"
           >
             {configHome.subtitulo}
           </motion.p>
 
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-12 flex flex-col sm:flex-row items-center gap-6"
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-5 w-full sm:w-auto justify-center"
           >
-            <Link href="/directorio" className="h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/25 group">
-              Explorar Ecosistema <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <Link 
+              href="/directorio" 
+              className="w-full sm:w-auto h-13 sm:h-14 px-8 rounded-full bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-base flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:-translate-y-0.5 active:translate-y-0 group"
+            >
+              Explorar Ecosistema 
+              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link href="/nosotros" className="h-14 px-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 font-bold flex items-center justify-center transition-all">
+            <Link 
+              href="/nosotros" 
+              className="w-full sm:w-auto h-13 sm:h-14 px-8 rounded-full bg-white/[0.08] hover:bg-white/[0.16] active:bg-white/[0.22] backdrop-blur-xl text-white border border-white/20 hover:border-white/40 font-semibold text-base flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5"
+            >
               Conocer a la Junta
             </Link>
           </motion.div>
+
+          {/* DOCK BENTO DE SEÑALES Y MÉTRICAS (FROSTED GLASS DOCK) */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+            className="mt-12 sm:mt-16 w-full max-w-3xl grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-white/[0.04] backdrop-blur-xl border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+          >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 py-1.5 sm:py-2 px-1 sm:px-3 text-center sm:text-left border-r border-white/10">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-cyan-300 flex-shrink-0">
+                <BuildingIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
+              <div>
+                <div className="text-[11px] sm:text-sm font-extrabold text-white tracking-tight leading-tight">+100 Empresas</div>
+                <div className="text-[9px] sm:text-[11px] text-slate-300 font-medium">Red Federada</div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 py-1.5 sm:py-2 px-1 sm:px-3 text-center sm:text-left border-r border-white/10">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 flex-shrink-0">
+                <TrendingUpIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
+              <div>
+                <div className="text-[11px] sm:text-sm font-extrabold text-white tracking-tight leading-tight">100% Productivo</div>
+                <div className="text-[9px] sm:text-[11px] text-slate-300 font-medium">Aragua Potencia</div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 py-1.5 sm:py-2 px-1 sm:px-3 text-center sm:text-left">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-200 flex-shrink-0">
+                <ShieldCheckIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
+              <div>
+                <div className="text-[11px] sm:text-sm font-extrabold text-white tracking-tight leading-tight">Sede Oficial</div>
+                <div className="text-[9px] sm:text-[11px] text-slate-300 font-medium">Maracay, Aragua</div>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
