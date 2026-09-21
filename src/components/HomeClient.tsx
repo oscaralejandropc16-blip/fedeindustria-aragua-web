@@ -8,8 +8,6 @@ import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 
 export default function HomeClient({ configHome, empresas, eventos, noticias, aliadosLogos }: any) {
-  const [activeLogo, setActiveLogo] = useState<number | null>(null)
-
   return (
     <div className="w-full bg-slate-50">
       
@@ -93,24 +91,15 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
         
         <div className="flex w-fit">
           <div className="flex items-center gap-10 md:gap-20 px-6 md:px-10 animate-custom-marquee">
-            {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src: string, i: number) => {
-              const isActive = activeLogo === i;
-              return (
-                <div 
-                  key={i}
-                  onClick={() => setActiveLogo(activeLogo === i ? null : i)}
-                  onTouchStart={() => setActiveLogo(i)}
-                  className={`h-16 md:h-20 w-[120px] relative flex items-center justify-center transition-all duration-300 cursor-pointer flex-shrink-0 select-none ${
-                    isActive
-                      ? 'grayscale-0 opacity-100 scale-110'
-                      : 'grayscale hover:grayscale-0 active:grayscale-0 opacity-60 hover:opacity-100 active:opacity-100 active:scale-105'
-                  }`}
-                  title="Aliado Estratégico"
-                >
-                  <Image src={src} alt="Logo Aliado" fill className="object-contain" sizes="120px" />
-                </div>
-              );
-            })}
+            {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src: string, i: number) => (
+              <div 
+                key={i}
+                className="h-16 md:h-20 w-[120px] relative flex items-center justify-center transition-all duration-300 flex-shrink-0 select-none grayscale-0 opacity-100 md:grayscale md:opacity-60 md:hover:grayscale-0 md:hover:opacity-100 md:hover:scale-105 cursor-pointer"
+                title="Aliado Estratégico"
+              >
+                <Image src={src} alt="Logo Aliado" fill className="object-contain" sizes="120px" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
