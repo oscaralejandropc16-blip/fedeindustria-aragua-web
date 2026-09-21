@@ -157,7 +157,7 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
             {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src: string, i: number) => (
               <div 
                 key={i}
-                className="h-16 md:h-20 w-[120px] relative flex items-center justify-center transition-all duration-300 flex-shrink-0 select-none grayscale-0 opacity-100 md:grayscale md:opacity-60 md:hover:grayscale-0 md:hover:opacity-100 md:hover:scale-105 cursor-pointer"
+                className="h-16 md:h-20 w-[120px] relative flex items-center justify-center transition-transform duration-300 flex-shrink-0 select-none hover:scale-110 cursor-pointer"
                 title="Aliado Estratégico"
               >
                 <Image src={src} alt="Logo Aliado" fill className="object-contain" sizes="120px" />
