@@ -29,7 +29,7 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 shadow-sm text-sm font-bold text-blue-200 mb-8 backdrop-blur-md"
           >
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Impulsando el motor productivo de Aragua
+            Fedeindustria Aragua · Impulsando el motor productivo
           </motion.div>
 
           <motion.h1 

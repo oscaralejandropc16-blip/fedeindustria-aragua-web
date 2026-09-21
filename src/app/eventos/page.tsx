@@ -1,7 +1,28 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/utils/supabase/server'
 import EventosClient from '@/components/EventosClient'
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: 'Eventos y Encuentros Empresariales',
+  description: 'Conoce los próximos eventos, ruedas de negocios, foros, exposiciones y talleres organizados por Fedeindustria Aragua.',
+  keywords: [
+    'Eventos Fedeindustria Aragua',
+    'Ruedas de negocios Aragua',
+    'Expo empresarial Maracay',
+    'Foros industriales Aragua',
+    'Capacitación empresarial Venezuela'
+  ],
+  alternates: {
+    canonical: 'https://www.fedeindustriaragua.org.ve/eventos',
+  },
+  openGraph: {
+    title: 'Eventos y Encuentros Empresariales | Fedeindustria Aragua',
+    description: 'Participa en los eventos y actividades empresariales de referencia en el estado Aragua.',
+    url: 'https://www.fedeindustriaragua.org.ve/eventos',
+  }
+}
 
 export default async function EventosPage() {
   const supabase = await createClient()

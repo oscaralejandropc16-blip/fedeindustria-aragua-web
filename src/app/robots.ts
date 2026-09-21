@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/'],
     },
-    sitemap: 'https://fedeindustria-aragua-web.vercel.app/sitemap.xml',
+    sitemap: 'https://www.fedeindustriaragua.org.ve/sitemap.xml',
   }
 }
