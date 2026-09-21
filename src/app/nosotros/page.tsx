@@ -6,9 +6,19 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 
+const DEFAULT_DIRECTIVA = [
+  {
+    id: 1,
+    nombre: 'Florimar Ontiveros',
+    cargo: 'Presidenta de Fedeindustria Aragua',
+    imagen_url: 'https://ookbqfgsbwvnjqmdgmal.supabase.co/storage/v1/object/public/media_institucional/directiva/1780931041514-hrpxb46a7r.png',
+    orden: 1,
+  },
+]
+
 export default function NosotrosPage() {
-  const [directiva, setDirectiva] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [directiva, setDirectiva] = useState<any[]>(DEFAULT_DIRECTIVA)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchDirectiva = async () => {
@@ -20,8 +30,6 @@ export default function NosotrosPage() {
         }
       } catch (err) {
         console.error('Error cargando directiva:', err)
-      } finally {
-        setLoading(false)
       }
     }
     fetchDirectiva()
