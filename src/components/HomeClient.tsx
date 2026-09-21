@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRightIcon, BuildingIcon, ChevronRightIcon, NewspaperIcon, CalendarIcon } from 'lucide-react'
@@ -7,6 +8,8 @@ import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 
 export default function HomeClient({ configHome, empresas, eventos, noticias, aliadosLogos }: any) {
+  const [activeLogo, setActiveLogo] = useState<number | null>(null)
+
   return (
     <div className="w-full bg-slate-50">
       
@@ -26,10 +29,11 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 shadow-sm text-sm font-bold text-blue-200 mb-8 backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/10 border border-white/20 shadow-sm text-xs sm:text-sm font-semibold text-blue-200 mb-6 sm:mb-8 backdrop-blur-md max-w-[90vw] text-center"
           >
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Fedeindustria Aragua · Impulsando el motor productivo
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
+            <span className="sm:hidden">Impulsando el Motor Productivo</span>
+            <span className="hidden sm:inline">Impulsando el motor productivo de Aragua</span>
           </motion.div>
 
           <motion.h1 
@@ -67,27 +71,46 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
           100% { transform: translateX(-50%); }
         }
         .animate-custom-marquee {
-          animation: customMarquee 30s linear infinite;
+          animation: customMarquee 55s linear infinite;
         }
-        .animate-custom-marquee:hover {
+        .animate-custom-marquee:hover,
+        .animate-custom-marquee:active {
           animation-play-state: paused;
+        }
+        @media (max-width: 768px) {
+          .animate-custom-marquee {
+            animation-duration: 70s;
+          }
         }
       `}} />
       <section className="py-16 bg-white border-y border-slate-100 overflow-hidden relative">
-        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-24 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-24 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
         
         <div className="text-center mb-10 relative z-20">
           <h3 className="text-sm font-black tracking-widest text-slate-400 uppercase">Respaldados por Aliados de Primera Línea</h3>
         </div>
         
         <div className="flex w-fit">
-          <div className="flex items-center gap-12 md:gap-20 px-6 md:px-10 animate-custom-marquee">
-            {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src: string, i: number) => (
-              <div key={i} className="h-16 md:h-20 w-[120px] relative flex items-center justify-center grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all cursor-pointer flex-shrink-0">
-                <Image src={src} alt="Logo Aliado" fill className="object-contain" sizes="120px" />
-              </div>
-            ))}
+          <div className="flex items-center gap-10 md:gap-20 px-6 md:px-10 animate-custom-marquee">
+            {[...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos, ...aliadosLogos].map((src: string, i: number) => {
+              const isActive = activeLogo === i;
+              return (
+                <div 
+                  key={i}
+                  onClick={() => setActiveLogo(activeLogo === i ? null : i)}
+                  onTouchStart={() => setActiveLogo(i)}
+                  className={`h-16 md:h-20 w-[120px] relative flex items-center justify-center transition-all duration-300 cursor-pointer flex-shrink-0 select-none ${
+                    isActive
+                      ? 'grayscale-0 opacity-100 scale-110'
+                      : 'grayscale hover:grayscale-0 active:grayscale-0 opacity-60 hover:opacity-100 active:opacity-100 active:scale-105'
+                  }`}
+                  title="Aliado Estratégico"
+                >
+                  <Image src={src} alt="Logo Aliado" fill className="object-contain" sizes="120px" />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
