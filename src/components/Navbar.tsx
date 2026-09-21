@@ -21,8 +21,8 @@ export default function Navbar() {
     fetchLogo()
   }, [])
 
-  // Evitar mostrar el navbar en las rutas de admin para que no estorbe el dashboard
-  if (pathname?.startsWith('/admin')) {
+  // Evitar mostrar el navbar en las rutas de admin o panel privado para que no estorbe el dashboard
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/panel-privado')) {
     return null
   }
 

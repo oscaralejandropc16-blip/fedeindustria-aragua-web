@@ -31,7 +31,7 @@ export default function AdminLogin() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/admin/dashboard')
+      router.push('/panel-privado/dashboard')
     }
   }
 

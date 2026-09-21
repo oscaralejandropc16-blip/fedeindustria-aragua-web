@@ -251,7 +251,7 @@ export default function Dashboard() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        router.push('/admin/login')
+        router.push('/panel-privado/login')
       } else {
         setIsAuthenticated(true)
         fetchData()
@@ -263,7 +263,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/admin/login')
+    router.push('/panel-privado/login')
   }
 
   const handleDelete = async (id: number, tabla: string) => {
