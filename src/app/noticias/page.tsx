@@ -32,7 +32,6 @@ export default async function TodasLasNoticiasPage() {
     .select('id, titulo, resumen, fecha_publicacion, imagen_url, galeria_urls')
     .order('orden', { ascending: true })
     .order('fecha_publicacion', { ascending: false })
-    .limit(12)
 
   return <NoticiasClient noticias={noticias || []} />
 }

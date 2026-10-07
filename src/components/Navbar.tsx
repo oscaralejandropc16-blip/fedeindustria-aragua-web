@@ -48,7 +48,7 @@ export default function Navbar() {
           </Link>
 
           {/* Enlaces de Navegación Centrados (Desktop) */}
-          <nav className="hidden md:flex items-center gap-10">
+          <nav className="hidden md:flex items-center gap-8">
             <Link href="/" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
               Inicio
               <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
@@ -63,6 +63,10 @@ export default function Navbar() {
             </Link>
             <Link href="/eventos" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
               Eventos
+              <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
+            </Link>
+            <Link href="/noticias" className="text-[15px] font-bold text-slate-600 hover:text-[#002b7f] transition-colors relative group">
+              Noticias
               <span className="absolute -bottom-1.5 left-0 w-0 h-0.5 bg-[#002b7f] group-hover:w-full transition-all duration-300"></span>
             </Link>
           </nav>
@@ -121,6 +125,13 @@ export default function Navbar() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Eventos
+            </Link>
+            <Link 
+              href="/noticias" 
+              className="text-lg font-bold text-slate-700 hover:text-[#002b7f] active:text-[#002b7f] px-4 py-3 rounded-xl hover:bg-slate-50 active:bg-blue-50 active:scale-95 transition-all"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Noticias
             </Link>
             <div className="pt-4 mt-2 border-t border-slate-100">
               <Link 

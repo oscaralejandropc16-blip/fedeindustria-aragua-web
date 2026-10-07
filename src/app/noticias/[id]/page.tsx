@@ -61,8 +61,8 @@ export default function NoticiaPage() {
           <NewspaperIcon className="w-16 h-16 text-slate-300 mx-auto mb-6" />
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Noticia no encontrada</h2>
           <p className="text-slate-500 mb-8">El artículo que intentas leer ya no está disponible o el enlace es incorrecto.</p>
-          <Link href="/" className="bg-[#002b7f] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-900 transition-colors inline-flex items-center gap-2">
-            <ArrowLeftIcon className="w-5 h-5" /> Volver al Inicio
+          <Link href="/noticias" className="bg-[#002b7f] text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-900 transition-colors inline-flex items-center gap-2">
+            <ArrowLeftIcon className="w-5 h-5" /> Volver a Sala de Prensa
           </Link>
         </div>
       </main>
@@ -125,9 +125,15 @@ export default function NoticiaPage() {
         </div>
 
         <div className="max-w-4xl mx-auto relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-[#002b7f] font-bold mb-8 transition-colors">
-            <ArrowLeftIcon className="w-4 h-4" /> Volver al Inicio
-          </Link>
+          <div className="flex items-center gap-3 mb-8">
+            <Link href="/noticias" className="inline-flex items-center gap-2 text-slate-500 hover:text-[#002b7f] font-bold transition-colors">
+              <ArrowLeftIcon className="w-4 h-4" /> Volver a Sala de Prensa
+            </Link>
+            <span className="text-slate-300">|</span>
+            <Link href="/" className="text-slate-400 hover:text-slate-600 font-medium text-sm transition-colors">
+              Inicio
+            </Link>
+          </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 text-emerald-600 font-bold uppercase tracking-widest text-sm mb-4">

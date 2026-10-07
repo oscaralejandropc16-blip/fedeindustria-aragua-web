@@ -64,6 +64,7 @@ export default function Footer() {
           <ul className="space-y-4">
             <li><Link href="/nosotros" className="text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all font-medium">Nuestra Historia</Link></li>
             <li><Link href="/directorio" className="text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all font-medium">Directorio Oficial</Link></li>
+            <li><Link href="/noticias" className="text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all font-medium">Sala de Prensa</Link></li>
             <li><Link href="/eventos" className="text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all font-medium">Agenda y Eventos</Link></li>
             <li><Link href="/contacto" className="text-slate-300 hover:text-white hover:translate-x-1 inline-block transition-all font-medium">Contáctanos</Link></li>
           </ul>

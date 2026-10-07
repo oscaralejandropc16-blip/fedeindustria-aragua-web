@@ -229,6 +229,16 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
               ))
             )}
           </div>
+
+          {/* Botón Ver todas en móvil */}
+          <div className="mt-10 text-center md:hidden">
+            <Link 
+              href="/noticias" 
+              className="inline-flex items-center justify-center gap-2 w-full py-4 px-6 rounded-2xl bg-blue-50 text-[#002b7f] font-bold hover:bg-blue-100 transition-colors shadow-sm"
+            >
+              Ver todas las noticias <ChevronRightIcon className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
