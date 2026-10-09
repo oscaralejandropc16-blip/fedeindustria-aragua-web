@@ -5,6 +5,7 @@ import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import HalloweenTheme from "@/components/HalloweenTheme";
 import "./globals.css";
 
 // Utilizamos Inter como fuente principal, es la más profesional y limpia para UI corporativa.
@@ -195,6 +196,7 @@ export default function RootLayout({
         {/* Footer Institucional Rediseñado */}
         <Footer />
         <ScrollToTop />
+        <HalloweenTheme />
       </body>
     </html>
   );

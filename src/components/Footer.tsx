@@ -107,7 +107,13 @@ export default function Footer() {
       </div>
       
       <div className="max-w-7xl mx-auto px-8 mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-sm font-medium text-slate-400">
-        <p>© {new Date().getFullYear()} Fedeindustria Aragua. Todos los derechos reservados.</p>
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+          <p>© {new Date().getFullYear()} Fedeindustria Aragua. Todos los derechos reservados.</p>
+          <span className="hidden sm:inline text-slate-600">•</span>
+          <span className="text-xs text-amber-400/90 flex items-center gap-1 font-semibold">
+            <span>🎃</span> Edición Especial Octubre
+          </span>
+        </div>
         <div className="flex gap-6 items-center">
           <Link href="#" className="hover:text-white transition-colors">Términos de Servicio</Link>
           <Link href="#" className="hover:text-white transition-colors">Privacidad</Link>
