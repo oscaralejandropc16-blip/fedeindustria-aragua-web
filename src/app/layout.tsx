@@ -183,7 +183,7 @@ export default function RootLayout({
         />
       </head>
       {/* Aseguramos que Inter sea la fuente base en todo el body */}
-      <body className={`${inter.className} min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900`}>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 relative`}>
         
         {/* Navbar Flotante Ultra-Moderno con estado responsivo */}
         <Navbar />
