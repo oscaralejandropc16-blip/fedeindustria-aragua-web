@@ -30,20 +30,6 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
 
         <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10 text-center flex flex-col items-center">
           
-          {/* BADGE DECORATIVO DE TEMPORADA HALLOWEEN */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500/15 via-amber-500/20 to-purple-500/15 border border-orange-500/35 backdrop-blur-md mb-4 shadow-[0_0_25px_rgba(249,115,22,0.22)] select-none"
-          >
-            <span className="text-sm">🎃</span>
-            <span className="text-[11px] sm:text-xs md:text-sm font-bold text-orange-200 tracking-wider uppercase">
-              Especial Octubre • Innovación & Productividad
-            </span>
-            <span className="text-xs text-orange-400/80 hidden sm:inline">🕸️</span>
-          </motion.div>
-
           {/* EDITORIAL LUXURY KICKER (TENDENCIA MODERNA) */}
           <motion.div 
             initial={{ opacity: 0, y: -10 }} 
