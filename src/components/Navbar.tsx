@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
 import { createClient } from "@/utils/supabase/client"
 
 export default function Navbar() {
@@ -36,11 +35,8 @@ export default function Navbar() {
           <Link href="/" className="flex items-center group relative" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="relative inline-block">
               {/* Sombrerito de Bruja Estilizado Vectorial */}
-              <motion.div
-                initial={{ rotate: -16, y: 0 }}
-                animate={{ rotate: [-16, -11, -16], y: [0, -2, 0] }}
-                transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-                className="absolute -top-3.5 sm:-top-4 -left-1 sm:-left-2 w-7 sm:w-9 h-7 sm:h-9 z-20 pointer-events-none drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] transition-transform group-hover:scale-110"
+              <div
+                className="absolute -top-3 sm:-top-4 -left-1 sm:-left-2 w-7 sm:w-9 h-7 sm:h-9 z-20 pointer-events-none drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] -rotate-12 group-hover:-rotate-6 group-hover:scale-110 transition-transform duration-300"
                 title="¡Edición Especial Halloween!"
               >
                 <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -56,7 +52,7 @@ export default function Navbar() {
                   {/* Brillo mágico en la punta */}
                   <circle cx="62" cy="15" r="2.5" fill="#fef08a" />
                 </svg>
-              </motion.div>
+              </div>
 
               <img 
                 src={logoUrl} 
