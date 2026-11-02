@@ -5,7 +5,6 @@ import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
-import HalloweenTheme from "@/components/HalloweenTheme";
 import "./globals.css";
 
 // Utilizamos Inter como fuente principal, es la más profesional y limpia para UI corporativa.
@@ -183,7 +182,7 @@ export default function RootLayout({
         />
       </head>
       {/* Aseguramos que Inter sea la fuente base en todo el body */}
-      <body className={`${inter.className} min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 relative`}>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900`}>
         
         {/* Navbar Flotante Ultra-Moderno con estado responsivo */}
         <Navbar />
@@ -196,7 +195,6 @@ export default function RootLayout({
         {/* Footer Institucional Rediseñado */}
         <Footer />
         <ScrollToTop />
-        <HalloweenTheme />
       </body>
     </html>
   );

@@ -24,8 +24,6 @@ export default function HomeClient({ configHome, empresas, eventos, noticias, al
           <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-[5px]" />
           {/* Subtle Ambient Aurora Light */}
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[650px] md:w-[850px] h-[300px] sm:h-[420px] bg-gradient-to-tr from-blue-600/25 via-cyan-500/15 to-transparent blur-[100px] sm:blur-[140px] pointer-events-none rounded-full" />
-          {/* Subtle Autumn & Halloween Warm Aura Light */}
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[550px] md:w-[700px] h-[260px] sm:h-[360px] bg-gradient-to-br from-amber-600/15 via-orange-500/10 to-transparent blur-[120px] sm:blur-[150px] pointer-events-none rounded-full" />
         </div>
 
         <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10 text-center flex flex-col items-center">
