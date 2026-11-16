@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, PlusIcon, InboxIcon, CheckCircleIcon, MailIcon, UsersIcon, FolderOpenIcon } from 'lucide-react'
+import { BuildingIcon, LogOutIcon, CalendarIcon, ShieldCheckIcon, ImageIcon, NewspaperIcon, LayoutDashboardIcon, MapPinIcon, PhoneIcon, TrashIcon, PencilIcon, XIcon, GripVerticalIcon, ArrowLeftIcon, ArrowRightIcon, PlusIcon, InboxIcon, CheckCircleIcon, MailIcon, UsersIcon, FolderOpenIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -99,6 +99,12 @@ export default function Dashboard() {
   const [homeEmail1, setHomeEmail1] = useState('fedeindustriaregistroaragua@gmail.com')
   const [homeEmail2, setHomeEmail2] = useState('fedeindustriaaragua@gmail.com')
   const [homeDireccion, setHomeDireccion] = useState('Av. Las Delicias, Centro Empresarial, Piso 3. Maracay, Edo. Aragua.')
+
+  // Estados de Identidad Institucional (Misión y Visión)
+  const [homeMision, setHomeMision] = useState('Respaldar la industria aragueña con fé y alianzas para el progreso')
+  const [homeVision, setHomeVision] = useState('Liderar la transformación industrial en el estado Aragua.')
+  const [msgIdentidad, setMsgIdentidad] = useState('')
+  const [savingIdentidad, setSavingIdentidad] = useState(false)
 
   // Estados para las Listas
   const [listaEmpresas, setListaEmpresas] = useState<any[]>([])
@@ -241,6 +247,8 @@ export default function Dashboard() {
       if (configHomeData.email_1 !== null && configHomeData.email_1 !== undefined) setHomeEmail1(configHomeData.email_1)
       if (configHomeData.email_2 !== null && configHomeData.email_2 !== undefined) setHomeEmail2(configHomeData.email_2)
       if (configHomeData.direccion !== null && configHomeData.direccion !== undefined) setHomeDireccion(configHomeData.direccion)
+      if (configHomeData.mision) setHomeMision(configHomeData.mision)
+      if (configHomeData.vision) setHomeVision(configHomeData.vision)
     }
 
     setLoadingListas(false)
@@ -724,6 +732,32 @@ export default function Dashboard() {
     setLoading(false); setUploadStatus('')
   }
 
+  const handleSaveIdentidad = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSavingIdentidad(true)
+    setMsgIdentidad('')
+
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('configuracion_home')
+      .update({
+        mision: homeMision,
+        vision: homeVision
+      })
+      .eq('id', 1)
+
+    if (error) {
+      if (error.message.includes('mision') || error.message.includes('vision') || error.code === '42703' || error.code === 'PGRST204') {
+        setMsgIdentidad("❌ Error: Faltan las columnas 'mision' y 'vision' en la tabla 'configuracion_home' de Supabase. Ejecuta el archivo 'update_mision_vision.sql' en el SQL Editor de Supabase para crearlas.")
+      } else {
+        setMsgIdentidad(`❌ Error: ${error.message}`)
+      }
+    } else {
+      setMsgIdentidad('✅ Misión y Visión actualizadas exitosamente en el portal.')
+    }
+    setSavingIdentidad(false)
+  }
+
   const handleUpdateSolicitud = async (id: number, nuevoEstatus: string) => {
     const supabase = createClient()
     const { error } = await supabase.from('solicitudes_afiliacion').update({ estatus: nuevoEstatus }).eq('id', id)
@@ -790,6 +824,9 @@ export default function Dashboard() {
           
           <TabsTrigger value="home" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <LayoutDashboardIcon className="w-5 h-5" /> Portada (Inicio)
+          </TabsTrigger>
+          <TabsTrigger value="identidad" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
+            <ShieldCheckIcon className="w-5 h-5" /> Misión y Visión
           </TabsTrigger>
           <TabsTrigger value="empresas" className="w-full justify-start gap-3 px-4 py-3.5 h-auto rounded-xl data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-none text-slate-500 font-bold hover:bg-slate-50 hover:text-slate-900 transition-all border border-transparent data-[state=active]:border-blue-100">
             <BuildingIcon className="w-5 h-5" /> Directorio
@@ -990,6 +1027,140 @@ export default function Dashboard() {
                   <Button type="submit" disabled={loading} className="h-14 px-8 bg-[#002b7f] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-[#002b7f]/25 transition-all w-full md:w-auto">
                     {loading ? uploadStatus || 'Guardando...' : 'Guardar Configuración de Portada'}
                   </Button>
+                </form>
+              </div>
+            </TabsContent>
+
+            {/* CONTENIDO IDENTIDAD (MISIÓN Y VISIÓN) */}
+            <TabsContent value="identidad" className="focus-visible:outline-none">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 p-8 md:p-12 mb-10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-[80px] -mr-20 -mt-20 pointer-events-none" />
+                
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 relative z-10">
+                  <h3 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#002b7f]/10 rounded-xl flex items-center justify-center text-[#002b7f]">
+                      <ShieldCheckIcon className="w-5 h-5" />
+                    </div>
+                    Identidad Institucional (Misión y Visión)
+                  </h3>
+                  <a 
+                    href="/nosotros" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="inline-flex items-center gap-2 text-xs font-bold text-[#002b7f] hover:text-blue-700 bg-blue-50 px-3.5 py-2 rounded-xl border border-blue-100 transition-colors w-fit"
+                  >
+                    Ver en portal web
+                    <ArrowRightIcon className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
+                <p className="text-slate-500 font-medium mb-8 text-sm relative z-10 leading-relaxed">
+                  Modifica los principios fundamentales de Fedeindustria Aragua. Los cambios realizados se reflejarán inmediatamente en la sección pública <strong>Quiénes Somos / Nosotros</strong> (/nosotros).
+                </p>
+
+                {msgIdentidad && (
+                  <div className={`p-4 mb-6 rounded-xl font-bold relative z-10 ${msgIdentidad.includes('✅') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                    {msgIdentidad}
+                  </div>
+                )}
+
+                <form onSubmit={handleSaveIdentidad} className="space-y-8 relative z-10">
+                  <div className="grid grid-cols-1 gap-8">
+                    {/* Campo Misión */}
+                    <div className="space-y-3 bg-slate-50/60 p-6 rounded-2xl border border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-slate-900 font-extrabold text-base flex items-center gap-2">
+                          <BuildingIcon className="w-5 h-5 text-[#002b7f]" />
+                          Misión Institucional
+                        </Label>
+                        <span className="text-xs font-bold text-slate-400 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+                          {homeMision.length} caracteres
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">
+                        Define el propósito y compromiso gremial con los industriales del Estado Aragua.
+                      </p>
+                      <textarea
+                        value={homeMision}
+                        onChange={e => setHomeMision(e.target.value)}
+                        placeholder="Respaldar la industria aragueña con fé y alianzas para el progreso"
+                        className="w-full min-h-[120px] p-4 bg-white border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-xl text-slate-800 font-medium leading-relaxed resize-y shadow-sm"
+                        required
+                      />
+                    </div>
+
+                    {/* Campo Visión */}
+                    <div className="space-y-3 bg-slate-50/60 p-6 rounded-2xl border border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-slate-900 font-extrabold text-base flex items-center gap-2">
+                          <CheckCircleIcon className="w-5 h-5 text-blue-600" />
+                          Visión Institucional
+                        </Label>
+                        <span className="text-xs font-bold text-slate-400 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+                          {homeVision.length} caracteres
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">
+                        Proyecta la meta a futuro y el liderazgo transformador del gremio industrial.
+                      </p>
+                      <textarea
+                        value={homeVision}
+                        onChange={e => setHomeVision(e.target.value)}
+                        placeholder="Liderar la transformación industrial en el estado Aragua."
+                        className="w-full min-h-[120px] p-4 bg-white border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002b7f] rounded-xl text-slate-800 font-medium leading-relaxed resize-y shadow-sm"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Vista Previa en Vivo */}
+                  <div className="pt-6 border-t border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                        Vista previa en tiempo real (Página /nosotros)
+                      </h4>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-6 bg-slate-100/60 p-6 rounded-2xl border border-slate-200/60">
+                      {/* Tarjeta Misión */}
+                      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="w-12 h-12 bg-blue-50 text-[#002b7f] rounded-xl flex items-center justify-center mb-5">
+                          <BuildingIcon className="w-6 h-6" />
+                        </div>
+                        <h5 className="text-xl font-extrabold text-slate-900 mb-3">Nuestra Misión</h5>
+                        <p className="text-slate-600 font-medium leading-relaxed text-sm">
+                          {homeMision || 'Sin texto de misión...'}
+                        </p>
+                      </div>
+
+                      {/* Tarjeta Visión */}
+                      <div className="bg-[#002b7f] p-8 rounded-2xl border border-[#002b7f] shadow-sm text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+                        <div className="w-12 h-12 bg-white/10 text-white rounded-xl flex items-center justify-center mb-5 relative z-10">
+                          <CheckCircleIcon className="w-6 h-6" />
+                        </div>
+                        <h5 className="text-xl font-extrabold text-white mb-3 relative z-10">Nuestra Visión</h5>
+                        <p className="text-blue-100 font-medium leading-relaxed text-sm relative z-10">
+                          {homeVision || 'Sin texto de visión...'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {msgIdentidad && (
+                    <div className={`p-4 rounded-xl font-bold relative z-10 ${msgIdentidad.includes('✅') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                      {msgIdentidad}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-4">
+                    <Button 
+                      type="submit" 
+                      disabled={savingIdentidad} 
+                      className="h-14 px-8 bg-[#002b7f] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-[#002b7f]/25 transition-all w-full md:w-auto"
+                    >
+                      {savingIdentidad ? 'Guardando cambios...' : 'Guardar Misión y Visión'}
+                    </Button>
+                  </div>
                 </form>
               </div>
             </TabsContent>

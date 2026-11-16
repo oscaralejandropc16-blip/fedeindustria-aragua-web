@@ -16,23 +16,37 @@ const DEFAULT_DIRECTIVA = [
   },
 ]
 
+const DEFAULT_MISION = 'Respaldar la industria aragueña con fé y alianzas para el progreso'
+const DEFAULT_VISION = 'Liderar la transformación industrial en el estado Aragua.'
+
 export default function NosotrosPage() {
   const [directiva, setDirectiva] = useState<any[]>(DEFAULT_DIRECTIVA)
   const [loading, setLoading] = useState(false)
+  const [mision, setMision] = useState(DEFAULT_MISION)
+  const [vision, setVision] = useState(DEFAULT_VISION)
 
   useEffect(() => {
-    const fetchDirectiva = async () => {
+    const fetchData = async () => {
       try {
         const supabase = createClient()
-        const { data } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true })
-        if (data && data.length > 0) {
-          setDirectiva(data)
+        
+        // Cargar directiva
+        const { data: dirData } = await supabase.from('junta_directiva').select('*').order('orden', { ascending: true })
+        if (dirData && dirData.length > 0) {
+          setDirectiva(dirData)
+        }
+
+        // Cargar Misión y Visión desde configuracion_home
+        const { data: configData } = await supabase.from('configuracion_home').select('*').eq('id', 1).single()
+        if (configData) {
+          if (configData.mision) setMision(configData.mision)
+          if (configData.vision) setVision(configData.vision)
         }
       } catch (err) {
-        console.error('Error cargando directiva:', err)
+        console.error('Error cargando información institucional:', err)
       }
     }
-    fetchDirectiva()
+    fetchData()
   }, [])
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
@@ -80,7 +94,7 @@ export default function NosotrosPage() {
             </div>
             <h2 className="text-3xl font-extrabold text-slate-900 mb-6 group-hover:text-[#002b7f] transition-colors">Nuestra Misión</h2>
             <p className="text-slate-500 font-medium leading-relaxed text-lg">
-              Representar, defender y promover los intereses de los industriales aragüeños. Fomentamos un ecosistema de innovación y competitividad que fortalece el aparato productivo nacional, acompañando a nuestros afiliados con asesoría técnica, legal y comercial.
+              {mision}
             </p>
           </motion.div>
 
@@ -96,7 +110,7 @@ export default function NosotrosPage() {
             </div>
             <h2 className="text-3xl font-extrabold text-white mb-6 relative z-10">Nuestra Visión</h2>
             <p className="text-blue-100 font-medium leading-relaxed text-lg relative z-10">
-              Ser el gremio empresarial de referencia indiscutible en Venezuela, caracterizado por liderar la transformación hacia un modelo industrial tecnológico, sustentable y con capacidad exportadora.
+              {vision}
             </p>
           </motion.div>
 
